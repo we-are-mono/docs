@@ -316,12 +316,11 @@ Gentoo has some [great documentation](https://wiki.gentoo.org/wiki/Custom_Initra
 ---
 
 #### References
-- https://cylab.be/blog/320/build-a-kernel-initramfs-and-busybox-to-create-your-own-micro-linux
-- https://akhileshmoghe.github.io/_post/linux/debian_minimal_rootfs
-- https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html
-- https://busybox.net/
-- https://wiki.debian.org/Debootstrap
-- https://qemu-project.gitlab.io/qemu/tools/qemu-img.html
-- https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf
-- https://www.baeldung.com/linux/tftp-server-install-configure-test
-- https://wiki.gentoo.org/wiki/Custom_Initramfs#Init
+- [Build a kernel, initramfs and Busybox to create your own micro-Linux](https://cylab.be/blog/320/build-a-kernel-initramfs-and-busybox-to-create-your-own-micro-linux)
+- [Complete tutorial to create a Debian Minimal RootFS](https://akhileshmoghe.github.io/_post/linux/debian_minimal_rootfs)
+- [Ramfs, rootfs and initramfs](https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html)
+- [Busybox](https://busybox.net/)
+- [Debootstrap](https://wiki.debian.org/Debootstrap)
+- [qemu-img](https://qemu-project.gitlab.io/qemu/tools/qemu-img.html)
+- [Bootlin Embedded Linux Labs](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf)
+- [Installing and Configuring a TFTP Server on Linux](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf)
