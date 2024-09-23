@@ -1,12 +1,16 @@
 # Build a Debian Linux image from scratch
 
+This tutorial has an accompanying [YouTube video](https://youtu.be/vJ44sgnsREk).
+
 In order to build a Debian linux from scratch for an embedded device, we need three components:
 
 - Linux Kernel
 - Root filesystem (along with an optional initial RAM filesystem)
 - A device tree
 
-If you encounter any issues following this tutorial, you're likely missing dependencies like `build-essential` on your system. I'm using Debian (bookworm) virtual machine on the M1 Mac Studio for everything below which means I don't have to use cross compilation tools, but if you're working on an x86 machine, give [this document](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf) a read.
+{% hint style="info" %}
+If you encounter any issues following this tutorial, you're likely missing dependencies like `build-essential` on your system. Also, I'm using Debian (bookworm) virtual machine on the M1 Mac Studio for everything below which means I don't have to use cross compilation tools, but if you're working on an x86 machine, give [this document](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf) a read.
+{% endhint %}
 
 ## Build the kernel
 
@@ -50,11 +54,12 @@ $ make install
 $ cd ..
 ```
 
-This created a directory `_install` which holds almost everything we need for our final *initramfs*, but we're missing two things - an *init* script which kernel needs to run as the very first thing once it's done booting, and a couple of directories that it also expects, so let's make both:
+This created a directory `_install` which holds almost everything we need for our final *initramfs*, but we're missing two things - an *init* script which kernel needs to run as the very first thing once it's done booting, and a couple of directories that it also expects, so let's make both and also copy the whole `_install` directory over:
 
 ```
 $ mkdir initramfs
 $ mkdir -p initramfs/bin initramfs/sbin initramfs/etc initramfs/proc initramfs/sys initramfs/dev initramfs/usr/bin initramfs/usr/sbin
+$ cp -a busybox-1_36_0/_install/* ./initramfs
 $ cat > ./initramfs/init << EOF
 #!/bin/sh
 
@@ -76,6 +81,7 @@ Booting kernel took $(cut -d' ' -f1 /proc/uptime) seconds.
 !
 exec /bin/sh
 EOF
+$ vim initramfs/init # to make any corrections
 $ chmod +x initramfs/init
 ```
 
@@ -166,7 +172,7 @@ To test it out, now go u-boot on your board and enter the following (make sure t
 ```
 => setenv ipaddr 10.0.0.10
 => setenv serverip 10.0.0.1
-=> setenv bootargs "console=ttyS0,115200 root=/dev/ram0 rootwait rw net.ifnames=0 earlycon=uart8250,mmio,0x21c0500"
+=> setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/ram0 rootwait rw"
 => tftp 0x80000000 embedded-debian/board.itb
 => bootm 0x80000000
 ```
@@ -194,8 +200,8 @@ $ sudo kpartx -a /dev/loop0
 $ sudo mkfs.ext4 /dev/mapper/loop0p1
 $ sudo mkfs.ext4 /dev/mapper/loop0p2
 $ sudo mkdir /mnt/sdcard
-$ sudo mkdir /mnt/sdcard/boot
 $ sudo mount /dev/mapper/loop0p2 /mnt/sdcard
+$ sudo mkdir /mnt/sdcard/boot
 $ sudo mount /dev/mapper/loop0p1 /mnt/sdcard/boot
 ```
 
@@ -213,7 +219,7 @@ $ sudo apt install debootstrap
 $ sudo debootstrap --arch=arm64 --foreign bookworm /mnt/sdcard
 $ sudo chroot /mnt/sdcard bash
 $ /debootstrap/debootstrap --second-stage
-$ apt install -y sudo ifupdown net-tools wget ntpdate openssh-server iperf3
+$ apt install -y sudo ifupdown net-tools wget ntpdate openssh-server udev
 $ passwd
 $ exit
 ```
@@ -273,9 +279,9 @@ While the commands should be pretty self-explanatory, let's go over them real qu
 
 - We set the kernel boot arguments to now look at the *second* partition for the root filesystem. This is because our first partition on the device is the `/boot` partition that holds our kernel and the device tree.
 - We load both, the kernel and the device tree into RAM
-- We boot the board. Notice the minus in `booti` command? That's because we're skipping the initial RAM filesystem.
+- We boot the board. Notice the minus character in `booti` command? That's because we're skipping the initial RAM filesystem.
 
-This should hopefully get you to the login screen, but we're not quite done yet. If you check the `/boot` directory, you'll notice that it's empty. This is perfectly fine if you never intend to use it from within Linux, but for the sake of completeness, let's make sure its automatically mounted at boot. First check the *UUID* of your partitions, by running `$ ls -la /dev/disk/by-uuid/` and copy the UUID of the partition that points to `mmcblk0p1` (remember, our first partition is the boot partition).
+This should hopefully get you to the login screen, but we're not quite done yet. If you check the `/boot` directory, you'll notice that it's either empty or you'll get an error. This is perfectly fine if you never intend to use it from within Linux, but for the sake of completeness, let's make sure its automatically mounted at boot. First check the *UUID* of your partitions, by running `$ ls -la /dev/disk/by-uuid/` and copy the UUID of the partition that points to `mmcblk0p1` (remember, our first partition is the boot partition).
 
 Then open `/etc/fstab` file with your favorite editor and paste the following line into it, and make sure you change the UUID to whatever *your* UUID of the partition is:
 
@@ -289,7 +295,7 @@ Then commit the above by entering `$ mount -a`. The `/etc/fstab` file gets read 
 
 If you ever need to boot into **initramfs** for whatever reason, run the following:
 ```
-=> setenv bootargs "console=ttyS0,115200 root=/dev/ram0 rootwait rw net.ifnames=0 earlycon=uart8250,mmio,0x21c0500"
+=> setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/ram0 rootwait rw net.ifnames=0 earlycon=uart8250,mmio,0x21c0500"
 => load mmc 0:1 $kernel_addr_r vmlinuz-6.6.51
 => load mmc 0:1 $ramdisk_addr_r initramfs.cpio.gz.uboot
 => load mmc 0:1 $fdt_addr_r dtb/fsl-ls1046a-rdb.dtb
