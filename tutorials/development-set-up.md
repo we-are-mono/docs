@@ -2,18 +2,18 @@
 
 In this article, we're going to set up a Debian 12 (bookworm) machine for developing software for [NXP LS1046A CPUs](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/layerscape-processors/layerscape-1046a-and-1026a-processors:LS1046A). We're using a virtual machine for this purposes, but a normal, physical box should work just the same.
 
-The goal here is to build two pieces of software that allow us to achieve *insane* amounts of networking performance on our 10 Gigabit ports regardless of what kind of traffic is passing through them or what kind of processing we need to do on it - NAT (IPv4 or IPv6), VLANs, PPPoE, IPSEC, IPS/IDS. And the software that allows us to do that is called Vector Packet Processing. Traditionally, kernel handles layers 2-4 in the OSI networking model, but since it's very inefficient at doing so, we're preventing it from even accessing the NICs in the first place. Instead, layer 2 is handled by something called a Data Plane Development Kit (DPDK) and layers 3 and 4 are handled by VPP (which in turn depends on DPDK and will not work properly without it). Building both is a relatively complex and involved process, which where this article comes in. Hopefully, by the end, you should have an understanding of how to cross-build both for arm64 and have them running on a development board!
+The goal here is to build two pieces of software that allow us to achieve *insane* amounts of networking performance on our 10 Gigabit ports regardless of what kind of traffic is passing through them or what kind of processing we need to do on it - NAT (IPv4 or IPv6), VLANs, PPPoE, IPSEC, IPS/IDS, you name it. And the software that allows us to do that is called Vector Packet Processing. Traditionally, kernel handles layers 2-4 in the OSI networking model, but since it's very inefficient at doing so, we're preventing it from even accessing the NICs in the first place. Instead, layer 2 is handled by something called a [Data Plane Development Kit (DPDK)](https://www.dpdk.org/) and layers 3 and 4 are handled by [VPP](https://fd.io/), which in turn depends on DPDK and will not work properly without it. Building both is a relatively complex and involved process, which is where this article comes in. Hopefully, by the end, you should have an understanding of how to cross-build both for arm64 and have them running on a development board!
 
 ---
 
-We're going to cross-compile a whole lot of packages, and to that end, we're going to create and mount a "target" filesystem on the same Linux machine and this target filesystem can then be mounted on the development board at boot time or turned into an SD card which we can then boot into.
+We're going to cross-compile a whole lot of packages, and to that end, we're going to create and mount a "target" filesystem on the same Linux machine we're working on, and this target filesystem can then be mounted on the development board at boot time (through NFS) or turned into an SD card which we can then boot into.
 
 Keep in mind that this is **not** a production-ready environment, but instead will result in having a development/debugging environment that we can then use for further development of software that will then be used in production.
 
 One additional thing worth mentionig is the nomenclature we're going to use, *host* and *target* specifically, because we'll use these two words a lot. *Host* refers to your development machine which is most likely an x86-based Linux PC. We'll *cross-compile* software that will be unable to run on it, because it will be built for our *target*, which is the development board, and that board runs a CPU on arm64 architecture.
 
 {% hint style="info" %}
-For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with [our router] once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
+For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with our router once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
 {% endhint %}
 
 Since we're working on the software, that is in many cases system-wide, both on the host and even more so on the target root filesystem, we're going to use the *root* user to run all the commands below, so just swap to it by entering `$ sudo -i`.
@@ -453,3 +453,15 @@ $ mount -a
 ```
 
 All that we need to do now is restart the board and we're off to the races!
+
+---
+
+#### References
+
+- [NXP SDK 24.06 documentation](https://www.nxp.com/docs/en/user-guide/UG10143.pdf)
+- [Vector Packet Processing](https://fd.io/)
+- [Data Plane Development kit](https://www.dpdk.org/)
+- [Flexbuild SDK for VPP](https://github.com/NXP/flexbuild/blob/main/src/apps/networking/vpp.mk)
+- [OpenSSL sources](https://github.com/openssl/openssl)
+- [Arm crypto lib](https://github.com/ARM-software/AArch64cryptolib)
+- [Linaro cross compilation toolkit](https://snapshots.linaro.org/gnu-toolchain/12.3-2023.06-1/aarch64-linux-gnu/)
