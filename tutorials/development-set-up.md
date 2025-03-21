@@ -83,7 +83,7 @@ Once you removed the block from the device tree, recompile the kernel, which sho
 
 `$ make CROSS_COMPILE=aarch64-linux-gnu- -j8`
 
-With this done, let's first set up a TFTP server so that we can always grab a fresh copy of it and the device tree once we start booting our development board.
+With this done, let's first set up a TFTP server so that we can always grab a fresh copy of the kernel and the device trees once we start booting our development board.
 
 
 ## (Optional) Set up a TFTP server
