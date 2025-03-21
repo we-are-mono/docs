@@ -12,9 +12,8 @@ Keep in mind that this is **not** a production-ready environment, but instead wi
 
 One additional thing worth mentionig is the nomenclature we're going to use, *host* and *target* specifically, because we'll use these two words a lot. *Host* refers to your development machine which is most likely an x86-based Linux PC. We'll *cross-compile* software that will be unable to run on it, because it will be built for our *target*, which is the development board, and that board runs a CPU on arm64 architecture.
 
-{% hint style="info" %}
-For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with our router once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
-{% endhint %}
+> [!NOTE]
+> For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with our router once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
 
 Since we're working on the software, that is in many cases system-wide, both on the host and even more so on the target root filesystem, we're going to use the *root* user to run all the commands below, so just swap to it by entering `$ sudo -i`.
 
@@ -52,9 +51,9 @@ $ make -j8
 $ make install
 ```
 
-{% hint style="info" %}
+> [!NOTE]
 In case OpenSSL returns errors, chances are, you have already set `ARCH` and `CROSS_COMPILE` environment variables (below) so it's trying to build for Arm achitecture! In this case, just unset both by entering `$ unset ARCH CROSS_COMPILE` and then run the `./Configure` again.
-{% endhint %}
+
 
 At this point, you also need to add some additional environment variables to the bottom of either `.bashrc` or `.zshrc` so that we don't need to add them to each command:
 
@@ -251,9 +250,9 @@ $ install -m 644 libAArch64crypto.a /mnt/rootfs/usr/lib
 $ install -m 644 AArch64cryptolib.h /mnt/rootfs/usr/include
 ```
 
-{% hint style="info" %}
-You'll notice this will become a recurring theme going forward, so if you're unfamiliar with how compiling in linux works, just know that we need two main *ingredients*: libraries and headers. Libraries can either be statically linked and end with `.a` (archive) or dynamically linked shared objects, the names of which end with `.so` (shared object). And headers provide function declarations and their arguments and end up with `.h`
-{% endhint %}
+> [!NOTE]
+> You'll notice this will become a recurring theme going forward, so if you're unfamiliar with how compiling in linux works, just know that we need two main *ingredients*: libraries and headers. Libraries can either be statically linked and end with `.a` (archive) or dynamically linked shared objects, the names of which end with `.so` (shared object). And headers provide function declarations and their arguments and end up with `.h`
+
 
 With `AArch64cryptolib` installed, let's also create a `.pc` file inside the target rootfs which is used by cross compiler to locate both the static library (the `libAArch64crypto.a` file which we just built) as well as the headers. 
 
@@ -335,9 +334,9 @@ platform = 'dpaa'
 END
 ```
 
-{% hint style="info" %}
-We've intentionally put this file *outside* the repository, because caching can sometime mess things up and it's easier to just delete the `dpdk` directory and start over, rather than mess around looking for those caches!
-{% endhint %}
+> [!NOTE]
+> We've intentionally put this file *outside* the repository, because caching can sometime mess things up and it's easier to just delete the `dpdk` directory and start over, rather than mess around looking for those caches!
+
 
 Let's now build DPDK:
 
@@ -440,9 +439,9 @@ Requires=fmc.service
 
 And while you're in, also remove the `ExecStartPre` line.
 
-{% hint style="info" %}
-In case you see an error that says `Your devicetree is out of date, please update it.`, just ignore it, the PHY chip will work just fine.
-{% endhint %}
+> [!NOTE]
+> In case you see an error that says `Your devicetree is out of date, please update it.`, just ignore it, the PHY chip will work just fine.
+
 
 We're almost three, the final thing we also need to do is mount something called *hugepages*. By default, Linux OS stores data in chunks, called *pages*, which are only 4 kb in size, but for high speed networking, these pages are too small which is why we passed the `default_hugepagesz=2m hugepagesz=2m hugepages=1024` earlier in u-boot. These *hugepages* are now allocated, but can't be accessed without mounting them first, so let's create a directory into which they will be mounted, and add a corresponding *fstab* entry do that linux does it automatically when booting:
 
