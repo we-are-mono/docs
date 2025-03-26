@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "next build --output public",
+    "build": "next build",
     "dev": "next dev -p 8080 --turbo",
     "lint": "eslint .",
     "start": "next start -p 8080 --turbo",
