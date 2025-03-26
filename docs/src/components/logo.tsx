@@ -1,5 +1,3 @@
-import { Card } from "fumadocs-ui/components/card";
-
 export function Logo() {
   return (<>
     <svg
