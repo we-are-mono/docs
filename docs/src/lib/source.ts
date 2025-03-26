@@ -9,7 +9,6 @@ export const source = loader({
   baseUrl: '/',
   source: docs.toFumadocsSource(),
   icon(icon) {
-    console.log("Trying to load icon", icon);
     if (icon && icon in icons)
       return createElement(icons[icon as keyof typeof icons]);
   },
