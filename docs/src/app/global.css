@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+@source '../../node_modules/fumadocs-ui/dist/**/*.js';
+
+.gateway {
+  --color-fd-primary: var(--gateway-color);
+}
+
+:root {
+  --gateway-color: var(--color-emerald-600);
+}
+
+table {
+  vertical-align: top;
+}
+
+table td {
+  vertical-align: top;
+}
+
+table th {
+  vertical-align: top;
+}

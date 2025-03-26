@@ -1,0 +1,11 @@
+{
+  "title": "Gateway",
+  "description": "The gateway router",
+  "root": true,
+  "icon": "Router",
+  "pages": [
+    "index",
+    "getting-started",
+    "guides"
+  ]
+}
