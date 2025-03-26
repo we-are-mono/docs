@@ -4,5 +4,5 @@ This is the starting point for our documentation. While it doesn't have much yet
 
 ### Tutorials
 
-- [Build a Debian Linux image from scratch](tutorials/linux-from-scratch.md)
-- [How to set up DPDK and VPP environment for LS1046A](tutorials/development-set-up.md)
+- [Build a Debian Linux image from scratch](docs/content/docs/tutorials/linux-from-scratch.md)
+- [How to set up DPDK and VPP environment for LS1046A](docs/content/docs/tutorials/development-set-up.mdx)
