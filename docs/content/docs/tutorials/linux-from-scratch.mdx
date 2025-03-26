@@ -1,16 +1,20 @@
-# Build a Debian Linux image from scratch
+---
+title: Build a Debian image
+description: Learn how to set up a Debian Linux image from scratch.
+---
 
 This tutorial has an accompanying [YouTube video](https://youtu.be/vJ44sgnsREk).
 
-In order to build a Debian linux from scratch for an embedded device, we need three components:
+In order to build a Debian linux from scratch for an embeBuild a Debian Linux image from scratched device, we need three components:
 
 - Linux Kernel
 - Root filesystem (along with an optional initial RAM filesystem)
 - A device tree
 
-{% hint style="info" %}
+
+<Callout>
 If you encounter any issues following this tutorial, you're likely missing dependencies like `build-essential` on your system. Also, I'm using Debian (bookworm) virtual machine on the M1 Mac Studio for everything below which means I don't have to use cross compilation tools, but if you're working on an x86 machine, give [this document](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf) a read.
-{% endhint %}
+</Callout>
 
 ## Build the kernel
 
@@ -302,9 +306,9 @@ If you ever need to boot into **initramfs** for whatever reason, run the followi
 => booti $kernel_addr_r $ramdisk_addr_r $fdt_addr_r
 ```
 
-{% hint style="info" %}
+<Callout>
 Pay special attention to the `root=/dev/ram0` part of the `bootargs` environment variable because this tells kernel as to where to look for the root filesystem. Since we're using *initramfs*, it needs to look into RAM. But if we skip *initramfs*, then it needs to look into our *mmc* device, which is why we used `root=/dev/mmcblk0p2` earlier.
-{% endhint %}
+</Callout>
 
 Once you're done with it, continue booting into Debian with the following:
 
