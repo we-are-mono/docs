@@ -1,6 +1,5 @@
 "use client";
 
-import { Cards } from "fumadocs-ui/components/card";
 import { useParams } from "next/navigation";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";

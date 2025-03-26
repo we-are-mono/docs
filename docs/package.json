@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev -p 8080 --turbo",
+    "lint": "eslint .",
     "start": "next start -p 8080 --turbo",
     "postinstall": "fumadocs-mdx"
   },
