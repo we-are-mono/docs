@@ -9,27 +9,21 @@ Before you plug the Development Kit in for the first time, it's worth familiariz
 User interface from left to right:
 
 **USB PD Type-C (Power)**
-
 Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant adapter rated for 40W or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power—this is intentional to protect against transient spikes.
 
 **USB 3.1 Type-C (Data)**
-
 A standard USB 3.1 host port. Use it to connect a thumb drive for backups, transfer files to/from the device, or attach external storage.
 
 **UART/Console Type-C (Serial)**
-
 Your primary interface for communicating with the device, especially during initial setup. Connect this to your computer's USB port and use a serial terminal at 115200 baud. We recommend [tio](https://github.com/tio/tio) on macOS/Linux or PuTTY on Windows.
 
 **Reset Button**
-
 Resets the device by pulling the reset pin to ground on most chips. Note that this performs a reset, not a full power cycle.
 
 **1 Gb RJ-45**
-
 Standard gigabit Ethernet ports, compatible with typical home networking equipment.
 
 **10 Gb SFP+**
-
 High-speed 10 gigabit ports for fiber or DAC connections. These should be compatible with a wide array of modules. If a particular module doesn't work, it's usually not a hardware limitation—the retimer chip is fully configurable via I2C, and our [kernel configuration is open source](https://github.com/we-are-mono/meta-mono/blob/master/meta-mono-bsp/recipes-kernel/linux/files/defconfig).
 
 ## First boot
@@ -56,6 +50,8 @@ To explore the firmware or troubleshoot issues, enter the following in U-Boot:
 ```
 
 This boots a minimal Linux environment from NOR flash. While its primary purpose is recovering a broken main OS, it's also useful for low-level system maintenance and learning how the components work.
+
+The default user is `root` with no password.
 
 To exit Recovery Linux and boot into OpenWRT:
 
