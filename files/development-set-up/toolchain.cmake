@@ -31,7 +31,6 @@ INCLUDE_DIRECTORIES("${dpdk_src}/drivers/bus/pci")
 INCLUDE_DIRECTORIES("${dpdk_src}/lib/eal/include")
 INCLUDE_DIRECTORIES("${dpdk_src}/lib/cryptodev")
 
-# set(THREADS_PTHREAD_ARG "2" CACHE STRING "Forcibly set by CMakeLists.txt." FORCE)
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_WIN32_THREADS_INIT 0)

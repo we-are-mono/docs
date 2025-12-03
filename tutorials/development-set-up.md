@@ -24,7 +24,7 @@ We're also going to use `/usr/src` as our working directory and it's here where 
 
 Before we can start, we need to make sure that we have all the necessary packages installed:
 
-`$ apt install -y debootstrap qemu-user-static qemu-utils  parted kpartx build-essential make cmake ncurses-dev flex bison meson bc vim curl git pkg-config rsync nfs-kernel-server debootstrap debhelper dh-python python3-pyelftools python3-ply chrpath tftpd-hpa`
+`$ apt install -y debootstrap qemu-user-static qemu-utils  parted kpartx build-essential make cmake ncurses-dev flex bison meson bc vim curl git pkg-config rsync nfs-kernel-server debootstrap debhelper dh-python python3-pyelftools python3-ply chrpath tftpd-hpa htop`
 
 
 We also need a cross-compiler, and for that, we'll use the one that [Linaro](https://www.linaro.org/) provides and are one of the most popular cross-compilers for ARM.
@@ -373,7 +373,7 @@ Now before we continue, we need to first fix one of the files, but only because 
 
 You can now go to the board (or flash the SD card), boot it, and test DPDK by running `dpdk-helloworld`.
 
-### Build VPP
+## Build VPP
 
 Same as with DPDK, we'll use NXP's version:
 
@@ -382,8 +382,6 @@ $ cd /usr/src
 $ git clone https://github.com/nxp-qoriq/vpp.git
 $ cd vpp
 $ git checkout lf-6.6.36-2.1.0
-$ cd build-root
-
 $ ln -s /mnt/rootfs/usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py \
    /usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py
 ```
@@ -391,12 +389,10 @@ $ ln -s /mnt/rootfs/usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py \
 Unfortunately, this version comes with a Meson *toolchain* file that isn't very friendly towards cross compilation, so we'll instead use our own. Just edit the `toolchain.cmake`, remove everything inside and put the contents of [this file](../files/development-set-up/toolchain.cmake) in. Now we can build it:
 
 ```shell
+$ cd build-root
 $ CROSS_SYSROOT=/mnt/rootfs \
   CROSS_PREFIX=aarch64-linux-gnu \
   DPDK_SRC=/usr/src/dpdk \
-  LDFLAGS="-Wl,-rpath-link=/mnt/rootfs/usr/lib/aarch64-linux-gnu \
-      -L/mnt/rootfs/usr/lib \
-      -L/mnt/rootfs/usr/lib/aarch64-linux-gnu" \
   DEB_BUILD_OPTIONS="nostrip" \
   LD_LIBRARY_PATH=/mnt/rootfs/usr/lib:/mnt/rootfs/lib/aarch64-linux-gnu \
   make V=0 PLATFORM=dpaa TAG=dpaa vpp-package-deb
@@ -408,6 +404,8 @@ When done (this might take a while), copy the resulting `*.deb` files into the t
 $ mkdir /mnt/rootfs/usr/local/vpp
 $ cp -vf *.deb /mnt/rootfs/usr/local/vpp
 ```
+
+---
 
 ### Post-install stuff
 
@@ -436,7 +434,7 @@ After=fmc.service
 Requires=fmc.service
 ```
 
-And while you're in, also remove the `ExecStartPre` line.
+And while you're in, also remove the `ExecStartPre` line, and once done, exit the editor and make sure the service is enabled by running `$ systemctl enable vpp.service`.
 
 > [!NOTE]
 > In case you see an error that says `Your device tree is out of date, please update it.`, just ignore it, the PHY chip will work just fine.
@@ -450,7 +448,7 @@ $ echo "none /mnt/hugepages hugetlbfs defaults,pagesize=2M 0 0" > /etc/fstab
 $ mount -a
 ```
 
-All that we need to do now is restart the board and we're off to the races!
+All that we need to do now is restart the board and once it boots, enter `$ vppctl` to start using VPP!
 
 ---
 
