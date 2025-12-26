@@ -9,13 +9,17 @@ Before you plug the Development Kit in for the first time, it's worth familiariz
 User interface from left to right:
 
 **USB PD Type-C (Power)**
-Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant adapter rated for 40W or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power—this is intentional to protect against transient spikes.
+Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant PSU rated for 15V 3A (45W) or 20V 2A (40W) or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power - this is indicated by the Power Fail LED diode.
+
+***Power Fail LED:***
+Turned ON: Insufficient external USB power supply
+Turned OFF: External power supply meets the required power needs
 
 **USB 3.1 Type-C (Data)**
-A standard USB 3.1 host port. Use it to connect a thumb drive for backups, transfer files to/from the device, or attach external storage.
+A standard USB 3.1 host port. Use it to connect a thumb drive for backups, transfer files to/from the device, or attach external storage. Data speed 5Gbps. This port is designed to power and external device with 5V, up to 3A (15W).
 
 **UART/Console Type-C (Serial)**
-Your primary interface for communicating with the device, especially during initial setup. Connect this to your computer's USB port and use a serial terminal at 115200 baud. We recommend [tio](https://github.com/tio/tio) on macOS/Linux or PuTTY on Windows.
+Your primary interface for communicating with the device, especially during initial setup. Connect this to your computer's USB 2.0 port and use a serial terminal at 115200 baud. We recommend [tio](https://github.com/tio/tio) on macOS/Linux or PuTTY on Windows.
 
 **Reset Button**
 Resets the device by pulling the reset pin to ground on most chips. Note that this performs a reset, not a full power cycle.
