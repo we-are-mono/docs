@@ -1,6 +1,6 @@
 # Getting started
 
-Before you plug the Development Kit in for the first time, it's worth familiarizing yourself with both all the ports on the back of the device.
+Before plugging the Development Kit in for the first time, it's worth familiarizing yourself with both: the ports on the back of the device as well as the First boot procedure.
 
 ## Connectors
 
@@ -9,10 +9,10 @@ Before you plug the Development Kit in for the first time, it's worth familiariz
 User interface from left to right:
 
 **USB PD Type-C (Power)**
-Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant PSU rated for 15V 3A (45W) or 20V 2A (40W) or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power - this is indicated by the Power Fail LED diode.
+Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant PSU rated for 15V 3A (45W) or 20V 2A (40W) or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power - this is indicated by the Power Fail LED diode.  
 
-***Power Fail LED:***
-Turned ON: Insufficient external USB power supply
+***Power Fail LED:***  
+Turned ON: Insufficient external USB power supply  
 Turned OFF: External power supply meets the required power needs
 
 **USB 3.1 Type-C (Data)**
