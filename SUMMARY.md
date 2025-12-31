@@ -5,6 +5,7 @@
 ## Gateway development kit
 
 * [Getting started](gateway-development-kit/getting-started.md)
+* [Expansion ports](gateway-development-kit/expansion-ports.md)
 * [Alternative operating systems](gateway-development-kit/alternative-os.md)
 
 ## Tutorials
