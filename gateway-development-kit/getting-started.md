@@ -4,7 +4,7 @@ Before plugging the Development Kit in for the first time, it's worth familiariz
 
 ## Connectors
 
-![Development Kit ports](assets/development-kit-ports.jpg)
+![Development Kit ports](assets/development-kit-backpanel-connectors.png)
 
 User interface from left to right:
 
