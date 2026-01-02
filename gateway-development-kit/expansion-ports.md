@@ -11,7 +11,7 @@ Before disassembling the device, ensure that proper ESD safety precautions are f
 
 Torx T10 screwdriver
 
-### Disassembly instructions
+### Instructions
 
 ![Development Kit disassembly instructions](assets/development-kit-assembly-instruction.png)
 
@@ -29,7 +29,7 @@ Torx T10 screwdriver
 
 - Gently lift the PCB out of the enclosure, holding it by the edges only.
 
-#### ESD safety notes
+### ESD safety notes
 
 - Work on an ESD-safe surface whenever possible.
 
@@ -37,10 +37,9 @@ Torx T10 screwdriver
 
 - Avoid touching components, connectors, or exposed contacts on the PCB.
 
-- Store the PCB in an ESD-safe bag when it is not installed in the enclosure.
+- Store the PCB in an ESD-safe bag when it is not installed in the enclosure.  
 
+## Port description
 
-
-### Port description
 
 ![Development Kit PCB port description](assets/development-kit-pcb-port-description.png)
