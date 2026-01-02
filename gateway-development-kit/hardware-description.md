@@ -4,6 +4,12 @@ This page describes the hardware specifications and functionality of the expansi
 
 ## PCB mechanical properties
 
+<img 
+  src="assets/development-kit-pcb-dimensions.png" 
+  alt="Development Kit PCB dimensions - mm [in]" 
+  style="max-width:100%; display:block; margin:0 auto;"
+/>
+
 ## Disassembly instructions
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
 
