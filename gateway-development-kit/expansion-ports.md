@@ -44,7 +44,7 @@ Torx T10 screwdriver
 
 ![Development Kit PCB port description](assets/development-kit-pcb-port-description.png)
 
-### GPIO 
+### GPIO_1 
 
 ![GPIO port pinout](assets/development-kit-gpio-port.png)
 
