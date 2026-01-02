@@ -15,8 +15,19 @@ Torx T10 screwdriver
 
 ### Instructions
 
-![Development Kit disassembly instructions - cover](assets/development-kit-assembly-instruction-cover.png)
-![Development Kit disassembly instructions - PCB](assets/development-kit-assembly-instruction-pcb.png)
+
+<img 
+  src="assets/development-kit-assembly-instruction-pcb.png" 
+  alt="Development Kit disassembly instructions - cover" 
+  style="max-width:100%; display:block; margin:0 auto;"
+/>
+
+<img 
+  src="assets/development-kit-assembly-instruction-cover.png" 
+  alt="Development Kit disassembly instructions - PCB" 
+  style="max-width:100%; display:block; margin:0 auto;"
+/>
+
 
 ### Steps
 
@@ -44,16 +55,11 @@ Torx T10 screwdriver
 
 ## Port description
 
-![Development Kit PCB port description - TOP side](assets/development-kit-pcb-port-description-top.png)
-![Development Kit PCB port description - BOTTOM side](assets/development-kit-pcb-port-description-bot.png)
-
-
 <img 
   src="assets/development-kit-pcb-port-description-top.png" 
   alt="Development Kit PCB port description - TOP side" 
   style="max-width:100%; display:block; margin:0 auto;"
 />
-
 
 <img 
   src="assets/development-kit-pcb-port-description-bot.png" 
