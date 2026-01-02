@@ -42,3 +42,5 @@ Torx T10 screwdriver
 
 
 ### Port description
+
+![Development Kit PCB port description](assets/development-kit-pcb-port-description.png)
