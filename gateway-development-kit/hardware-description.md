@@ -116,7 +116,7 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 
 
 {% hint style="danger" %}
-**WARNING** GPIO data pins are not protected. Do not overstress them. Overstressing them will damage the CPU.
+**WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
 {% endhint %}
 
 All other ports are described in the [getting started](getting-started.md)
