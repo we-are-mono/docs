@@ -1,6 +1,8 @@
-# Getting started
+# Development Kit Hardware
 
-The Development Kit was designed with expandability in mind. This page describes the functionality of the expansion ports and how to use them.
+This page describes the hardware specifications and functionality of the expansion ports and how to use them.
+
+## PCB mechanical properties
 
 ## Disassembly instructions
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
@@ -13,7 +15,8 @@ Torx T10 screwdriver
 
 ### Instructions
 
-![Development Kit disassembly instructions](assets/development-kit-assembly-instruction.png)
+![Development Kit disassembly instructions - cover](assets/development-kit-assembly-instruction-cover.png)
+![Development Kit disassembly instructions - PCB](assets/development-kit-assembly-instruction-pcb.png)
 
 ### Steps
 
@@ -42,9 +45,11 @@ Torx T10 screwdriver
 ## Port description
 
 
-![Development Kit PCB port description](assets/development-kit-pcb-port-description.png)
+![Development Kit PCB port description - TOP side](assets\development-kit-pcb-port-description-top.png)
+![Development Kit PCB port description - BOTTOM side](assets\development-kit-pcb-port-description-bot.png)
 
 ### GPIO_1 
+The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
 
 ![GPIO port pinout](assets/development-kit-gpio-port.png)
 
@@ -71,7 +76,7 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 | 10         | GPIO_D4                          | GPIO pin #4                                        |
 | 11         | GPIO_D5                          | GPIO pin #5                                        |
 | 12         | GPIO_D6                          | GPIO pin #6                                        |
-| 7-8, 13-14 | GPIO_D6                          | Ground                                             |
+| 7-8, 13-14 | GND                              | Ground                                             |
 
 
 ### Voltage specifications
@@ -90,10 +95,11 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 | Maximum current           | +-0.5 mA         |
 
 
-   ```
-   GPIO data pins are not protected! Do not overstress them!
-   ```
 
+
+{% hint style="danger" %}
+**WARNING** > GPIO data pins are not protected. Do not overstress them. Overstressing them will result into damaging the CPU.
+{% endhint %}
 
 All other ports are described in the [getting started](getting-started.md)
 
