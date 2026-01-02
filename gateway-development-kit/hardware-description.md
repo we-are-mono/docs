@@ -9,27 +9,25 @@ Since the expansion features are not accessible with the enclosure installed, it
 
 Before disassembling the device, ensure that proper ESD safety precautions are followed to prevent damage to the electronics.
 
-### Required tools
 
+### PCB removal guide
+#### Required tools
 Torx T10 screwdriver
 
-### Instructions
-
-
 <img 
-  src="assets/development-kit-assembly-instruction-pcb.png" 
+  src="assets/development-kit-assembly-instruction-cover.png" 
   alt="Development Kit disassembly instructions - cover" 
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
 <img 
-  src="assets/development-kit-assembly-instruction-cover.png" 
+  src="assets/development-kit-assembly-instruction-pcb.png" 
   alt="Development Kit disassembly instructions - PCB" 
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
 
-### Steps
+#### Steps
 
 - Power off the device and disconnect all cables.
 
@@ -43,7 +41,7 @@ Torx T10 screwdriver
 
 - Gently lift the PCB out of the enclosure, holding it by the edges only.
 
-### ESD safety notes
+#### ESD safety notes
 
 - Work on an ESD-safe surface whenever possible.
 
@@ -118,7 +116,7 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 
 
 {% hint style="danger" %}
-**WARNING** GPIO data pins are not protected. Do not overstress them. Overstressing them will result into damaging the CPU.
+**WARNING** GPIO data pins are not protected. Do not overstress them. Overstressing them will damage the CPU.
 {% endhint %}
 
 All other ports are described in the [getting started](getting-started.md)
