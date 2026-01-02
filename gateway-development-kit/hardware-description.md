@@ -15,8 +15,8 @@ Torx T10 screwdriver
 
 ### Instructions
 
-![Development Kit disassembly instructions - cover](assets/development-kit-assembly-instruction-cover.png)
-![Development Kit disassembly instructions - PCB](assets/development-kit-assembly-instruction-pcb.png)
+![Development Kit disassembly instructions - cover](assets/development-kit-assembly-instruction-cover.png)  
+![Development Kit disassembly instructions - PCB](assets/development-kit-assembly-instruction-pcb.png)  
 
 ### Steps
 
@@ -45,8 +45,8 @@ Torx T10 screwdriver
 ## Port description
 
 
-![Development Kit PCB port description - TOP side](assets\development-kit-pcb-port-description-top.png)
-![Development Kit PCB port description - BOTTOM side](assets\development-kit-pcb-port-description-bot.png)
+![Development Kit PCB port description - TOP side](gateway-development-kit\assets\development-kit-pcb-port-description-bot.png)  
+![Development Kit PCB port description - BOTTOM side](gateway-development-kit\assets\development-kit-pcb-port-description-bot.png)  
 
 ### GPIO_1 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
