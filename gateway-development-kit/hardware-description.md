@@ -25,6 +25,8 @@ This page describes the hardware specifications and functionality of the expansi
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
+PCB thickness is 1.6mm [63 mil]
+
 ## Development Kit enclosure
 Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).  
 {% file src="assets/10G_GW_DK_ENC_A1.zip" %}
