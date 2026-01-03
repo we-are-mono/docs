@@ -5,9 +5,9 @@ This is the starting point for our documentation. While it doesn't have much yet
 
 ### Gateway Development Kit
 
-- [Getting started](tutorials/getting-started.md)
-- [Hardware description](tutorials/development-set-up.md)
-- [Alternative operating systems](tutorials/alternative-os.md)
+- [Getting started](gateway-development-kit/getting-started.md)
+- [Hardware description](gateway-development-kit/hardware-description.md)
+- [Alternative operating systems](gateway-development-kit/alternative-os.md)
 
 ### Tutorials
 
