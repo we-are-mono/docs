@@ -2,6 +2,21 @@
 
 This page describes the hardware specifications and functionality of the expansion ports and how to use them.
 
+## Performance specification
+|                            |                                                                                               |
+|----------------------------|-----------------------------------------------------------------------------------------------|
+| CPU                        | NXP Layerscape LS1046A<br>4 cores<br>1.6 GHz                                                  |
+| RAM                        | 8 GB<br>2100 MT/s<br>ECC support                                                              |
+| Networking                 | 2x SFP+ 10 Gb<br>3x RJ-45 1 Gb                                                                |
+| Wifi                       | 1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br>1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread)                         |
+| Storage                    | 32 GB eMMC for Operating System<br>64 MB NOR flash for Bootloader                             |
+| Debugging                  | JTAG connector<br>100+ test points throughout the PCB<br>UART USB-C port<br>Status RGB LED    |
+| Required Power supply      | USB-C PD 3.0<br>15V 3A (45W) or<br>20V 2A (40W)                                               |
+| Connectivity               | 1x USB-C 3.1 port<br>5Gbps data speed<br>5V 3A output power                                   |
+| Active cooling support     | Yes<br>2x 4-pin PWM 5V fan headers                                                            |
+
+
+
 ## PCB mechanical properties
 
 <img 
