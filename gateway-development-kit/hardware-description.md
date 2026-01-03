@@ -10,6 +10,13 @@ This page describes the hardware specifications and functionality of the expansi
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
+## Development Kit enclosure
+Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).  
+{% file src="assets/10G_GW_DK_ENC_A1.zip" %}
+    Enclosure 3D step models.
+{% endfile %}
+
+
 ## Disassembly instructions
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
 
