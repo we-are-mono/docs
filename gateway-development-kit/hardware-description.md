@@ -17,21 +17,94 @@ This page describes the hardware specifications and functionality of the expansi
 
 
 
-## PCB mechanical properties
+## Port description
 
 <img 
-  src="assets/development-kit-pcb-dimensions.png" 
-  alt="Development Kit PCB dimensions - mm [in]" 
+  src="assets/development-kit-pcb-port-description-top.png" 
+  alt="Development Kit PCB port description - TOP side" 
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
-PCB thickness is 1.6mm [63 mil]
+<img 
+  src="assets/development-kit-pcb-port-description-bot.png" 
+  alt="Development Kit PCB port description - BOTTOM side" 
+  style="max-width:100%; display:block; margin:0 auto;"
+/>
 
-## Development Kit enclosure
-Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).  
-{% file src="assets/10G_GW_DK_ENC_A1.zip" %}
-    Enclosure 3D step models.
-{% endfile %}
+### USB PD Type-C (Power)
+Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant PSU rated for 15V 3A (45W) or 20V 2A (40W) or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power - this is indicated by the Power Fail LED diode.  
+
+### Power Fail LED:
+Turned ON: Insufficient external USB power supply  
+Turned OFF: External power supply meets the required power needs. It is normal for the Power Fail LED to momentarily turn ON during the power up process. 
+
+### USB 3.1 Type-C (Data)
+A standard USB 3.1 host port. Use it to connect a thumb drive for backups, transfer files to/from the device, or attach external storage. Data speed 5Gbps. This port is designed to power an external device with 5V, up to 3A (15W).
+
+### UART/Console Type-C (Serial)
+Your primary interface for communicating with the device, especially during initial setup. Connect this to your computer's USB 2.0 port and use a serial terminal at 115200 baud. We recommend [tio](https://github.com/tio/tio) on macOS/Linux or PuTTY on Windows.
+
+### Reset Button
+Resets the device by pulling the reset pin to ground on most chips. Note that this performs a reset, not a full power cycle.
+
+### 1 Gb RJ-45
+Standard gigabit Ethernet ports, compatible with typical home networking equipment.
+
+### 10 Gb SFP+
+High-speed 10 gigabit ports for fiber or DAC connections. These should be compatible with a wide array of modules. If a particular module doesn't work, it's usually not a hardware limitation—the retimer chip is fully configurable via I2C, and our [kernel configuration is open source](https://github.com/we-are-mono/meta-mono/blob/master/meta-mono-bsp/recipes-kernel/linux/files/defconfig).
+
+### GPIO_1 
+The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
+
+![GPIO port pinout](assets/development-kit-gpio-port.png)
+
+
+#### Connector type
+| Connector type     | Description                  | Link                                                   |
+|--------------------|------------------------------|--------------------------------------------------------|
+| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | [Datasheet](assets/62701420621.pdf)   |
+| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | [Datasheet](assets/62701423121.pdf)   |
+
+#### Pinout 
+A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).  
+A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). This is made easier with the use of internal pull-up or pull-down resistors. This can be configured in software.
+
+| Pin #      | Name                             | Specification                                      |
+|------------|----------------------------------|----------------------------------------------------|
+| 1          | PWR OUT 1.8V                     | Power output, 1.8V, 100mA max. Resettable fuse.    |
+| 2          | PWR OUT 3.3V                     | Power output, 3.3V, 100mA max. Resettable fuse.    |
+| 3          | I2C SDA                          | I2C BUS DATA. 1.8V logic level.                    |
+| 5          | I2C SCL                          | I2C BUS CLOCK. 1.8V logic level.                   |
+| 4          | GPIO_D1                          | GPIO pin #1                                        |
+| 6          | GPIO_D2                          | GPIO pin #2                                        |
+| 9          | GPIO_D3                          | GPIO pin #3                                        |
+| 10         | GPIO_D4                          | GPIO pin #4                                        |
+| 11         | GPIO_D5                          | GPIO pin #5                                        |
+| 12         | GPIO_D6                          | GPIO pin #6                                        |
+| 7-8, 13-14 | GND                              | Ground                                             |
+
+
+#### Voltage specifications
+
+| INPUT                     |                  |
+|---------------------------|------------------|
+| Absolute maximum rating   | 1.98 V           |
+| Input high voltage        | >1.26 V          |
+| Input low voltage         | <0.36 V          |
+| Input current             | +-50 uA          |
+
+| OUTPUT                    |                  |
+|---------------------------|------------------|
+| Output high voltage       | 1.35 V @ -0.5 mA |
+| Output low voltage        | 0.4 V @ 0.5 mA   |
+| Maximum current           | +-0.5 mA         |
+
+
+
+
+{% hint style="danger" %}
+**WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
+{% endhint %}
 
 
 ## Disassembly instructions
@@ -81,73 +154,19 @@ Torx T10 screwdriver
 
 - Store the PCB in an ESD-safe bag when it is not installed in the enclosure.  
 
-## Port description
+
+## PCB mechanical properties
 
 <img 
-  src="assets/development-kit-pcb-port-description-top.png" 
-  alt="Development Kit PCB port description - TOP side" 
+  src="assets/development-kit-pcb-dimensions.png" 
+  alt="Development Kit PCB dimensions - mm [in]" 
   style="max-width:100%; display:block; margin:0 auto;"
 />
 
-<img 
-  src="assets/development-kit-pcb-port-description-bot.png" 
-  alt="Development Kit PCB port description - BOTTOM side" 
-  style="max-width:100%; display:block; margin:0 auto;"
-/>
+PCB thickness is 1.6mm [63 mil]
 
-
-### GPIO_1 
-The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
-
-![GPIO port pinout](assets/development-kit-gpio-port.png)
-
-
-### Connector type
-| Connector type     | Description                  | Link                                                   |
-|--------------------|------------------------------|--------------------------------------------------------|
-| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | [Datasheet](assets/62701420621.pdf)   |
-| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | [Datasheet](assets/62701423121.pdf)   |
-
-### Pinout 
-A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).  
-A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). This is made easier with the use of internal pull-up or pull-down resistors. This can be configured in software.
-
-| Pin #      | Name                             | Specification                                      |
-|------------|----------------------------------|----------------------------------------------------|
-| 1          | PWR OUT 1.8V                     | Power output, 1.8V, 100mA max. Resettable fuse.    |
-| 2          | PWR OUT 3.3V                     | Power output, 3.3V, 100mA max. Resettable fuse.    |
-| 3          | I2C SDA                          | I2C BUS DATA. 1.8V logic level.                    |
-| 5          | I2C SCL                          | I2C BUS CLOCK. 1.8V logic level.                   |
-| 4          | GPIO_D1                          | GPIO pin #1                                        |
-| 6          | GPIO_D2                          | GPIO pin #2                                        |
-| 9          | GPIO_D3                          | GPIO pin #3                                        |
-| 10         | GPIO_D4                          | GPIO pin #4                                        |
-| 11         | GPIO_D5                          | GPIO pin #5                                        |
-| 12         | GPIO_D6                          | GPIO pin #6                                        |
-| 7-8, 13-14 | GND                              | Ground                                             |
-
-
-### Voltage specifications
-
-| INPUT                     |                  |
-|---------------------------|------------------|
-| Absolute maximum rating   | 1.98 V           |
-| Input high voltage        | >1.26 V          |
-| Input low voltage         | <0.36 V          |
-| Input current             | +-50 uA          |
-
-| OUTPUT                    |                  |
-|---------------------------|------------------|
-| Output high voltage       | 1.35 V @ -0.5 mA |
-| Output low voltage        | 0.4 V @ 0.5 mA   |
-| Maximum current           | +-0.5 mA         |
-
-
-
-
-{% hint style="danger" %}
-**WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
-{% endhint %}
-
-All other ports are described in the [getting started](getting-started.md)
-
+## Development Kit enclosure
+Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).  
+{% file src="assets/10G_GW_DK_ENC_A1.zip" %}
+    Enclosure 3D step models.
+{% endfile %}
