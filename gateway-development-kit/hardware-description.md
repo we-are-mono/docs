@@ -34,7 +34,7 @@ This page describes the hardware specifications and functionality of the expansi
 ### USB PD Type-C (Power)
 Use the included 65W GaN power supply. Alternatively, any USB PD 3.0 compliant PSU rated for 15V 3A (45W) or 20V 2A (40W) or more will work. If the board doesn't power up with a third-party adapter, it likely failed to negotiate sufficient power - this is indicated by the Power Fail LED diode.  
 
-### Power Fail LED:
+### Power Fail LED
 Turned ON: Insufficient external USB power supply  
 Turned OFF: External power supply meets the required power needs. It is normal for the Power Fail LED to momentarily turn ON during the power up process. 
 
@@ -69,7 +69,7 @@ The cooling fan driver provides two fully independent channels designed to suppo
 ### GPIO Expansion port [GPIO_1] 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
 
-![GPIO port pinout](assets/development-kit-gpio-port.png)
+![GPIO port pinout - PCB side](assets/development-kit-gpio-port.png)
 
 
 #### Connector type
