@@ -6,7 +6,7 @@ Before plugging the Development Kit in for the first time, it's worth familiariz
 
 ![Development Kit ports](assets/development-kit-backpanel-connectors.png)
 
-More detailed information about the ports is provided in [Hardware description](hardware-description.md.md)
+More detailed information about the ports is provided in [Hardware description](hardware-description.md)
 
 ## First boot
 

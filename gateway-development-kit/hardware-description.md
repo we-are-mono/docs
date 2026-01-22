@@ -45,7 +45,7 @@ A standard USB 3.1 host port. Use it to connect a thumb drive for backups, trans
 Your primary interface for communicating with the device, especially during initial setup. Connect this to your computer's USB 2.0 port and use a serial terminal at 115200 baud. We recommend [tio](https://github.com/tio/tio) on macOS/Linux or PuTTY on Windows.
 
 ### Reset Button
-Resets the device by pulling the reset pin to ground on most chips. Note that this performs a reset, not a full power cycle.
+Resets the device by pulling the reset pin to ground on most chips. Note that this performs a reset, not a full power cycle. There are two reset buttons on the PCB, one located near the USB and network ports and the second one is located on the bottom side of the board near the RTC coin backup battery.  
 
 ### 1 Gb RJ-45
 Standard gigabit Ethernet ports, compatible with typical home networking equipment.
@@ -53,7 +53,17 @@ Standard gigabit Ethernet ports, compatible with typical home networking equipme
 ### 10 Gb SFP+
 High-speed 10 gigabit ports for fiber or DAC connections. These should be compatible with a wide array of modules. If a particular module doesn't work, it's usually not a hardware limitation—the retimer chip is fully configurable via I2C, and our [kernel configuration is open source](https://github.com/we-are-mono/meta-mono/blob/master/meta-mono-bsp/recipes-kernel/linux/files/defconfig).
 
-### GPIO_1 
+### Cooling Fan ports [F_1] & [F_2]
+The cooling fan driver provides two fully independent channels designed to support 4-wire, 5 V cooling fans. These channels are labeled [F_1] and [F_2]. TChannel 1 (CH1) has two physical connectors, one on the top side and one on the bottom side of the PCB, both labeled [F_1]. 
+
+{% hint style="danger" %}
+**WARNING** Only one cooling fan may be connected to CH1 at a time. Connecting more than one fan to this channel may result in malfunction or permanent damage to the cooling fan driver.
+{% endhint %}
+
+
+
+
+### GPIO Expansion port [GPIO_1] 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
 
 ![GPIO port pinout](assets/development-kit-gpio-port.png)
