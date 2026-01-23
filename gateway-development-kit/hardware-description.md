@@ -70,7 +70,7 @@ The cooling fan driver provides two fully independent channels designed to suppo
 
 ![Cooling Fan pinout - Wire side](assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
 
-
+#### Pinout 
 
 ### GPIO Expansion port [GPIO_1] 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
