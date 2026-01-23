@@ -70,7 +70,23 @@ The cooling fan driver provides two fully independent channels designed to suppo
 
 ![Cooling Fan pinout - Wire side](assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
 
+#### Connector type
+| Connector type     | Description                  | Link                                                   |
+|--------------------|------------------------------|--------------------------------------------------------|
+| PCB connector [F_1]      | Wurth Elektronik 653104131822, 4-pin, 1.25mm  | [Datasheet](assets/653104131822.pdf)   |
+| PCB connector [F_1] & [F_2]    | Wurth Elektronik 653104124022, 4-pin, 1.25mm  | [Datasheet](assets/653104124022.pdf)   |
+| Wire connector    | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | [Datasheet](assets/620004113322.pdf)   |
+
 #### Pinout 
+*From the PCB ports perspective*
+| Pin #   | Name      | Specification                                  |
+|---------|-----------|------------------------------------------------|
+| 1       | GND       | Power ground                                   |
+| 2       | +5V VCC   | Power output, 5V, 250mA max per port.          |
+| 3       | TACH      | RPM feedback input<br>Sometimes marked as "FG" |
+| 4       | PWM       | PWM output signal                              |
+
+
 
 ### GPIO Expansion port [GPIO_1] 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch. 
