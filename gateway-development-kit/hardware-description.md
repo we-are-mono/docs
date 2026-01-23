@@ -68,6 +68,7 @@ The cooling fan driver provides two fully independent channels designed to suppo
 
 ![Cooling Fan CH1 [F_1] pinout - PCB bottom side](assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout.png)
 
+![Cooling Fan pinout - Wire side](assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
 
 
 
