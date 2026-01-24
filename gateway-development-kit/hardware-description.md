@@ -176,7 +176,7 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 *From the PCB port's perspective*
 | Pin #                                   | Signal name                | Description                                                    |
 |-----------------------------------------|----------------------------|----------------------------------------------------------------|
-| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                        | Ground                                                         |
+| 1, 7, 33, 39, 45, 51, 57, 63, 69, 75    | GND                        | Ground                                                         |
 | 2, 4, 72, 74                            | +3V3 VCC                   | Power output, 3.3V                                             |
 | 18                                      | VIO_CFG                    | Pulled to ground via 0R resistor                               |
 | 9                                       | SDIO_CLK O (1V8L)          | SDIO bus used for Wifi. Wifi card CLK input signal             |
@@ -206,7 +206,7 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 
 | Pin #                                   | Signal name              | Description                                            |
 |-----------------------------------------|--------------------------|--------------------------------------------------------|
-| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                      | Ground                                                 |
+| 1, 7, 33, 39, 45, 51, 57, 63, 69, 75    | GND                      | Ground                                                 |
 | 2, 4, 72, 74                            | +3V3 VCC                 | Power output, 3.3V                                     |
 | 18                                      | VIO_CFG                  | Pulled to ground via 0R resistor                       |
 | 22                                      | UART_RXD I (1V8L)        | UART bus used for BT. Wifi card TXD output signal      |
