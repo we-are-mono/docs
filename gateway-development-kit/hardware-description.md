@@ -163,7 +163,7 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 {% endhint %} 
 
 {% hint style="danger" %}
-**WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
+**WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with the Gateway, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %}
 
 | Card name                                                | Type       | PCB port| Test status                                                                  | Recommended to use |
