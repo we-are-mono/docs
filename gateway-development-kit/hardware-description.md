@@ -155,8 +155,7 @@ TBD
 
 
 #### Dual-radio wireless card [M2_2]
-The dual-radio expansion port [M2_2] was designed to support compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
-
+The dual-radio expansion port [M2_2] supports compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
 
 ##### Supported cards
 The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
@@ -169,10 +168,10 @@ The wireless expansion cards are partially tested and have not yet completed ful
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %}   
 
-| Card name                                                           | Test status                                                                   | Recommended to use   |
-|------------|------------|------------|
-| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3.pdf)       | Basic HW & Firmware tests done.<br>Performance validation not yet performed.  | YES                  |
-| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR.pdf) | No tests performed yet                                                        | ON YOUR OWN RISK     |
+| Card name  | Test status | Recommended to use   |
+|------------|-------------|----------------------|
+| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3.pdf) | Basic HW & Firmware tests done.<br>Performance validation not yet performed. | YES |
+| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR.pdf) | No tests performed yet | ON YOUR OWN RISK |
 
 
 ##### Pinout 
