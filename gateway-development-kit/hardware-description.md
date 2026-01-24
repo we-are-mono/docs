@@ -148,8 +148,8 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 
 | Battery spec                     |                                  |
 |----------------------------------|----------------------------------|
-| Battery model                    | CR2032                           |
-| Battery size                     | 20mm diameter<br>3.2mm thickness |
+| Model                            | CR2032                           |
+| Size                             | 20mm diameter<br>3.2mm thickness |
 | Nominal voltage / capacity       | 3V / >150mAh                     |
 | Rechargable                      | No                               |
 
@@ -157,9 +157,11 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 {% hint style="danger" %}
 **WARNING** Do not use force to remove the battery from its holder.
 {% endhint %}
-![RTC battery remove](assets/development-kit-RTC-battery-remove.png)
+![RTC battery remove procedure](assets/development-kit-RTC-battery-remove.png)
 
-Use a flathead screwdriver to carefully lever the battery out of the holder, as shown in the image.
+To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
+
+Once the PCB is accessible, use a flathead screwdriver to carefully lever the battery out of the holder, as shown in the image.
 
 ## Disassembly instructions
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
