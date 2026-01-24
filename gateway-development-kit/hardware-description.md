@@ -146,7 +146,7 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 
 {% hint style="danger" %}
 **WARNING** The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
-{% endhint %} 
+{% endhint %}
 
 | Card type  | Features                                       | Key type | Purpose                      | Port designation |
 |------------|------------------------------------------------|----------|------------------------------|------------------|
