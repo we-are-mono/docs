@@ -53,6 +53,8 @@ Standard gigabit Ethernet ports, compatible with typical home networking equipme
 ### 10 Gb SFP+
 High-speed 10 gigabit ports for fiber or DAC connections. These should be compatible with a wide array of modules. If a particular module doesn't work, it's usually not a hardware limitation—the retimer chip is fully configurable via I2C, and our [kernel configuration is open source](https://github.com/we-are-mono/meta-mono/blob/master/meta-mono-bsp/recipes-kernel/linux/files/defconfig).
 
+### Status LED
+An onboard RGBW LED located on the top side of the board is directly controlled by the main processor. It is intended for system status indication and user defined signaling. More information about its behavior and control is provided in [Getting started](getting-started.md)
 
 ### Cooling Fan ports [F_1] & [F_2]
 ![Cooling fans block diagram](assets/development-kit-cooling-fans-block-diagram.png)
@@ -172,31 +174,57 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 
 #### Pinout Tri-radio card [M2_1]
 *From the PCB port's perspective*
+| Pin #                                   | Signal name                | Description                                                    |
+|-----------------------------------------|----------------------------|----------------------------------------------------------------|
+| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                        | Ground                                                         |
+| 2, 4, 72, 74                            | +3V3 VCC                   | Power output, 3.3V                                             |
+| 18                                      | VIO_CFG                    | Pulled to ground via 0R resistor                               |
+| 9                                       | SDIO_CLK O (1V8L)          | SDIO bus used for Wifi. Wifi card CLK input signal             |
+| 11                                      | SDIO_CMD I/O (1V8L)        | SDIO bus used for Wifi. Wifi card CMD input/output signal      |
+| 13                                      | SDIO_D0 I/O (1V8L)         | SDIO bus used for Wifi. Wifi card D0 input/output signal       |
+| 15                                      | SDIO_D1 I/O (1V8L)         | SDIO bus used for Wifi. Wifi card D1 input/output signal       |
+| 17                                      | SDIO_D2 I/O (1V8L)         | SDIO bus used for Wifi. Wifi card D2 input/output signal       |
+| 19                                      | SDIO_D3 I/O (1V8L)         | SDIO bus used for Wifi. Wifi card D3 input/output signal       |
+| 22                                      | UART_RXD I (1V8L)          | UART bus used for BT. Wifi card TXD output signal              |
+| 32                                      | UART_TXD O (1V8L)          | UART bus used for BT. Wifi card RXD output signal              |
+| 38                                      | SPI MOSI O (1V8L)          | SPI bus used for 802.15.4. Wifi card MOSI input signal         |
+| 40                                      | SPI MISO I (1V8L)          | SPI bus used for 802.15.4. Wifi card MISO output signal        |
+| 42                                      | SPI CLK O (1V8L)           | SPI bus used for 802.15.4. Wifi card CLK input signal          |
+| 62                                      | SPI_INT I (1V8L)           | SPI bus used for 802.15.4. Wifi card INT output signal         |
+| 64                                      | SPI_FRM O (1V8L)           | SPI bus used for 802.15.4. Wifi card FMR input signal          |
+| 58                                      | I2C_DATA I/O (1V8L)        | I2C bus. Wifi card DATA input/output signal                    |
+| 60                                      | I2C_CLK O (1V8L)           | I2C bus. Wifi card CLK input signal                            |
+| 23                                      | M2_3R_RESET O (1V8L)       | Wifi card reset signal                                         |
+| 54                                      | M2_3R_RESET O (Open Drain) | Wifi card reset signal                                         |
+| 56                                      | M2_3R_nENABLE O (3V3L)     | Wifi card power-down signal                                    |
+| 24-31                                   | M.2 Key E connector notch  | Mechanical cutout in the M.2 card                              |
+| Other pins                              | N.C.                       | Not connected                                                  |
 
-TBD
 
 #### Pinout Dual-radio card [M2_2]
 *From the PCB port's perspective* 
-*From the PCB port's perspective*
-| Pin #                                   | Signal name              | Description                                        |
-|-----------------------------------------|--------------------------|----------------------------------------------------|
-| 18                                      | VIO_CFG                  | Pulled to ground via 0R resistor                   |
-| 22                                      | UART_RXD I (1V8L)        | UART bus. Wifi card TXD output signal              |
-| 32                                      | UART_TXD O (1V8L)        | UART bus. Wifi card RXD input signal               |
-| 34                                      | UART_CTS I (1V8L)        | UART bus. Wifi card RTS output signal              |
-| 36                                      | UART_RTS O (1V8L)        | UART bus. Wifi card CTS input signal               |
-| 35                                      | PCIe TX0+ O (1V8L)       | PCIe bus. Wifi card RX0+ input signal              |
-| 37                                      | PCIe TX0- O (1V8L)       | PCIe bus. Wifi card RX0- input signal              |
-| 41                                      | PCIe RX0+ I (1V8L)       | PCIe bus. Wifi card TX0+ output signal             |
-| 43                                      | PCIe RX0- I (1V8L)       | PCIe bus. Wifi card TX0- output signal             |
-| 47                                      | PCIe REFCLK+ O (1V8L)    | PCIe bus. Wifi card REFCLK+ input signal           |
-| 49                                      | PCIe REFCLK- O (1V8L)    | PCIe bus. Wifi card REFCLK- input signal           |
-| 52                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                             |
-| 54                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                             |
-| 56                                      | M2_2R_ENABLE O (3V3L)    | Wifi card power-down signal                        |
-| 24-31                                   | M.2 Key E connector notch| Mechanical cutout in the M.2 card                  |
-| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                      | Ground                                             |
-| 1, 4, 72, 74                            | +3V3 VCC                 | Power output, 3.3V                                 |
+
+| Pin #                                   | Signal name              | Description                                            |
+|-----------------------------------------|--------------------------|--------------------------------------------------------|
+| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                      | Ground                                                 |
+| 2, 4, 72, 74                            | +3V3 VCC                 | Power output, 3.3V                                     |
+| 18                                      | VIO_CFG                  | Pulled to ground via 0R resistor                       |
+| 22                                      | UART_RXD I (1V8L)        | UART bus used for BT. Wifi card TXD output signal      |
+| 32                                      | UART_TXD O (1V8L)        | UART bus used for BT. Wifi card RXD input signal       |
+| 34                                      | UART_CTS I (1V8L)        | UART bus used for BT. Wifi card RTS output signal      |
+| 36                                      | UART_RTS O (1V8L)        | UART bus used for BT. Wifi card CTS input signal       |
+| 35                                      | PCIe TX0+ O (1V8L)       | PCIe bus usef for Wifi. Wifi card RX0+ input signal    |
+| 37                                      | PCIe TX0- O (1V8L)       | PCIe bus usef for Wifi. Wifi card RX0- input signal    |
+| 41                                      | PCIe RX0+ I (1V8L)       | PCIe bus usef for Wifi. Wifi card TX0+ output signal   |
+| 43                                      | PCIe RX0- I (1V8L)       | PCIe bus usef for Wifi. Wifi card TX0- output signal   |
+| 47                                      | PCIe REFCLK+ O (1V8L)    | PCIe bus usef for Wifi. Wifi card REFCLK+ input signal |
+| 49                                      | PCIe REFCLK- O (1V8L)    | PCIe bus usef for Wifi. Wifi card REFCLK- input signal |
+| 52                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                                 |
+| 54                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                                 |
+| 56                                      | M2_2R_ENABLE O (3V3L)    | Wifi card power-down signal                            |
+| 24-31                                   | M.2 Key E connector notch| Mechanical cutout in the M.2 card                      |
+| Other pins                              | N.C.                     | Not connected                                          |
+
 
 #### Wireless card installation
 TBD
