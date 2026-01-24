@@ -145,8 +145,53 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 ### Smarthome card port [M2_1]
 TBD
 
+
 ### Wireless card port [M2_2]
-TBD
+The Gateway supports dual-radio Wi-Fi and Bluetooth M.2 Key-E cards to extend system functionality by adding wireless connectivity.
+
+The dual-radio expansion port [M2_2] is designed to support compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
+
+
+#### Supported cards
+The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
+
+{% hint style="danger" %}
+**WARNING** Use of these cards is at your own risk. Performance, reliability, and long-term stability are not guaranteed, and changes may be made in future revisions.
+{% endhint %} 
+
+{% hint style="danger" %}
+It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
+{% endhint %} 
+
+| Card name                | Test status                                                                 | Recommended to use   |
+|--------------------------|-----------------------------------------------------------------------------|----------------------|
+| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)   | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
+| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | NO<br>OWN RISK       |
+
+
+
+
+#### Pinout 
+*From the PCB port's perspective*
+| Pin #                                   | Signal name              | Description                                        |
+|-----------------------------------------|--------------------------|----------------------------------------------------|
+| 18                                      | VIO_CFG                  | Pulled to ground via 0R resistor                   |
+| 22                                      | UART_RXD I (1V8L)        | UART bus. Wifi card TXD output signal              |
+| 32                                      | UART_TXD O (1V8L)        | UART bus. Wifi card RXD input signal               |
+| 34                                      | UART_CTS I (1V8L)        | UART bus. Wifi card RTS output signal              |
+| 36                                      | UART_RTS O (1V8L)        | UART bus. Wifi card CTS input signal               |
+| 35                                      | PCIe TX0+ O (1V8L)       | PCIe bus. Wifi card RX0+ input signal              |
+| 37                                      | PCIe TX0- O (1V8L)       | PCIe bus. Wifi card RX0- input signal              |
+| 41                                      | PCIe RX0+ I (1V8L)       | PCIe bus. Wifi card TX0+ output signal             |
+| 43                                      | PCIe RX0- I (1V8L)       | PCIe bus. Wifi card TX0- output signal             |
+| 47                                      | PCIe REFCLK+ O (1V8L)    | PCIe bus. Wifi card REFCLK+ input signal           |
+| 49                                      | PCIe REFCLK- O (1V8L)    | PCIe bus. Wifi card REFCLK- input signal           |
+| 52                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                             |
+| 54                                      | M2_2R_RESET O (3V3L)     | Wifi card reset signal                             |
+| 56                                      | M2_2R_ENABLE O (3V3L)    | Wifi card power-down signal                        |
+| 24-31                                   | M.2 Key E connector notch| Mechanical cutout in the M.2 card                  |
+| 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                      | Ground                                             |
+| 1, 4, 72, 74                            | +3V3 VCC                 | Power output, 3.3V                                 |
 
 ### RTC backup battery
 The Real-Time Clock (RTC) circuit uses a coin cell battery to maintain time and date information when the device is powered off or disconnected from the main power source.
@@ -164,6 +209,7 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 {% hint style="danger" %}
 **WARNING** Do not use force to remove the battery from its holder.
 {% endhint %}
+
 ![RTC battery remove procedure](assets/development-kit-RTC-battery-remove.png)
 
 To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
