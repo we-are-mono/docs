@@ -153,7 +153,6 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 | Tri-radio  | Wireless<br>Bluetooth<br>Threads IEEE 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]           |
 | Dual-radio | Wireless<br>Bluetooth                          | Key-E    | Main radio card for wireless | [M2_2]           |
 
-
 #### Supported cards
 {% hint style="danger" %}
 **WARNING** Use of these cards is at your own risk. Performance, reliability, and long-term stability are not guaranteed, and changes may be made in future revisions.
