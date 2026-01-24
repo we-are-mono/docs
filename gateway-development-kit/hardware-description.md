@@ -80,7 +80,8 @@ The cooling fan driver provides two fully independent channels designed to suppo
 | Wire connector              | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | [Datasheet](assets/620004113322.pdf) |
 
 #### Pinout 
-*From the PCB ports perspective*
+*From the Gateway port's perspective* 
+
 | Pin #   | Name      | Specification                                  |
 |---------|-----------|------------------------------------------------|
 | 1       | GND       | Power ground                                   |
@@ -110,6 +111,7 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 **WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
 {% endhint %}
 
+*From the Gateway port's perspective* 
 
 | Pin #      | Name                             | Specification                                      |
 |------------|----------------------------------|----------------------------------------------------|
@@ -173,7 +175,8 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 
 
 #### Pinout Tri-radio card [M2_1]
-*From the PCB port's perspective*
+*From the Gateway port's perspective* 
+
 | Pin #                                   | Signal name                | Description                                                    |
 |-----------------------------------------|----------------------------|----------------------------------------------------------------|
 | 1, 7, 33, 39, 45, 51, 57, 63, 69, 75    | GND                        | Ground                                                         |
@@ -202,7 +205,7 @@ The Gateway includes two M.2 Key-E expansion ports that support two different ca
 
 
 #### Pinout Dual-radio card [M2_2]
-*From the PCB port's perspective* 
+*From the Gateway port's perspective* 
 
 | Pin #                                   | Signal name              | Description                                            |
 |-----------------------------------------|--------------------------|--------------------------------------------------------|
