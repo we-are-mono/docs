@@ -142,24 +142,19 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 
 
 ### M2 wireless card ports [M2_1] & [M2_2]
-The Gateway was designed to supports two types of wireless cards:
+The Gateway includes two M.2 Key-E expansion ports that support two different categories of wireless cards:
 
-| Card type  | Features                                  | Key type | Purpose                      | Port designation |
-|------------|-------------------------------------------|----------|------------------------------|------------------|
-| Tri-radio  | Wireless<br>Bluetooth<br>Threads 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]           |
-| Dual-radio | Wireless<br>Bluetooth                     | Key-E    | Main radio card for wireless | [M2_2]           |
+{% hint style="danger" %}
+**WARNING** The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
+{% endhint %} 
+
+| Card type  | Features                                       | Key type | Purpose                      | Port designation |
+|------------|------------------------------------------------|----------|------------------------------|------------------|
+| Tri-radio  | Wireless<br>Bluetooth<br>Threads IEEE 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]           |
+| Dual-radio | Wireless<br>Bluetooth                          | Key-E    | Main radio card for wireless | [M2_2]           |
 
 
-#### Tri-radio wireless card [M2_1]
-TBD
-
-
-#### Dual-radio wireless card [M2_2]
-The dual-radio expansion port [M2_2] supports compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
-
-##### Supported cards
-The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
-
+#### Supported cards
 {% hint style="danger" %}
 **WARNING** Use of these cards is at your own risk. Performance, reliability, and long-term stability are not guaranteed, and changes may be made in future revisions.
 {% endhint %} 
@@ -168,12 +163,21 @@ The wireless expansion cards are partially tested and have not yet completed ful
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %}
 
-| Card name                                                | Test status                                                                  | Recommended to use |
-|----------------------------------------------------------|------------------------------------------------------------------------------|--------------------|
-| [uBlox M2-JODY-W377-00B](assets/M2_M2-JODY-W3.pdf)       | Basic HW & Firmware tests done.<br>Performance validation not yet performed. | YES                |
-| [AzureWave AW-XM458MA-PUR](assets/M2_AW-XM458MA-PUR.pdf) | No tests performed yet                                                       | ON YOUR OWN RISK   |
+| Card name                                                | Type       | PCB port| Test status                                                                  | Recommended to use |
+|----------------------------------------------------------|------------|---------|------------------------------------------------------------------------------|--------------------|
+| [uBlox M2-MAYA-W271-00B](assets/M2_M2-MAYA-W2.pdf)       | Tri-radio  | [M2_1]  | Basic HW & Firmware tests done.<br>Performance validation not yet performed. | YES                |
+| [H&D Wireless SPB438-NTD](assets/M2_SPB438-NTD.pdf)      | Tri-radio  | [M2_1]  | No tests performed yet                                                       | ON YOUR OWN RISK   |
+| [uBlox M2-JODY-W377-00B](assets/M2_M2-JODY-W3.pdf)       | Dual-radio | [M2_2]  | Basic HW & Firmware tests done.<br>Performance validation not yet performed. | YES                |
+| [AzureWave AW-XM458MA-PUR](assets/M2_AW-XM458MA-PUR.pdf) | Dual-radio | [M2_2]  | No tests performed yet                                                       | ON YOUR OWN RISK   |
 
-##### Pinout 
+
+#### Pinout Tri-radio card [M2_1]
+*From the PCB port's perspective*
+
+TBD
+
+#### Pinout Dual-radio card [M2_2]
+*From the PCB port's perspective* 
 *From the PCB port's perspective*
 | Pin #                                   | Signal name              | Description                                        |
 |-----------------------------------------|--------------------------|----------------------------------------------------|
