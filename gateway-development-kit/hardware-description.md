@@ -3,17 +3,17 @@
 This page describes the hardware specifications and functionality of the expansion ports and how to use them.
 
 ## Performance specification
-|                            |                                                                                               |
-|----------------------------|-----------------------------------------------------------------------------------------------|
-| CPU                        | NXP Layerscape LS1046A<br>4 cores<br>1.6 GHz                                                  |
-| RAM                        | 8 GB<br>2100 MT/s<br>ECC support                                                              |
-| Networking                 | 2x SFP+ 10 Gb<br>3x RJ-45 1 Gb                                                                |
-| Wifi                       | 1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br>1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread)                         |
-| Storage                    | 32 GB eMMC for Operating System<br>64 MB NOR flash for Bootloader                             |
-| Debugging                  | JTAG connector<br>100+ test points throughout the PCB<br>UART USB-C port<br>Status RGB LED    |
-| Required Power supply      | USB-C PD 3.0<br>15V 3A (45W) or<br>20V 2A (40W)                                               |
-| Connectivity               | 1x USB-C 3.1 port<br>5Gbps data speed<br>5V 3A output power                                   |
-| Active cooling support     | Yes<br>2x 4-pin PWM 5V fan headers                                                            |
+|                            |                                                                                                             |
+|----------------------------|-------------------------------------------------------------------------------------------------------------|
+| CPU                        | NXP Layerscape LS1046A<br>4 cores<br>1.6 GHz                                                                |
+| RAM                        | 8 GB<br>2100 MT/s<br>ECC support                                                                            |
+| Networking                 | 2x SFP+ 10 Gb<br>3x RJ-45 1 Gb                                                                              |
+| Wifi                       | 1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br>1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread) |
+| Storage                    | 32 GB eMMC for Operating System<br>64 MB NOR flash for Bootloader                                           |
+| Debugging                  | JTAG connector<br>100+ test points throughout the PCB<br>UART USB-C port<br>Status RGB LED                  |
+| Required Power supply      | USB-C PD 3.0<br>15V 3A (45W) or<br>20V 2A (40W)                                                             |
+| Connectivity               | 1x USB-C 3.1 port<br>5Gbps data speed<br>5V 3A output power                                                 |
+| Active cooling support     | Yes<br>2x 4-pin PWM 5V fan headers                                                                          |
 
 
 
@@ -71,11 +71,11 @@ The cooling fan driver provides two fully independent channels designed to suppo
 ![Cooling Fan pinout - Wire side](assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
 
 #### Connector type
-| Connector type     | Description                  | Link                                                   |
-|--------------------|------------------------------|--------------------------------------------------------|
-| PCB connector [F_1]      | Wurth Elektronik 653104131822, 4-pin, 1.25mm  | [Datasheet](assets/653104131822.pdf)   |
-| PCB connector [F_1] & [F_2]    | Wurth Elektronik 653104124022, 4-pin, 1.25mm  | [Datasheet](assets/653104124022.pdf)   |
-| Wire connector    | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | [Datasheet](assets/620004113322.pdf)   |
+| Connector type              | Description                                   | Link                                  |
+|-----------------------------|-----------------------------------------------|---------------------------------------|
+| PCB connector [F_1]         | Wurth Elektronik 653104131822, 4-pin, 1.25mm  | ![Datasheet](assets/653104131822.pdf) |
+| PCB connector [F_1] & [F_2] | Wurth Elektronik 653104124022, 4-pin, 1.25mm  | ![Datasheet](assets/653104124022.pdf) |
+| Wire connector              | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | ![Datasheet](assets/620004113322.pdf) |
 
 #### Pinout 
 *From the PCB ports perspective*
@@ -95,10 +95,10 @@ The GPIO header can be found on the top side of the board and has 1.27mm pin pit
 
 
 #### Connector type
-| Connector type     | Description                  | Link                                                   |
-|--------------------|------------------------------|--------------------------------------------------------|
-| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | [Datasheet](assets/62701420621.pdf)   |
-| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | [Datasheet](assets/62701423121.pdf)   |
+| Connector type     | Description                  | Link                                                    |
+|--------------------|------------------------------|---------------------------------------------------------|
+| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | ![Datasheet](assets/62701420621.pdf)   |
+| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | ![Datasheet](assets/62701423121.pdf)   |
 
 #### Pinout 
 A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).  
@@ -167,12 +167,12 @@ The wireless expansion cards are partially tested and have not yet completed ful
 
 {% hint style="danger" %}
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
-{% endhint %} 
+{% endhint %}   
 
-| Card name                                                                     | Test status                                                                 | Recommended to use   |
-|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
-| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
-| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | ON YOUR OWN RISK     |
+| Card name                                                                      | Test status                                                                 | Recommended to use   |
+|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
+| ![uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
+| ![AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | ON YOUR OWN RISK     |
 
 
 ##### Pinout 
