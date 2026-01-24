@@ -169,9 +169,9 @@ The wireless expansion cards are partially tested and have not yet completed ful
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %} 
 
-| Card name                | Test status                                                                 | Recommended to use   |
-|--------------------------|-----------------------------------------------------------------------------|----------------------|
-| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)   | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
+| Card name                                                                     | Test status                                                                 | Recommended to use   |
+|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
+| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
 | [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | NO<br>OWN RISK       |
 
 
