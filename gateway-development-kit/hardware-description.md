@@ -73,9 +73,9 @@ The cooling fan driver provides two fully independent channels designed to suppo
 #### Connector type
 | Connector type              | Description                                   | Link                                  |
 |-----------------------------|-----------------------------------------------|---------------------------------------|
-| PCB connector [F_1]         | Wurth Elektronik 653104131822, 4-pin, 1.25mm  | ![Datasheet](assets/653104131822.pdf) |
-| PCB connector [F_1] & [F_2] | Wurth Elektronik 653104124022, 4-pin, 1.25mm  | ![Datasheet](assets/653104124022.pdf) |
-| Wire connector              | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | ![Datasheet](assets/620004113322.pdf) |
+| PCB connector [F_1]         | Wurth Elektronik 653104131822, 4-pin, 1.25mm  | [Datasheet](assets/653104131822.pdf) |
+| PCB connector [F_1] & [F_2] | Wurth Elektronik 653104124022, 4-pin, 1.25mm  | [Datasheet](assets/653104124022.pdf) |
+| Wire connector              | Wurth Elektronik 620004113322, 4-pin, 1.25mm  | [Datasheet](assets/620004113322.pdf) |
 
 #### Pinout 
 *From the PCB ports perspective*
@@ -97,8 +97,8 @@ The GPIO header can be found on the top side of the board and has 1.27mm pin pit
 #### Connector type
 | Connector type     | Description                  | Link                                                    |
 |--------------------|------------------------------|---------------------------------------------------------|
-| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | ![Datasheet](assets/62701420621.pdf)   |
-| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | ![Datasheet](assets/62701423121.pdf)   |
+| PCB connector      | Wurth Elektronik 62701420621, 14-pin, 1.27mm  | [Datasheet](assets/62701420621.pdf)   |
+| Cable connector    | Wurth Elektronik 62701423121, 14-pin, 1.27mm  | [Datasheet](assets/62701423121.pdf)   |
 
 #### Pinout 
 A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).  
@@ -144,10 +144,10 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 ### M2 wireless card ports [M2_1] & [M2_2]
 The Gateway was designed to supports two types of wireless cards:
 
-| Card type  | Features                                  | Key type | Purpose                      | PCB port designation |
-|------------|-------------------------------------------|----------|------------------------------|----------------------|
-| Tri-radio  | Wireless<br>Bluetooth<br>Threads 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]               |
-| Dual-radio | Wireless<br>Bluetooth                     | Key-E    | Main radio card for wireless | [M2_2]               |
+| Card type  | Features                                  | Key type | Purpose                      | Port designation |
+|------------|-------------------------------------------|----------|------------------------------|------------------|
+| Tri-radio  | Wireless<br>Bluetooth<br>Threads 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]           |
+| Dual-radio | Wireless<br>Bluetooth                     | Key-E    | Main radio card for wireless | [M2_2]           |
 
 
 #### Tri-radio wireless card [M2_1]
@@ -169,11 +169,12 @@ The wireless expansion cards are partially tested and have not yet completed ful
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %}   
 
-| Card name                                                                      | Test status                                                                 | Recommended to use   |
-|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
-| ![uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
-| ![AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | ON YOUR OWN RISK     |
+| Card name                                                           | Test status                                                                 | Recommended to use   |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
+| [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
+| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR.pdf) | No tests performed yet                                                      | ON YOUR OWN RISK     |
 
+[AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR.pdf)
 
 ##### Pinout 
 *From the PCB port's perspective*
@@ -218,6 +219,7 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 {% endhint %}
 
 ![RTC battery remove procedure](assets/development-kit-RTC-battery-remove.png)
+
 
 To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
 
