@@ -141,6 +141,25 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 **WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
 {% endhint %}
 
+### RTC backup battery
+The Real-Time Clock (RTC) circuit uses a coin cell battery to maintain time and date information when the device is powered off or disconnected from the main power source.
+
+If the battery is removed or fully discharged, the RTC will lose its stored time and date, and the clock will need to be reset after the next power-up.
+
+| Battery spec                     |                                  |
+|----------------------------------|----------------------------------|
+| Battery model                    | CR2032                           |
+| Battery size                     | 20mm diameter<br>3.2mm thickness |
+| Nominal voltage / capacity       | 3V / >150mAh                     |
+| Rechargable                      | No                               |
+
+#### Replacing the battery
+{% hint style="danger" %}
+**WARNING** Do not use force to remove the battery from its holder.
+{% endhint %}
+![RTC battery remove](assets/development-kit-RTC-battery-remove.png)
+
+Use a flathead screwdriver to carefully lever the battery out of the holder, as shown in the image.
 
 ## Disassembly instructions
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
