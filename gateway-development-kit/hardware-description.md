@@ -104,6 +104,11 @@ The GPIO header can be found on the top side of the board and has 1.27mm pin pit
 A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).  
 A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). This is made easier with the use of internal pull-up or pull-down resistors. This can be configured in software.
 
+{% hint style="danger" %}
+**WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
+{% endhint %}
+
+
 | Pin #      | Name                             | Specification                                      |
 |------------|----------------------------------|----------------------------------------------------|
 | 1          | PWR OUT 1.8V                     | Power output, 1.8V, 100mA max. Resettable fuse.    |
@@ -137,9 +142,11 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 
 
 
-{% hint style="danger" %}
-**WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
-{% endhint %}
+### Smarthome card port [M2_1]
+TBD
+
+### Wireless card port [M2_2]
+TBD
 
 ### RTC backup battery
 The Real-Time Clock (RTC) circuit uses a coin cell battery to maintain time and date information when the device is powered off or disconnected from the main power source.
