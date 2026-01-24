@@ -172,9 +172,7 @@ The wireless expansion cards are partially tested and have not yet completed ful
 | Card name                                                                     | Test status                                                                 | Recommended to use   |
 |-------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------|
 | [uBlox M2-JODY-W377-00B](assets/M2_Dual-Radio_M2-JODY-W3_DataSheet.pdf)       | Basic HW & Firmware tests done<br>Performance validation not yet performed  | YES                  |
-| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | NO<br>OWN RISK       |
-
-
+| [AzureWave AW-XM458MA-PUR](assets/M2_Dual-Radio_AW-XM458MA-PUR_DataSheet.pdf) | No tests performed yet                                                      | ON YOUR OWN RISK     |
 
 
 ##### Pinout 
