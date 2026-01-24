@@ -141,18 +141,24 @@ A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). Th
 
 
 
+### M2 wireless card ports [M2_1] & [M2_2]
+The Gateway was designed to supports two types of wireless cards:
 
-### Smarthome card port [M2_1]
+| Card type  | Features                                  | Key type | Purpose                      | PCB port designation |
+|------------|-------------------------------------------|----------|------------------------------|----------------------|
+| Tri-radio  | Wireless<br>Bluetooth<br>Threads 802.15.4 | Key-E    | Home automation & smarthome  | [M2_1]               |
+| Dual-radio | Wireless<br>Bluetooth                     | Key-E    | Main radio card for wireless | [M2_2]               |
+
+
+#### Tri-radio wireless card [M2_1]
 TBD
 
 
-### Wireless card port [M2_2]
-The Gateway supports dual-radio Wi-Fi and Bluetooth M.2 Key-E cards to extend system functionality by adding wireless connectivity.
-
-The dual-radio expansion port [M2_2] is designed to support compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
+#### Dual-radio wireless card [M2_2]
+The dual-radio expansion port [M2_2] was designed to support compatible M.2 Key-E wireless cards interfacing through the system’s supported buses (pinout table below). This allows the integration of various wireless cards that meet the electrical requirements of the platform.
 
 
-#### Supported cards
+##### Supported cards
 The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
 
 {% hint style="danger" %}
@@ -160,7 +166,7 @@ The wireless expansion cards are partially tested and have not yet completed ful
 {% endhint %} 
 
 {% hint style="danger" %}
-It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
+**WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with this board, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
 {% endhint %} 
 
 | Card name                | Test status                                                                 | Recommended to use   |
@@ -171,7 +177,7 @@ It is strictly important to follow the M.2 pinout listed below when selecting an
 
 
 
-#### Pinout 
+##### Pinout 
 *From the PCB port's perspective*
 | Pin #                                   | Signal name              | Description                                        |
 |-----------------------------------------|--------------------------|----------------------------------------------------|
@@ -192,6 +198,9 @@ It is strictly important to follow the M.2 pinout listed below when selecting an
 | 24-31                                   | M.2 Key E connector notch| Mechanical cutout in the M.2 card                  |
 | 1, 7, 33, 39, 45, 51,<br>57, 63, 69, 75 | GND                      | Ground                                             |
 | 1, 4, 72, 74                            | +3V3 VCC                 | Power output, 3.3V                                 |
+
+#### Wireless card installation
+TBD
 
 ### RTC backup battery
 The Real-Time Clock (RTC) circuit uses a coin cell battery to maintain time and date information when the device is powered off or disconnected from the main power source.
