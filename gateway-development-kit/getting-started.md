@@ -42,6 +42,26 @@ To exit Recovery Linux and boot into OpenWRT:
 $ reboot
 ```
 
+{% hint style="danger" %}
+It seems we introduced a bug in building the final OpenWRT image, resulting in the device not having the LuCI (web gui) installed. In order to fix that, you'll need to reflash the eMMC drive on the board, but worry not, it only takes a couple of minutes!
+
+With UART connected, reset the device, interrupt the u-boot countdown, then run these commands:
+```
+=> run recovery
+# When you get to Recovery linux, enter "root", no password needed
+$ ip link set eth0 up; ip addr add 10.0.0.199/24 dev eth0; ip route add default via 10.0.0.1 dev eth0
+# eth0 is the leftmost RJ-45 port, recovery linux has no DHCP, so you have to set ip and router address manually
+$ curl -kO https://mono.si/openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-rootfs.ext4.gz
+$ gunzip openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-rootfs.ext4.gz
+$ dd if=openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-rootfs.ext4 of=/dev/mmcblk0p1 bs=1M
+$ reboot
+```
+
+Keep in mind: you should do this as soon as possible, because you will lose all configuration. Or make a backup if you already configured the router.
+
+If you need help, drop by our [Discord](https://discord.gg/FGHJ3J5v5W) and we'll help you sort this out!
+{% endhint %}
+
 ### Status LED
 
 During boot, U-Boot runs a series of hardware tests to verify that all I2C devices are present and functioning correctly. This includes power sensors, thermal sensors, the fan controller, power delivery controller, EEPROM, and more.
