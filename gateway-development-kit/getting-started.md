@@ -111,7 +111,7 @@ The Development Kit ships with OpenWRT pre-installed. To start using it, simply 
 
 The default install has the following apk repositories, which allows you to add new repos to the customfeeds.list ( or distfeeds.list, not sure it makes any difference ).
 ```
-root@OpenWrt:~# cat /etc/apk/repositories.d/
+root@OpenWrt:~# ls /etc/apk/repositories.d/
 customfeeds.list  distfeeds.list
 root@OpenWrt:~# cat /etc/apk/repositories.d/distfeeds.list
 https://downloads.openwrt.org/releases/25.12.0-rc3/targets/layerscape/armv8_64b/packages/packages.adb
