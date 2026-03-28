@@ -75,7 +75,7 @@ Adjust the interface, IP address, and gateway to match your setup.
 
 ## Step 4: Get your MAC addresses
 
-Run `ip a` and note down the MAC addresses of your interfaces. These serve as the password when downloading firmware.
+Run `ip a` and note down the MAC addresses of your interfaces. These serve as the password when downloading firmware — use the full address including colons (e.g. `4d:4f:4e:4f:4d:4f`).
 
 ```
 $ ip a
@@ -86,7 +86,7 @@ $ ip a
 Download the eMMC firmware image using your MAC address as the password, then write it to the eMMC:
 
 ```
-$ curl -ku mono:<mac-address> -O https://firmware.mono.si/firmware-emmc.bin
+$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc.bin
 $ dd if=firmware-emmc.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
 ```
 
@@ -129,7 +129,7 @@ $ ip route add default via 10.0.0.1 dev <interface>
 Download and flash the NOR firmware:
 
 ```
-$ curl -ku mono:<mac-address> -O https://firmware.mono.si/firmware-qspi.bin
+$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi.bin
 $ flashcp -v firmware-qspi.bin /dev/mtd0
 ```
 
