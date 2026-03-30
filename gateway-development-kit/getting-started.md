@@ -12,7 +12,7 @@ More detailed information about the ports is provided in [Hardware description](
 |----------------------|----------------------------------|
 | 0                    | USB-c power                      |
 | 1                    | USB-c                            |
-| 2                    | USB-c UART                       |restoring-openwrt.md
+| 2                    | USB-c UART                       |
 | 3                    | eth0                             |
 | 4                    | eth1                             |
 | 5                    | eth2                             |
