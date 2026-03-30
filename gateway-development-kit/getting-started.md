@@ -12,7 +12,7 @@ More detailed information about the ports is provided in [Hardware description](
 |----------------------|----------------------------------|
 | 0                    | USB-c power                      |
 | 1                    | USB-c                            |
-| 2                    | USB-c UART                       |
+| 2                    | USB-c UART                       |restoring-openwrt.md
 | 3                    | eth0                             |
 | 4                    | eth1                             |
 | 5                    | eth2                             |
@@ -280,3 +280,6 @@ Browsing to the IP of your router with http should now work.
 **Installing an alternative OS**
 
 If you'd prefer to run Debian or Mono SDK Linux instead, see [Alternative operating systems](alternative-os.md).  This is coming soon.
+
+# Restoring OpenWRT
+If you installed alternative operating system and would like to go back to OpenWRT, follow [this guide](restoring-openwrt.md).
