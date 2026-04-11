@@ -280,3 +280,6 @@ Browsing to the IP of your router with http should now work.
 **Installing an alternative OS**
 
 If you'd prefer to run Debian or Mono SDK Linux instead, see [Alternative operating systems](alternative-os.md).  This is coming soon.
+
+# Restoring OpenWRT
+If you installed alternative operating system and would like to go back to OpenWRT, follow [this guide](restoring-openwrt.md).
