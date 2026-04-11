@@ -6,12 +6,14 @@ All devices ship with NOR pre-flashed. Since the firmware is under active develo
 
 ## Overview
 
+The built-in `firmware` tool auto-detects which medium the device booted from and always flashes the other one. This ensures you never overwrite the firmware you are currently running from.
+
 The recommended procedure is:
 
-1. **Flash eMMC first** (from NOR recovery)
-2. Switch to eMMC, verify it boots
-3. **Flash NOR** (from eMMC recovery)
-4. Switch back to NOR
+1. Boot into recovery from **NOR**, run `firmware update` (flashes eMMC)
+2. Switch DIP to eMMC, verify it boots
+3. Boot into recovery from **eMMC**, run `firmware update` (flashes NOR)
+4. Switch DIP back to NOR
 
 This order ensures you always have a working recovery environment to fall back on.
 
@@ -23,7 +25,6 @@ This order ensures you always have a working recovery environment to fall back o
 
 - UART serial console connected (see [Getting started](getting-started.md))
 - An Ethernet cable connected to one of the ports with access to the internet
-- The device's MAC addresses (used for firmware download authentication)
 
 ## Step 1: Back up U-Boot environment variables
 
@@ -73,28 +74,17 @@ $ ip route add default via 10.0.0.1 dev eth0
 
 Adjust the interface, IP address, and gateway to match your setup.
 
-## Step 4: Get your MAC addresses
+## Step 4: Flash eMMC
 
-Run `ip a` and note down the MAC addresses of your interfaces. These serve as the password when downloading firmware — use the full address including colons (e.g. `4d:4f:4e:4f:4d:4f`).
-
-```
-$ ip a
-```
-
-## Step 5: Flash eMMC
-
-Download the eMMC firmware image using your MAC address as the password, then write it to the eMMC:
+Run the firmware update tool:
 
 ```
-$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc.bin
-$ dd if=firmware-emmc.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
+$ firmware update
 ```
 
-{% hint style="info" %}
-The `skip=1 seek=1` arguments skip the first 4 KB of both the input file and the output device. The CPU does not use this region, which is where the GPT partition data resides.
-{% endhint %}
+The tool will download the eMMC firmware, verify its signature, and flash it. Follow the on-screen prompts.
 
-## Step 6: Switch to eMMC and verify
+## Step 5: Switch to eMMC and verify
 
 Flip the DIP switch to **eMMC**. You can do this while the system is still running — no need to power off. Then reboot:
 
@@ -108,7 +98,7 @@ Watch the serial console output. Confirm you see the following line, which indic
 INFO:    RCW BOOT SRC is SD/EMMC
 ```
 
-## Step 7: Boot into recovery Linux from eMMC
+## Step 6: Boot into recovery Linux from eMMC
 
 Now that eMMC is verified, interrupt the U-Boot countdown again and enter recovery:
 
@@ -124,16 +114,17 @@ $ ip addr add 10.0.0.69/24 dev <interface>
 $ ip route add default via 10.0.0.1 dev <interface>
 ```
 
-## Step 8: Flash NOR
+## Step 7: Flash NOR
 
-Download and flash the NOR firmware:
+Run the firmware update tool again:
 
 ```
-$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi.bin
-$ flashcp -v firmware-qspi.bin /dev/mtd0
+$ firmware update
 ```
 
-## Step 9: Switch back to NOR and reboot
+Since you are now booted from eMMC, the tool will automatically target NOR.
+
+## Step 8: Switch back to NOR and reboot
 
 Flip the DIP switch back to **NOR**, then reboot:
 
@@ -142,6 +133,28 @@ $ reboot
 ```
 
 Both storage devices are now running the latest firmware. If you backed up custom U-Boot environment variables in Step 1, restore them now using `setenv` and `saveenv`.
+
+## Manual flashing (legacy)
+
+If your device has an older firmware without the `firmware` command, you can download and flash manually. Replace `<mac-address-with-colons>` with your device's MAC address in lowercase format (e.g. `4d:4f:4e:4f:4d:4f`). Run `ip a` to find it.
+
+**eMMC:**
+
+```
+$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc.bin
+$ dd if=firmware-emmc.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
+```
+
+{% hint style="info" %}
+The `skip=1 seek=1` arguments skip the first 4 KB of both the input file and the output device. The CPU does not use this region, which is where the GPT partition data resides.
+{% endhint %}
+
+**NOR:**
+
+```
+$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi.bin
+$ flashcp -v firmware-qspi.bin /dev/mtd0
+```
 
 ## Note for custom OS images
 
