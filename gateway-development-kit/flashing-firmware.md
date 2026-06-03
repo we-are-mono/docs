@@ -141,8 +141,8 @@ If your device has an older firmware without the `firmware` command, you can dow
 **eMMC:**
 
 ```
-$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc.bin
-$ dd if=firmware-emmc.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
+$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc-gateway-dk.bin
+$ dd if=firmware-emmc-gateway-dk.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
 ```
 
 {% hint style="info" %}
@@ -152,8 +152,8 @@ The `skip=1 seek=1` arguments skip the first 4 KB of both the input file and the
 **NOR:**
 
 ```
-$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi.bin
-$ flashcp -v firmware-qspi.bin /dev/mtd0
+$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi-gateway-dk.bin
+$ flashcp -v firmware-qspi-gateway-dk.bin /dev/mtd0
 ```
 
 ## Note for custom OS images
