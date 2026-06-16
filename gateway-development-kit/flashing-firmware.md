@@ -50,7 +50,7 @@ Log in as `root` (no password required).
 
 ## Step 3: Set up networking
 
-Recovery Linux has no DHCP, so you need to configure the network manually. Pick the interface that matches the port you connected your cable to:
+Recovery Linux supports SLAAC, but has no DHCP client. For IPv6 with SLAAC, you only need to enable an interface (`ip link set ethX up`). For IPv4, you need to configure the network manually. Pick the interface that matches the port you connected your cable to:
 
 | Port (left to right) | Interface |
 |----------------------|-----------|
@@ -64,7 +64,7 @@ Recovery Linux has no DHCP, so you need to configure the network manually. Pick 
 The non-sequential interface naming is a cosmetic hardware quirk — the interfaces work correctly, they are just enumerated out of order.
 {% endhint %}
 
-For example, if using the third RJ-45 port (eth0):
+For example, if using the third RJ-45 port (eth0) with IPv4:
 
 ```
 $ ip link set eth0 up
