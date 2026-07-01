@@ -26,6 +26,20 @@ This order ensures you always have a working recovery environment to fall back o
 - UART serial console connected (see [Getting started](getting-started.md))
 - An Ethernet cable connected to one of the ports with access to the internet
 
+## NOR Flash Memory Map
+
+The 32MB NOR flash image layout (NOR flash itself is 64MB):
+
+| Offset | Hex | Component |
+|--------|-----|-----------|
+| 0 | 0x000000 | RCW + BL2 |
+| 1MB | 0x100000 | ATF FIP (BL31 + U-Boot) |
+| 3MB | 0x300000 | U-Boot Environment |
+| 4MB | 0x400000 | FMAN Microcode |
+| 5MB | 0x500000 | Device Tree |
+| 6MB | 0x600000 | Unallocated |
+| 10MB | 0xA00000 | Kernel + Initramfs |
+
 ## Step 1: Back up U-Boot environment variables
 
 Flashing firmware resets U-Boot environment variables back to factory defaults. If you have customized any variables (e.g. for OPNsense or a custom boot configuration), you should save them before proceeding.
