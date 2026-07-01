@@ -7,6 +7,7 @@
 * [Getting started](gateway-development-kit/getting-started.md)
 * [Hardware description](gateway-development-kit/hardware-description.md)
 * [Flashing firmware](gateway-development-kit/flashing-firmware.md)
+* [Installing Armbian](gateway-development-kit/installing-armbian.md)
 
 ## Tutorials
 
