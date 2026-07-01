@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Documentation](README.md)
+* [GitHub](https://github.com/orgs/we-are-mono/repositories)
 
 ## Gateway development kit
 
