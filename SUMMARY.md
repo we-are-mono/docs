@@ -7,7 +7,6 @@
 * [Getting started](gateway-development-kit/getting-started.md)
 * [Hardware description](gateway-development-kit/hardware-description.md)
 * [Flashing firmware](gateway-development-kit/flashing-firmware.md)
-* [Alternative operating systems](gateway-development-kit/alternative-os.md)
 
 ## Tutorials
 
