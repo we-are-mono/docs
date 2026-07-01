@@ -8,8 +8,9 @@
 * [Getting started](gateway-development-kit/getting-started.md)
 * [Hardware description](gateway-development-kit/hardware-description.md)
 * [Flashing firmware](gateway-development-kit/flashing-firmware.md)
-* [Installing Armbian](gateway-development-kit/installing-armbian.md)
 * [Installing OPNsense](https://opnsense.mono.si/releases/26.1/)
+* [Installing Armbian](gateway-development-kit/installing-armbian.md)
+* [Installing OpenWRT](gateway-development-kit/installing_openwrt.md)
 
 ## Tutorials
 
