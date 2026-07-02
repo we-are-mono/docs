@@ -101,6 +101,68 @@ During boot, U-Boot runs a series of hardware tests to verify that all I2C devic
 
 If the LED turns red, reset the device and check the U-Boot output via the serial console—it will report which chip failed its test.
 
+### Reading serial number and MAC addresses from EEPROM
+
+#### From U-Boot
+```
+=> i2c dev 3
+Setting bus to 3
+=> i2c md 0x50 0.2 100
+0000: 4d 41 47 43 00 01 a6 3f 4d 6f 6e 6f 20 47 61 74    MAGC...?Mono Gat
+0010: 65 77 61 79 20 44 65 76 65 6c 6f 70 6d 65 6e 74    eway Development
+0020: 20 4b 69 74 00 00 00 00 4d 54 2d 52 30 31 41 2d     Kit....MT-R01A-
+0030: 30 33 32 36 2d 30 30 34 30 34 00 00 00 00 00 00    0326-00404......
+0040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+0050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+0060: 00 00 00 00 00 00 00 00 e8 f6 d7 00 17 df e8 f6    ................
+0070: d7 00 17 e0 e8 f6 d7 00 17 e1 e8 f6 d7 00 17 e2    ................
+0080: e8 f6 d7 00 17 e3 ff ff ff ff ff ff ff ff ff ff    ................
+0090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff    ................
+```
+
+#### From recovery linux
+```
+root@recovery:~# echo 24c32 0x50 > /sys/bus/i2c/devices/i2c-3/new_device
+root@recovery:~# hexdump -C /sys/bus/i2c/devices/3-0050/eeprom
+00000000  4d 41 47 43 00 01 a6 3f  4d 6f 6e 6f 20 47 61 74  |MAGC...?Mono Gat|
+00000010  65 77 61 79 20 44 65 76  65 6c 6f 70 6d 65 6e 74  |eway Development|
+00000020  20 4b 69 74 00 00 00 00  4d 54 2d 52 30 31 41 2d  | Kit....MT-R01A-|
+00000030  30 33 32 36 2d 30 30 34  30 34 00 00 00 00 00 00  |0326-00404......|
+00000040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000060  00 00 00 00 00 00 00 00  e8 f6 d7 00 17 df e8 f6  |................|
+00000070  d7 00 17 e0 e8 f6 d7 00  17 e1 e8 f6 d7 00 17 e2  |................|
+00000080  e8 f6 d7 00 17 e3 ff ff  ff ff ff ff ff ff ff ff  |................|
+00000090  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+*
+00001000
+root@recovery:~# echo 0x50 > /sys/bus/i2c/devices/i2c-3/delete_device
+```
+
+#### With Python
+
+In case you have installed an operating system that comes with Python 3 or installed Python 3 manually:
+```
+sudo python3 - <<"EOF"
+import os, fcntl
+fd = os.open("/dev/i2c-3", os.O_RDWR)
+fcntl.ioctl(fd, 0x0706, 0x50)
+os.write(fd, bytes([0x00, 0x0]))
+print(os.read(fd, 160))
+EOF
+```
+
+And if you want just serial number:
+```
+sudo python3 - <<"EOF"
+import os, fcntl
+fd = os.open("/dev/i2c-3", os.O_RDWR)
+fcntl.ioctl(fd, 0x0706, 0x50)
+os.write(fd, bytes([0x00, 0x28]))
+print(os.read(fd, 64).split(b"\x00")[0].decode())
+EOF
+```
+
 ## Next steps
 
 **Using OpenWRT (default)**
