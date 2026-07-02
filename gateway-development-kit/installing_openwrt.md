@@ -56,3 +56,19 @@ sync
 ```
 => boot
 ```
+
+## 7. Write fresh firmware again
+
+Earlier we wiped the eMMC while creating new partions. So, to refresh the firmware in the QSPI/boot region (0–32 MiB):
+
+1. Set the DIP switch to **NOR**.
+2. Reboot into recovery Linux.
+3. Set up networking (check the start of this docs - step 1)
+4. Run the update:
+
+   ```sh
+   firmware update
+   ```
+
+5. Set the DIP switch back to **eMMC**.
+6. Reboot.
