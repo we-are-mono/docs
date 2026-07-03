@@ -75,4 +75,19 @@ Watch the serial console. A successful eMMC boot shows:
 INFO:    RCW BOOT SRC is SD/EMMC
 ```
 
-The device now boots Armbian from eMMC.
+## Step 6: Write fresh firmware again
+
+Earlier we wiped the eMMC while writing the image to it, so we need to write firmware back to eMMC.
+
+1. Set the DIP switch to **NOR**.
+2. Reboot into recovery Linux.
+3. Set up networking (check the start of this docs - step 2)
+4. Run the update:
+
+   ```sh
+   firmware update
+   ```
+
+5. Set the DIP switch back to **eMMC**.
+6. Reboot.
+
