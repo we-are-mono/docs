@@ -2,6 +2,10 @@
 
 Flashes the OpenWRT ext4 rootfs to eMMC and boots it via U-Boot.
 
+## Updates
+
+Mono Gateway development kit fllashed with our own OpenWRT image, can and should **not** be updated. For now...
+
 ## 1. Set up networking in recovery
 
 
