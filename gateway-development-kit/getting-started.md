@@ -4,38 +4,40 @@ Before plugging the Development Kit in for the first time, it's worth familiariz
 
 ## Connectors
 
-![Development Kit ports](assets/development-kit-backpanel-connectors.png)
+![Development Kit ports](../.gitbook/assets/development-kit-backpanel-connectors.png)
 
 More detailed information about the ports is provided in [Hardware description](hardware-description.md)
 
-| Port (left to right) | Name               |
-|----------------------|----------------------------------|
-| 0                    | USB-c power                      |
-| 1                    | USB-c                            |
-| 2                    | USB-c UART                       |
-| 3                    | eth0                             |
-| 4                    | eth1                             |
-| 5                    | eth2                             |
-| 6                    | eth3 10GE                        |
-| 7                    | eth4 10GE                        |
-
+| Port (left to right) | Name        |
+| -------------------- | ----------- |
+| 0                    | USB-c power |
+| 1                    | USB-c       |
+| 2                    | USB-c UART  |
+| 3                    | eth0        |
+| 4                    | eth1        |
+| 5                    | eth2        |
+| 6                    | eth3 10GE   |
+| 7                    | eth4 10GE   |
 
 ## First boot
 
 1. Connect the power cable and the UART cable to your computer. ( Power is left most, UART is right most. )
-2. Open a serial terminal:
-   ```
-   tio /dev/ttyUSB0
-   ```
-   (Adjust the device path if needed—check `ls /dev/ttyUSB*` to find yours.)
+2.  Open a serial terminal:
+
+    ```
+    tio /dev/ttyUSB0
+    ```
+
+    (Adjust the device path if needed—check `ls /dev/ttyUSB*` to find yours.)
 3. You should now see output from the device.
 
 Press the reset button to observe the full boot sequence. The device will boot through U-Boot, which displays a countdown before loading the OS. You can either:
 
-- **Let it continue** — boots into OpenWRT on the eMMC.
-- **Press any key** — interrupts the countdown and drops you into the U-Boot shell.
+* **Let it continue** — boots into OpenWRT on the eMMC.
+* **Press any key** — interrupts the countdown and drops you into the U-Boot shell.
 
 When attaching the USB cable to the router's UART, in dmesg you will see something like:
+
 ```
 [  292.530676] usb 7-2: new full-speed USB device number 2 using xhci_hcd
 [  292.682522] usb 7-2: New USB device found, idVendor=0403, idProduct=6015, bcdDevice=10.00
@@ -72,6 +74,7 @@ $ reboot
 It seems we introduced a bug in building the final OpenWRT image, resulting in the device not having the LuCI (web gui) installed. In order to fix that, you'll need to reflash the eMMC drive on the board, but worry not, it only takes a couple of minutes!
 
 With UART connected, reset the device, interrupt the u-boot countdown, then run these commands:
+
 ```
 => run recovery
 # When you get to Recovery linux, enter "root", no password needed
@@ -92,18 +95,19 @@ If you need help, drop by our [Discord](https://discord.gg/FGHJ3J5v5W) and we'll
 
 During boot, U-Boot runs a series of hardware tests to verify that all I2C devices are present and functioning correctly. This includes power sensors, thermal sensors, the fan controller, power delivery controller, EEPROM, and more.
 
-| LED Color       | Meaning                          |
-|-----------------|----------------------------------|
-| Green (solid)   | All hardware tests passed        |
-| Red (solid)     | One or more tests failed         |
-| Orange (pulsing)| Booted into Recovery Linux       |
-| White (solid)   | Booted into OpenWRT              |
+| LED Color        | Meaning                    |
+| ---------------- | -------------------------- |
+| Green (solid)    | All hardware tests passed  |
+| Red (solid)      | One or more tests failed   |
+| Orange (pulsing) | Booted into Recovery Linux |
+| White (solid)    | Booted into OpenWRT        |
 
 If the LED turns red, reset the device and check the U-Boot output via the serial console—it will report which chip failed its test.
 
 ### Reading serial number and MAC addresses from EEPROM
 
 #### From U-Boot
+
 ```
 => i2c dev 3
 Setting bus to 3
@@ -121,6 +125,7 @@ Setting bus to 3
 ```
 
 #### From recovery linux
+
 ```
 root@recovery:~# echo 24c32 0x50 > /sys/bus/i2c/devices/i2c-3/new_device
 root@recovery:~# hexdump -C /sys/bus/i2c/devices/3-0050/eeprom
@@ -142,6 +147,7 @@ root@recovery:~# echo 0x50 > /sys/bus/i2c/devices/i2c-3/delete_device
 #### With Python
 
 In case you have installed an operating system that comes with Python 3 or installed Python 3 manually:
+
 ```
 sudo python3 - <<"EOF"
 import os, fcntl
@@ -153,6 +159,7 @@ EOF
 ```
 
 And if you want just serial number:
+
 ```
 sudo python3 - <<"EOF"
 import os, fcntl
@@ -172,6 +179,7 @@ The Development Kit ships with OpenWRT pre-installed. To start using it, simply 
 ### Installing OpenWRT packages
 
 The default install has the following apk repositories, which allows you to add new repos to the customfeeds.list ( or distfeeds.list, not sure it makes any difference ).
+
 ```
 root@OpenWrt:~# ls /etc/apk/repositories.d/
 customfeeds.list  distfeeds.list
@@ -186,6 +194,7 @@ root@OpenWrt:~#
 ```
 
 To add the standard packages/pacakages, verify, and update
+
 ```
 echo "https://downloads.openwrt.org/releases/25.12.0-rc3/packages/aarch64_generic/packages/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 
@@ -210,6 +219,7 @@ root@OpenWrt:~#
 ```
 
 To add the LuCI web interface packages:
+
 ```
 echo "https://downloads.openwrt.org/releases/25.12.0-rc3/packages/aarch64_generic/luci/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 
@@ -220,9 +230,10 @@ root@OpenWrt:~# apk search luci | wc -l
 root@OpenWrt:~#
 ```
 
-Wow.  That's a lot of packages
+Wow. That's a lot of packages
 
 Now install luci
+
 ```
 root@OpenWrt:~# apk add luci
 ( 1/32) Installing rpcd (2025.12.03~ffb9961c-r1)
@@ -299,6 +310,7 @@ root@OpenWrt:~#
 ```
 
 Finally, start uhttpd
+
 ```
 root@OpenWrt:~# /etc/init.d/uhttpd enable
 root@OpenWrt:~# /etc/init.d/uhttpd start
@@ -317,7 +329,8 @@ root@OpenWrt:~#
 
 ```
 
-In most cases, this should be enough to now connect to the web interface.  In my case, I need to add a firewall rule to allow traffic from another subnet.
+In most cases, this should be enough to now connect to the web interface. In my case, I need to add a firewall rule to allow traffic from another subnet.
+
 ```
 root@OpenWrt:~# uci add firewall rule
 icfg0e92bd
@@ -337,8 +350,8 @@ root@OpenWrt:~#
 
 Browsing to the IP of your router with http should now work.
 
-<img src="../media/initial-luci-login.png" alt="initial-luci-login" width="50%" height="50%"/>
+<img src="../.gitbook/assets/initial-luci-login.png" alt="initial-luci-login" height="50%" width="50%">
 
 **Installing an alternative OS**
 
-If you'd prefer to run Debian or Mono SDK Linux instead, see [Alternative operating systems](alternative-os.md).  This is coming soon.
+If you'd prefer to run Debian or Mono SDK Linux instead, see [Alternative operating systems](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/alternative-os.md). This is coming soon.

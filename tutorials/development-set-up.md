@@ -1,31 +1,28 @@
-# LS1046A development environment setup
+# How to set up DPDK and VPP environment for LS1046A
 
 In this article, we're going to set up a Debian 12 (bookworm) machine for developing software for [NXP LS1046A CPUs](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/layerscape-processors/layerscape-1046a-and-1026a-processors:LS1046A). We're using a virtual machine for this purposes, but a normal, physical box should work just the same.
 
-The goal here is to build two pieces of software that allow us to achieve *insane* amounts of networking performance on our 10 Gigabit ports regardless of what kind of traffic is passing through them or what kind of processing we need to do on it - NAT (IPv4 or IPv6), VLANs, PPPoE, IPSEC, IPS/IDS, you name it. And the software that allows us to do that is called Vector Packet Processing. Traditionally, kernel handles layers 2-4 in the OSI networking model, but since it's very inefficient at doing so, we're preventing it from even accessing the NICs in the first place. Instead, layer 2 is handled by something called a [Data Plane Development Kit (DPDK)](https://www.dpdk.org/) and layers 3 and 4 are handled by [VPP](https://fd.io/), which in turn depends on DPDK and will not work properly without it. Building both is a relatively complex and involved process, which is where this article comes in. Hopefully, by the end, you should have an understanding of how to cross-build both for arm64 and have them running on a development board!
+The goal here is to build two pieces of software that allow us to achieve _insane_ amounts of networking performance on our 10 Gigabit ports regardless of what kind of traffic is passing through them or what kind of processing we need to do on it - NAT (IPv4 or IPv6), VLANs, PPPoE, IPSEC, IPS/IDS, you name it. And the software that allows us to do that is called Vector Packet Processing. Traditionally, kernel handles layers 2-4 in the OSI networking model, but since it's very inefficient at doing so, we're preventing it from even accessing the NICs in the first place. Instead, layer 2 is handled by something called a [Data Plane Development Kit (DPDK)](https://www.dpdk.org/) and layers 3 and 4 are handled by [VPP](https://fd.io/), which in turn depends on DPDK and will not work properly without it. Building both is a relatively complex and involved process, which is where this article comes in. Hopefully, by the end, you should have an understanding of how to cross-build both for arm64 and have them running on a development board!
 
----
+***
 
 We're going to cross-compile a whole lot of packages, and to that end, we're going to create and mount a "target" filesystem on the same Linux machine we're working on, and this target filesystem can then be mounted on the development board at boot time (through NFS) or turned into an SD card which we can then boot into.
 
 Keep in mind that this is **not** a production-ready environment, but instead will result in having a development/debugging environment that we can then use for further development of software that will then be used in production.
 
-One additional thing worth mentionig is the nomenclature we're going to use, *host* and *target* specifically, because we'll use these two words a lot. *Host* refers to your development machine which is most likely an x86-based Linux PC. We'll *cross-compile* software that will be unable to run on it, because it will be built for our *target*, which is the development board, and that board runs a CPU on arm64 architecture.
+One additional thing worth mentionig is the nomenclature we're going to use, _host_ and _target_ specifically, because we'll use these two words a lot. _Host_ refers to your development machine which is most likely an x86-based Linux PC. We'll _cross-compile_ software that will be unable to run on it, because it will be built for our _target_, which is the development board, and that board runs a CPU on arm64 architecture.
 
-> [!NOTE]
-> For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with our router once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
+> \[!NOTE] For the time being, this article is written to work with the [NXP LS1046A Reference Design Board](https://www.nxp.com/design/design-center/software/qoriq-developer-resources/layerscape-ls1046a-reference-design-board:LS1046A-RDB) but will be rewritten to work with our router once the evaluation boards are out. That being said, with some modifications, it should also work with other ARM64-based boards!
 
-Since we're working on the software, that is in many cases system-wide, both on the host and even more so on the target root filesystem, we're going to use the *root* user to run all the commands below, so just swap to it by entering `$ sudo -i`.
+Since we're working on the software, that is in many cases system-wide, both on the host and even more so on the target root filesystem, we're going to use the _root_ user to run all the commands below, so just swap to it by entering `$ sudo -i`.
 
 We're also going to use `/usr/src` as our working directory and it's here where we will download and build all the packages, so once you're logged into the (virutal) machine, `$ cd /usr/src` and let's begin!
-
 
 ## Prerequisites
 
 Before we can start, we need to make sure that we have all the necessary packages installed:
 
-`$ apt install -y debootstrap qemu-user-static qemu-utils  parted kpartx build-essential make cmake ncurses-dev flex bison meson bc vim curl git pkg-config rsync nfs-kernel-server debootstrap debhelper dh-python python3-pyelftools python3-ply chrpath tftpd-hpa htop`
-
+`$ apt install -y debootstrap qemu-user-static qemu-utils parted kpartx build-essential make cmake ncurses-dev flex bison meson bc vim curl git pkg-config rsync nfs-kernel-server debootstrap debhelper dh-python python3-pyelftools python3-ply chrpath tftpd-hpa htop`
 
 We also need a cross-compiler, and for that, we'll use the one that [Linaro](https://www.linaro.org/) provides and are one of the most popular cross-compilers for ARM.
 
@@ -35,7 +32,6 @@ $ wget https://snapshots.linaro.org/gnu-toolchain/12.3-2023.06-1/aarch64-linux-g
 $ tar -xf gcc-linaro-12.3.1-2023.06-x86_64_aarch64-linux-gnu.tar.xz
 $ ln -sf gcc-linaro-12.3.1-2023.06-x86_64_aarch64-linux-gnu toolchain
 ```
-
 
 ## Build the kernel
 
@@ -51,9 +47,7 @@ $ make -j8
 $ make install
 ```
 
-> [!NOTE]
-In case OpenSSL returns errors, chances are, you have already set `ARCH` and `CROSS_COMPILE` environment variables (below) so it's trying to build for Arm achitecture! In this case, just unset both by entering `$ unset ARCH CROSS_COMPILE` and then run the `./Configure` again.
-
+> \[!NOTE] In case OpenSSL returns errors, chances are, you have already set `ARCH` and `CROSS_COMPILE` environment variables (below) so it's trying to build for Arm achitecture! In this case, just unset both by entering `$ unset ARCH CROSS_COMPILE` and then run the `./Configure` again.
 
 At this point, you also need to add some additional environment variables to the bottom of either `.bashrc` or `.zshrc` so that we don't need to add them to each command:
 
@@ -65,7 +59,7 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 
 Don't forget to run `$ source ~/.bashrc` to load those new environment variables!
 
----
+***
 
 Now we're ready to build the kernel. Since we're using a Layerscape CPU, we won't be using the official kernel but instead the one that NXP provides and includes the necessary packages that take advantage of their DPAA architecture. Unlike with other packages, we're going to use a branch that's a little older, because the `lf-6.6.36-2.1.0` version contains a bug that causes some memory issues. They also provide a default configuration that should work with all their hardware out of the box.
 
@@ -85,7 +79,6 @@ Once you removed the block from the device tree, recompile the kernel, which sho
 
 With this done, let's first set up a TFTP server so that we can always grab a fresh copy of the kernel and the device trees once we start booting our development board.
 
-
 ## (Optional) Set up a TFTP server
 
 Since we already installed a TFTP server as part of the prerequisite packages, Debian likely already created a `/srv/tftp` directory, which we now have to modify slighly, and while we're at it, also make sure that it starts automatically whenever the machine is booted up:
@@ -104,14 +97,13 @@ $ cp arch/arm64/boot/Image* /srv/tftp
 $ cp arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb*.dtb /srv/tftp
 ```
 
-If we check the contents of the TFTP directory, there are 6 device trees in that we can use for booting, but in this article, we're only interested in `fsl-ls1046a-rdb-usdpaa.dtb`. This particular one prevents kernel from using them for networking and instead passes them on to user space, hence the *US* in *USDPAA*. Because we modified the source file earlier, the kernel will only have access to **one** interface, while the rest will be *invisible* to it, from a networking standpoint.
+If we check the contents of the TFTP directory, there are 6 device trees in that we can use for booting, but in this article, we're only interested in `fsl-ls1046a-rdb-usdpaa.dtb`. This particular one prevents kernel from using them for networking and instead passes them on to user space, hence the _US_ in _USDPAA_. Because we modified the source file earlier, the kernel will only have access to **one** interface, while the rest will be _invisible_ to it, from a networking standpoint.
 
 If we wanted to develop the software which doesn't rely on DPDK (more on that soon), then we could use another device tree to boot our board with, such as `fsl-ls1046a-rdb-sdk.dtb`.
 
-
 ## (Optional) Make an SDCard image and NFS mount
 
-This step is optional, but since the reference design board comes with an SD card slot that we can boot from, we can also prepare an image file and then mount it into `/mnt/rootfs` so that once we're done, we can directly use this image file to flash an SD card. 
+This step is optional, but since the reference design board comes with an SD card slot that we can boot from, we can also prepare an image file and then mount it into `/mnt/rootfs` so that once we're done, we can directly use this image file to flash an SD card.
 
 ```shell
 $ cd /usr/src
@@ -139,11 +131,9 @@ $ exportfs -a
 $ /etc/init.d/nfs-kernel-server reload
 ```
 
-
 ## Build a root filesystem
 
-Okay, now we have everything prepared to build our initial filesystem which will run on the board, and for that, we'll use a package, called `debootstrap`. As the name suggests, it *bootstraps* a Debian filesystem into a directory of our choosing which will be `/mnt/rootfs` in our case.
-
+Okay, now we have everything prepared to build our initial filesystem which will run on the board, and for that, we'll use a package, called `debootstrap`. As the name suggests, it _bootstraps_ a Debian filesystem into a directory of our choosing which will be `/mnt/rootfs` in our case.
 
 ```shell
 $ debootstrap --arch=arm64 --foreign bookworm /mnt/rootfs
@@ -154,9 +144,9 @@ $ passwd
 $ exit
 ```
 
-Notice how we also installed a bunch of packages? Since we're *chrooted* into the target root filesystem, these packages provide all the necessary headers and libraries that are already compiled for arm64 - and our cross compiler will include those when needed.
+Notice how we also installed a bunch of packages? Since we're _chrooted_ into the target root filesystem, these packages provide all the necessary headers and libraries that are already compiled for arm64 - and our cross compiler will include those when needed.
 
----
+***
 
 Now that we have our filesystem set up, let's first copy all the kernel modules into it. This is an optional step, but can't hurt to have all the compiled modules in place, should we need them further on.
 
@@ -181,7 +171,7 @@ $ DESTDIR=/mnt/rootfs PREFIX=/usr make install-libfm-arm
 
 The last command puts header files into `/mnt/rootfs/usr/include/fmd`, but just to make sure, run `find / -name "libfm-arm.a"` to verify that a file `/mnt/rootfs/usr/lib/libfm-arm.a` is indeed present.
 
-Now that we have the *Frame manager* library and headers in place, we also need to take care of a dependecies that *Frame manager configurator* needs to build successfully.We'll go to the root filesystem (into `/usr/lib` directory), and add a couple of symlinks:
+Now that we have the _Frame manager_ library and headers in place, we also need to take care of a dependecies that _Frame manager configurator_ needs to build successfully.We'll go to the root filesystem (into `/usr/lib` directory), and add a couple of symlinks:
 
 ```shell
 $ cd /mnt/rootfs/usr/lib
@@ -232,10 +222,10 @@ $ install -m 755 source/fmc /mnt/rootfs/usr/local/bin/fmc && \
 
 While the source comes with a serice file for systemd as well as a file that service needs to call, they are developed for multiple boards and as such, include checks we don't need. Let's instead make our own:
 
-- `/mnt/rootfs/usr/local/bin/init-fmc.sh` with [this content](../files/development-set-up/init-fmc.sh) (don't forget to `chmod +x` on it!)
-- `/mnt/rootfs/lib/systemd/system/fmc.service` with [this](../files/development-set-up/fmc.service)
+* `/mnt/rootfs/usr/local/bin/init-fmc.sh` with [this content](https://github.com/we-are-mono/docs/blob/master/files/development-set-up/init-fmc.sh) (don't forget to `chmod +x` on it!)
+* `/mnt/rootfs/lib/systemd/system/fmc.service` with [this](https://github.com/we-are-mono/docs/blob/master/files/development-set-up/fmc.service)
 
-Before you can use either DPDK or VPP, make sure to activate *fmc* at system boot, by running `$ systemctl enable fmc.service` inside the chroot target environment (`$ chroot /mnt/rootfs bash`) or on the board directly, so that the service will run at boot time.
+Before you can use either DPDK or VPP, make sure to activate _fmc_ at system boot, by running `$ systemctl enable fmc.service` inside the chroot target environment (`$ chroot /mnt/rootfs bash`) or on the board directly, so that the service will run at boot time.
 
 ## Build crypto packages
 
@@ -250,11 +240,9 @@ $ install -m 644 libAArch64crypto.a /mnt/rootfs/usr/lib
 $ install -m 644 AArch64cryptolib.h /mnt/rootfs/usr/include
 ```
 
-> [!NOTE]
-> You'll notice this will become a recurring theme going forward, so if you're unfamiliar with how compiling in linux works, just know that we need two main *ingredients*: libraries and headers. Libraries can either be statically linked and end with `.a` (archive) or dynamically linked shared objects, the names of which end with `.so` (shared object). And headers provide function declarations and their arguments and end up with `.h`
+> \[!NOTE] You'll notice this will become a recurring theme going forward, so if you're unfamiliar with how compiling in linux works, just know that we need two main _ingredients_: libraries and headers. Libraries can either be statically linked and end with `.a` (archive) or dynamically linked shared objects, the names of which end with `.so` (shared object). And headers provide function declarations and their arguments and end up with `.h`
 
-
-With `AArch64cryptolib` installed, let's also create a `.pc` file inside the target rootfs which is used by cross compiler to locate both the static library (the `libAArch64crypto.a` file which we just built) as well as the headers. 
+With `AArch64cryptolib` installed, let's also create a `.pc` file inside the target rootfs which is used by cross compiler to locate both the static library (the `libAArch64crypto.a` file which we just built) as well as the headers.
 
 ```shell
 $ tee -a /mnt/rootfs/usr/lib/aarch64-linux-gnu/pkgconfig/libAArch64crypto.pc << 'END'
@@ -272,7 +260,7 @@ Cflags: -DPERF_GCM_BIG -I${includedir}
 END
 ```
 
-Next, as part of the *crypto* functionality, we also need to compile OpenSSL for the target, and we can reuse the one with built for the host earlier, so let's go back, clean the temporary files, then rebuild and reinstall it for the target:
+Next, as part of the _crypto_ functionality, we also need to compile OpenSSL for the target, and we can reuse the one with built for the host earlier, so let's go back, clean the temporary files, then rebuild and reinstall it for the target:
 
 ```shell
 $ cd /usr/src/openssl
@@ -282,10 +270,9 @@ $ make -j8
 $ make DESTDIR=/mnt/rootfs install
 ```
 
-
 ## Build DPDK
 
-Much like with the frame manager and kernel, we need to use a DPDK version that NXP provides because this software interacts with the DPAA hardware *directly* so NXP has done their *magic* on it to make sure that it does.
+Much like with the frame manager and kernel, we need to use a DPDK version that NXP provides because this software interacts with the DPAA hardware _directly_ so NXP has done their _magic_ on it to make sure that it does.
 
 ```shell
 $ cd /usr/src
@@ -307,9 +294,9 @@ END
 $ chmod +x /usr/bin/aarch64-linux-gnu-pkg-config
 ```
 
-Now this file that we just created (`/usr/bin/aarch64-linux-gnu-pkg-config`) doesn't have any kind of *default* name, meaning we will have to tell the compilers and tools to use it going forward, and the very next code block will reflect that.
+Now this file that we just created (`/usr/bin/aarch64-linux-gnu-pkg-config`) doesn't have any kind of _default_ name, meaning we will have to tell the compilers and tools to use it going forward, and the very next code block will reflect that.
 
-Since DPDK uses [Meson](https://mesonbuild.com/) to build itself, we also need to configure a *cross file* that it can refer to for building the code for another architecture. We're putting this file into out `/srv/src` so that keep the source of the project completely clean (also notice the `pkgconfig` line). 
+Since DPDK uses [Meson](https://mesonbuild.com/) to build itself, we also need to configure a _cross file_ that it can refer to for building the code for another architecture. We're putting this file into out `/srv/src` so that keep the source of the project completely clean (also notice the `pkgconfig` line).
 
 ```shell
 $ tee -a ../dpdk.config << 'END'
@@ -334,9 +321,7 @@ platform = 'dpaa'
 END
 ```
 
-> [!NOTE]
-> We've intentionally put this file *outside* the repository, because caching can sometime mess things up and it's easier to just delete the `dpdk` directory and start over, rather than mess around looking for those caches!
-
+> \[!NOTE] We've intentionally put this file _outside_ the repository, because caching can sometime mess things up and it's easier to just delete the `dpdk` directory and start over, rather than mess around looking for those caches!
 
 Let's now build DPDK:
 
@@ -386,7 +371,7 @@ $ ln -s /mnt/rootfs/usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py \
    /usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py
 ```
 
-Unfortunately, this version comes with a Meson *toolchain* file that isn't very friendly towards cross compilation, so we'll instead use our own. Just edit the `toolchain.cmake`, remove everything inside and put the contents of [this file](../files/development-set-up/toolchain.cmake) in. Now we can build it:
+Unfortunately, this version comes with a Meson _toolchain_ file that isn't very friendly towards cross compilation, so we'll instead use our own. Just edit the `toolchain.cmake`, remove everything inside and put the contents of [this file](https://github.com/we-are-mono/docs/blob/master/files/development-set-up/toolchain.cmake) in. Now we can build it:
 
 ```shell
 $ cd build-root
@@ -405,7 +390,7 @@ $ mkdir /mnt/rootfs/usr/local/vpp
 $ cp -vf *.deb /mnt/rootfs/usr/local/vpp
 ```
 
----
+***
 
 ### Post-install stuff
 
@@ -426,7 +411,7 @@ $ cd /usr/local/vpp
 $ dpkg -i *.deb
 ```
 
-There's one last thing we need to do before we're done with the installation. VPP depends on the FMC to correctly set up the interfaces which is why it needs to start *after* FMC does, and to do that, we need to modify the file `/usr/lib/systemd/system/vpp.service` (on the target system) and change the `[Unit]` section, so that it has these two lines in it (remove the existing `After` line):
+There's one last thing we need to do before we're done with the installation. VPP depends on the FMC to correctly set up the interfaces which is why it needs to start _after_ FMC does, and to do that, we need to modify the file `/usr/lib/systemd/system/vpp.service` (on the target system) and change the `[Unit]` section, so that it has these two lines in it (remove the existing `After` line):
 
 ```ini
 [Unit]
@@ -436,11 +421,9 @@ Requires=fmc.service
 
 And while you're in, also remove the `ExecStartPre` line, and once done, exit the editor and make sure the service is enabled by running `$ systemctl enable vpp.service`.
 
-> [!NOTE]
-> In case you see an error that says `Your device tree is out of date, please update it.`, just ignore it, the PHY chip will work just fine.
+> \[!NOTE] In case you see an error that says `Your device tree is out of date, please update it.`, just ignore it, the PHY chip will work just fine.
 
-
-We're almost there, the final thing we also need to do is mount something called *hugepages*. By default, Linux OS stores data in chunks, called *pages*, which are only 4 kb in size, but for high speed networking, these pages are too small which is why we passed the `default_hugepagesz=2m hugepagesz=2m hugepages=1024` earlier in u-boot. These *hugepages* are now allocated, but can't be accessed without mounting them first, so let's create a directory into which they will be mounted, and add a corresponding *fstab* entry do that linux does it automatically when booting:
+We're almost there, the final thing we also need to do is mount something called _hugepages_. By default, Linux OS stores data in chunks, called _pages_, which are only 4 kb in size, but for high speed networking, these pages are too small which is why we passed the `default_hugepagesz=2m hugepagesz=2m hugepages=1024` earlier in u-boot. These _hugepages_ are now allocated, but can't be accessed without mounting them first, so let's create a directory into which they will be mounted, and add a corresponding _fstab_ entry do that linux does it automatically when booting:
 
 ```shell
 $ mkdir /mnt/hugepages
@@ -450,14 +433,14 @@ $ mount -a
 
 All that we need to do now is restart the board and once it boots, enter `$ vppctl` to start using VPP!
 
----
+***
 
 #### References
 
-- [NXP SDK 24.06 documentation](https://www.nxp.com/docs/en/user-guide/UG10143.pdf)
-- [Vector Packet Processing](https://fd.io/)
-- [Data Plane Development kit](https://www.dpdk.org/)
-- [Flexbuild SDK for VPP](https://github.com/NXP/flexbuild/blob/main/src/apps/networking/vpp.mk)
-- [OpenSSL sources](https://github.com/openssl/openssl)
-- [Arm crypto lib](https://github.com/ARM-software/AArch64cryptolib)
-- [Linaro cross compilation toolkit](https://snapshots.linaro.org/gnu-toolchain/12.3-2023.06-1/aarch64-linux-gnu/)
+* [NXP SDK 24.06 documentation](https://www.nxp.com/docs/en/user-guide/UG10143.pdf)
+* [Vector Packet Processing](https://fd.io/)
+* [Data Plane Development kit](https://www.dpdk.org/)
+* [Flexbuild SDK for VPP](https://github.com/NXP/flexbuild/blob/main/src/apps/networking/vpp.mk)
+* [OpenSSL sources](https://github.com/openssl/openssl)
+* [Arm crypto lib](https://github.com/ARM-software/AArch64cryptolib)
+* [Linaro cross compilation toolkit](https://snapshots.linaro.org/gnu-toolchain/12.3-2023.06-1/aarch64-linux-gnu/)
