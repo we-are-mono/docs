@@ -10,6 +10,10 @@ The procedure boots Recovery Linux from **NOR**, writes the Armbian image to eMM
 * An Ethernet cable connected to one of the ports with access to the internet
 * DIP switch currently set to **NOR** (factory default)
 
+## Updates
+
+Armbian can be update normally after it is installed on Mono Gateway developmnet kit.
+
 ## Step 1: Boot into Recovery Linux
 
 Connect the UART cable and open a serial terminal:
@@ -90,4 +94,3 @@ Earlier we wiped the eMMC while writing the image to it, so we need to write fir
 
 5. Set the DIP switch back to **eMMC**.
 6. Reboot.
-
