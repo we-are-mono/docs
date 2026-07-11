@@ -4,17 +4,24 @@ This page describes the hardware specifications and functionality of the expansi
 
 ## Performance specification
 
-|                        |                                                                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| CPU                    | <p>NXP Layerscape LS1046A<br>4 cores<br>1.6 GHz</p>                                                                |
-| RAM                    | <p>8 GB<br>2100 MT/s<br>ECC support</p>                                                                            |
-| Networking             | <p>2x SFP+ 10 Gb<br>3x RJ-45 1 Gb</p>                                                                              |
-| Wifi                   | <p>1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br>1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread)</p> |
-| Storage                | <p>32 GB eMMC for Operating System<br>64 MB NOR flash for Bootloader</p>                                           |
-| Debugging              | <p>JTAG connector<br>100+ test points throughout the PCB<br>UART USB-C port<br>Status RGB LED</p>                  |
-| Required Power supply  | <p>USB-C PD 3.0<br>15V 3A (45W) or<br>20V 2A (40W)</p>                                                             |
-| Connectivity           | <p>1x USB-C 3.1 port<br>5Gbps data speed<br>5V 3A output power</p>                                                 |
-| Active cooling support | <p>Yes<br>2x 4-pin PWM 5V fan headers</p>                                                                          |
+|                                |                                                                                                                                                                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CPU**                        | NXP QorIQ LS1046A SoC: 4x Cortex-A72 @1.6 GHz                                                                                                                                                                                                     |
+| **RAM**                        | 8 GB ECC DDR4 @2100 MT/s                                                                                                                                                                                                                          |
+| **Networking**                 | 2x SFP+ 10 Gbps (10GBASE-R)<br>3x RJ45 1 Gbps (1000BASE-T)                                                                                                                                                                                        |
+| **M.2 expansion\***            | 1x M.2_1 Key-E (Left) *'Smart home'* – interfaces: SDIO, UART, SPI, I2C – Usage: low-bandwidth tri-radio cards (Wifi5, Bluetooth, Thread)<br>1x M.2_2 Key-E (Right) *'Wireless'* – interfaces: UART, PCIe 3.0 x1 – Usage: Wifi6 2x2 MU-MIMO cards |
+| **Storage**                    | *User selectable boot source via PCB dip-switch:*<br>1x 64 MB NOR flash for Bootloader<br>1x 32 GB eMMC for Operating System                                                                                                                      |
+| **Firmware**                   | NOR + eMMC (user-updatable) firmware targets are available, see: [flashing-firmware](flashing-firmware.md)                                                                                                                                        |
+| **Boot loader**                | U-Boot via `booti`                                                                                                                                                                                                                                |
+| **External I/O**               | 1x USB-C 3.1 5 Gbps port, max 5V 3A<br>1x USB-C UART (serial) Console, 115200 baud (`ttyS0`)                                                                                                                                                      |
+| **Internal I/O**               | 1x 4-pin 5V PWM CPU fan<br>1x 4-pin 5V header (unused)<br>1x Programmable RGBW status LED<br>1x JTAG programmer connector<br>100+ PCB test points                                                                                                 |
+| **Power supply<br>(external)** | 1x USB-C PD 3.0: 20V 2A (40W), or 15V 3A (45W)                                                                                                                                                                                                    |
+> **NOTE:** As a development kit, additional features are included to enable: 
+> OS installation, device recovery, firmware updates, and HW debugging of both the SoC and PCB
+
+>**\*WARNING:** The two m.2 E-key slots have different presented interfaces and pinouts. Compatibility with user-supplied m.2 E-key hardware is not guaranteed, and incorrect use may result in hardware damage. Check the datasheet for your intended m.2 E-key device to establish interface requirements and pin-compatibility. For a list of the tested m.2 devices, and full socket pin-assignments see - [#supported-cards](hardware-description.md#supported-cards)
+
+The Mono Gateway Development Kit is an extremely versatile device, and its design enables user-recovery in an abnormally wide range of scenarios. Even if rendered *'bricked'* and unbootable, the device still may be recovered via a (separate) JTAG hardware debugger probe ([e.g. TC2050](https://www.tag-connect.com/product/tc2050-idc-050-all)).
 
 ## Port description
 
