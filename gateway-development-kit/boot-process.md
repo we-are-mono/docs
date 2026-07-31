@@ -70,16 +70,14 @@ The kernel then starts the 3 other processor cores, starts the network interface
 
 
 ## Resources / Additional reading
-[https://www.nxp.com/webapp/Download?colCode=LS1046ARM](LS1046A Reference Manual) *You need an NXP account... Yay!*
+[LS1046A Reference Manual](https://www.nxp.com/webapp/Download?colCode=LS1046ARM) *You need an NXP account... Yay!*
 - Chapter 4: Reset, Clocking, and Initialization (Specifically: 4.4.1 Power-on reset sequence)
 - Chapter 26: Pre-Boot Loader (PBL)
 
-Our RCWs (GitHub):
-- [https://github.com/we-are-mono/rcw/blob/mono-development/gateway_dk/NN_FFSSPSNP_1133_5A06/rcw_2100_qspiboot.rcw](QSPI)
-- [https://github.com/we-are-mono/rcw/blob/mono-development/gateway_dk/NN_FFSSPSNP_1133_5A06/rcw_2100_emmcboot.rcw](eMMC)
+[Our QSPI RCW](https://github.com/we-are-mono/rcw/blob/mono-development/gateway_dk/NN_FFSSPSNP_1133_5A06/rcw_2100_qspiboot.rcw)
 
-Our firmware image:
-- [https://github.com/we-are-mono/meta-mono/blob/master/recipes-core/images/firmware-image.bb#L83-L88]()
+[Our eMMC RCW](https://github.com/we-are-mono/rcw/blob/mono-development/gateway_dk/NN_FFSSPSNP_1133_5A06/rcw_2100_emmcboot.rcw)
 
-ARM privilege and exception levels:
-- [https://support.arm.com/documentation/102412/0103/Privilege-and-Exception-levels]()
+[Our firmware image](https://github.com/we-are-mono/meta-mono/blob/master/recipes-core/images/firmware-image.bb#L83-L88)
+
+[ARM privilege and exception levels](https://support.arm.com/documentation/102412/0103/Privilege-and-Exception-levels)
