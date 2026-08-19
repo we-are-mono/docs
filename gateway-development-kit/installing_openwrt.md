@@ -93,28 +93,79 @@ to fill the whole eMMC (about 29 GB). After that:
   **eth4** is a second LAN (`192.168.2.1`)
 * Login is root with no password — set one.
 
-### Updates from here on
+### Updating
 
-The board checks [openwrt.mono.si](https://openwrt.mono.si) once a day.
-When a new release is out, it writes a line to the system log and to
-`/tmp/mono-update-available`. To install it:
+The board checks [openwrt.mono.si](https://openwrt.mono.si) once a day and
+notes any new release in the system log (and in
+`/tmp/mono-update-available`). How you install that release depends on which
+version the board is currently running.
 
-```sh
-sysupgrade <url from the file above>
-```
+Either way your settings survive, and the image is verified before anything
+is written — its signature and hash are checked against the signed release
+manifest. And either way, one **heads-up**: writing the new system takes a
+few seconds, and a power cut in exactly that window leaves the board booting
+into recovery. Fine on a desk; think twice for a device in a closet far away.
 
-Your settings survive the upgrade. If you would rather have the board
-update itself with no questions asked:
+#### mono-v25.12.5-r7 and earlier
+
+The updater (`mono-update-check`) is driven by a single mode setting and only
+notifies by default. To install, switch it to verified auto-install and
+either wait for the daily check or run it now:
 
 ```sh
 uci set mono-update.check.mode='auto'
 uci commit mono-update
+mono-update-check          # apply now instead of waiting for the daily check
 ```
 
-Heads-up on `auto`: writing the new system takes a few seconds, and a
-power cut in exactly that window leaves the board booting into
-recovery. Fine on a desk, think twice for a device in a closet far
-away.
+Left at `auto`, every future release installs itself unattended; set it back
+to `notify` afterwards if you only wanted the one update. Do not `sysupgrade`
+the release URL by hand — that path skips the signature and hash checks.
+
+#### mono-v25.12.5-r8 and up
+
+r8 replaces the mode dance with an on-demand command and a LuCI page, so a
+one-off update no longer means flipping a persistent setting.
+
+From LuCI: open **System → Updates**, click **Check for updates**, then
+**Install update** if one is offered.
+
+From the shell:
+
+```sh
+mono-update --check      # is a newer signed release available?
+mono-update --install    # verify + flash the newest signed release (reboots)
+```
+
+Running `mono-update` with no arguments prints this usage. The daily
+background check still only notifies; for unattended updates set
+`mono-update.check.mode='auto'` as before, and at the default `notify`
+nothing is flashed without you asking.
+
+The command and page exist only once the board is running r8 or newer;
+update *to* r8 from an older release using the procedure above.
+
+#### Updating to mono-v25.12.5-r9 (the A/B migration)
+
+r9 introduces **A/B boot slots** — two rootfs copies, so a failed update rolls
+itself back to the previous working one instead of dropping you into recovery.
+Reaching that layout means re-carving the eMMC once, so **the update to r9
+reboots twice** — both automatically, nothing for you to do:
+
+1. `mono-update --install` verifies and writes the new system, then reboots
+   into it (as every update does).
+2. On that first boot the board shrinks the single rootfs partition, adds the
+   second slot and a persistent `/data` partition, and **reboots itself once
+   more** to bring the new layout into effect.
+
+So the board comes up, restarts on its own, and then settles — a brief double
+boot that is normal and happens on this one update only. Every update after r9
+is a single reboot, and a bad one rolls back on its own.
+
+Why the second reboot can't be skipped: the eMMC is full, so the rootfs must
+shrink to make room, and the running kernel will not accept a new partition
+table while it is booted from that partition — only a reboot re-reads it. Boards
+freshly flashed from recovery already carry the A/B layout and skip all of this.
 
 ## Part 2: How the image works
 
@@ -247,3 +298,120 @@ cd openwrt
 cp configs/mono_gateway-dk.seed .config
 make defconfig && make
 ```
+
+## Wi-Fi
+
+The image ships a driver and firmware for the **u-blox JODY-W377-00B** module
+(NXP 88W9098, Wi-Fi 6). It is optional — the same image runs unchanged whether or
+not a module is fitted; Wi-Fi simply stays dormant when the slot is empty.
+
+### Fitting the module
+
+The Gateway Development Kit has **two M.2 slots, `M2_1` and `M2_2`**. Install the
+JODY-W377-00B in **`M2_2`**.
+
+The module also needs **three U.FL antennae**, purchased separately — fit one to
+each U.FL connector on the card.
+
+### Configuring
+
+The 88W9098 is a dual-MAC (2×2 + 2×2) radio, so it appears as **two radios** in
+LuCI under *Network → Wireless* (managed natively — no extra setup needed). Both
+are auto-detected on the 5 GHz band; to put one on 2.4 GHz, change its band in
+LuCI, or from the shell:
+
+```
+uci set wireless.radio0.band='2g'
+uci set wireless.radio0.htmode='HE40'
+uci commit wireless
+wifi reload
+```
+
+Set SSIDs and encryption per device in LuCI as usual.
+
+Both bands run Wi-Fi 6 at 40 MHz-wide channels (HE40). 80 MHz (HE80) on 5 GHz is
+currently rejected by the module driver even where the regulatory domain permits
+it, so leave 5 GHz at HE40.
+
+{% hint style="warning" %}
+**A client that connects but has no internet is almost always DNS, not Wi-Fi.**
+The giveaway on an iPhone or iPad: under _Wi-Fi → ⓘ → Configure DNS: Automatic_ the
+DNS-server list is **empty**, and the Wi-Fi icon drops to cellular. It associated,
+got an IP, and simply has no resolver.
+
+This bites whenever something takes port 53 and moves dnsmasq aside — the image's
+**AdGuard Home** puts dnsmasq on `5353` — because dnsmasq then stops advertising
+_itself_ as the DHCP DNS server and nothing else fills in. Linux and Android fall
+back to the gateway and never notice; iOS doesn't, so it is left with no DNS at
+all. Setting a manual DNS on the device (e.g. `192.168.1.1`) works and confirms it.
+
+Fix it on the router by handing out a DNS server explicitly, once per DHCP-served
+network, each pointing at that network's own gateway (AdGuard listens on all of
+them):
+
+```sh
+uci add_list dhcp.lan.dhcp_option='6,192.168.1.1'   # repeat per network → its gateway
+uci commit dhcp
+/etc/init.d/dnsmasq reload
+```
+{% endhint %}
+
+### One SSID on both bands, with band steering
+
+To present a single network name across 2.4 and 5 GHz — where dual-band clients
+are actively pushed onto 5 GHz and nudged to roam as they move around — combine
+three things: one radio per band sharing the **same SSID**, **802.11k/v** on both,
+and the **usteer** steering daemon. All of it ships in the image.
+
+**1. One radio per band, identical SSID.** Put `radio0` on 2.4 GHz and `radio1` on
+5 GHz, and give both interfaces the same SSID, encryption and key:
+
+```sh
+# radios: one per band (set country to your regulatory domain)
+uci set wireless.radio0.band='2g'; uci set wireless.radio0.htmode='HE40'
+uci set wireless.radio1.band='5g'; uci set wireless.radio1.htmode='HE40'
+uci set wireless.radio0.country='SI'; uci set wireless.radio1.country='SI'
+
+# both interfaces: same SSID/key + 802.11k (neighbour/beacon reports)
+# and 802.11v (BSS transition management)
+for i in default_radio0 default_radio1; do
+    uci set wireless.$i.ssid='YourNetwork'
+    uci set wireless.$i.encryption='sae-mixed'      # WPA2/WPA3
+    uci set wireless.$i.key='your-passphrase'
+    uci set wireless.$i.ieee80211k='1'
+    uci set wireless.$i.rrm_neighbor_report='1'
+    uci set wireless.$i.rrm_beacon_report='1'
+    uci set wireless.$i.ieee80211v='1'
+    uci set wireless.$i.bss_transition='1'
+done
+uci commit wireless
+wifi reload
+```
+
+Clients now see one network and can roam between the bands: 802.11k tells a client
+which other AP/band exists, 802.11v lets the AP ask it to move.
+
+**2. Enable band steering (usteer).** 802.11k/v only *advertises* the other band;
+`usteer` is what actively steers. It ships installed but disabled — configure and
+enable it:
+
+```sh
+u=usteer.@usteer[0]
+uci set $u.assoc_steering='1'          # refuse 2.4 GHz assoc for 5 GHz-capable clients
+uci set $u.band_steering_min_snr='-75' # only steer up if 5 GHz would hold this signal
+uci set $u.signal_diff_threshold='15'  # roam if another band is >15 dB better
+uci set $u.roam_trigger_snr='20'       # nudge an 802.11v roam below this SNR
+uci set $u.roam_scan_snr='25'
+uci set $u.load_kick_enabled='0'       # no load-based kicking
+uci commit usteer
+/etc/init.d/usteer enable && /etc/init.d/usteer start
+```
+
+`assoc_steering` is the core "prefer 5 GHz": a dual-band client that tries to join
+on 2.4 GHz is refused until it comes up on 5 GHz instead. The `roam_*` and
+`signal_diff_threshold` settings handle already-connected clients that wander off —
+usteer sends them an 802.11v BSS-transition request toward the stronger AP/band.
+A status page lives under *Network → Wireless → usteer*.
+
+Option names drift between usteer versions; the shipped `/etc/config/usteer` is
+fully commented, so check it there if the daemon rejects one.
