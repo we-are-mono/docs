@@ -36,18 +36,18 @@ see [Flashing firmware](flashing-firmware.md) — then come back here.
 
 ### 2. Get networking up
 
-Recovery has no network configured. Plug a cable into one of the ports — the
-**eth3** port is a safe choice — then bring it up and grab an address:
+Recovery has no network set up. Plug a copper cable into one of the three
+**RJ-45** ports — these are `eth0`, `eth1` and `eth2` (the two SFP+ cages are
+`eth3`/`eth4` and need a module) — then bring your port up and grab an address:
 
 ```sh
-ip link set eth3 up
-udhcpc -i eth3
+ip link set eth0 up
+udhcpc -i eth0
 ```
 
-(Replace `eth3` with whichever port you plugged into; see the
-[hardware description](hardware-description.md) for which physical port is which
-`ethN`. If your network has no DHCP, set a static address with `ip addr add …`
-and `ip route add default via …` instead.)
+(Use whichever RJ-45 you plugged into. If your network has no DHCP, set a static
+address with `ip addr add …` and `ip route add default via …` instead. See
+[Getting started](getting-started.md) for the physical port order.)
 
 ### 3. Download and write the image
 
@@ -127,8 +127,10 @@ board grows the active rootfs slot to its full size, creates the persistent
 After that it settles. Then:
 
 * LuCI (the web interface) is at `https://192.168.1.1`
-* Ports: **eth0–eth2** are the LAN bridge, **eth3** is WAN (DHCP), **eth4** is a
-  second LAN (`192.168.2.1`)
+* Ports: the three **RJ-45** ports (`eth0`–`eth2`) are the LAN bridge; the first
+  **SFP+** cage (`eth3`) is WAN (DHCP); the second SFP+ (`eth4`) is a second LAN
+  (`192.168.2.1`). See [Getting started](getting-started.md) for the physical
+  port order.
 * Login is `root` with no password — set one.
 
 ### Updating
