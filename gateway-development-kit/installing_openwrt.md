@@ -1,26 +1,26 @@
 # OpenWRT on the Mono Gateway
 
 Our OpenWRT build comes with hardware offloading (ASK), all board
-hardware working out of the box, and automatic updates.
+hardware working out of the box, and self-service updates over the network.
 
 * Source: [github.com/we-are-mono/openwrt](https://github.com/we-are-mono/openwrt) (branch `mono`)
 * Images: [openwrt.mono.si](https://openwrt.mono.si) and the GitHub
   [releases page](https://github.com/we-are-mono/openwrt/releases)
-* Releases are named `mono-v25.12.5`, `mono-v25.12.5-r2`, and so on.
-  The first part is the OpenWRT version we build on; the `-rN` suffix
-  means we changed something on our side (usually an ASK update)
-  without waiting for a new OpenWRT release.
+* Releases are named like `mono-v25.12.5-rN`. The `25.12.5` is the OpenWRT
+  version we build on; the `-rN` marks our own updates in between (usually an
+  ASK refresh). Always grab the newest folder from
+  [openwrt.mono.si](https://openwrt.mono.si).
 
-## Part 1: Getting started
+## Part 1: Installing
 
-You flash the board once, from recovery Linux. After that it updates
-itself over the network and you never need this procedure again
-(unless you brick it, in which case: this procedure un-bricks it too).
+You flash the board once, from recovery Linux. After that it updates itself
+over the network and you never need this procedure again (unless you brick it —
+in which case this procedure un-bricks it too).
 
 ### 1. Boot into recovery
 
-Set the boot DIP switch to **NOR** and power-cycle. The board stops
-in U-Boot; start recovery Linux by typing:
+Set the boot DIP switch to **NOR** and power-cycle. The board stops in U-Boot;
+start recovery Linux by typing:
 
 ```
 run recovery
@@ -28,183 +28,166 @@ run recovery
 
 Log in as `root` — no password.
 
+{% hint style="info" %}
+If `run recovery` fails with `Bad Linux ARM64 Image magic!` (or similar), the
+board's low-level firmware needs reflashing first. Do that once —
+see [Flashing firmware](flashing-firmware.md) — then come back here.
+{% endhint %}
+
 ### 2. Get networking up
 
-Recovery has no network configured. Plug a cable into one of the
-ports — see the
-[hardware description](hardware-description.md) for which physical
-port is which `ethN` — then:
+Recovery has no network configured. Plug a cable into one of the ports — the
+**eth3** port is a safe choice — then bring it up and grab an address:
 
 ```sh
-ip link set eth0 up
-udhcpc -i eth0
+ip link set eth3 up
+udhcpc -i eth3
 ```
 
-(Replace `eth0` with the port you plugged into. If your network has
-no DHCP, set a static address with `ip addr add` and
-`ip route add default via ...` instead.)
+(Replace `eth3` with whichever port you plugged into; see the
+[hardware description](hardware-description.md) for which physical port is which
+`ethN`. If your network has no DHCP, set a static address with `ip addr add …`
+and `ip route add default via …` instead.)
 
 ### 3. Download and write the image
 
+Open [openwrt.mono.si](https://openwrt.mono.si), note the newest `mono-v…`
+folder, and use it below. Each release ships a small `flash-mono-gateway.sh`
+that does the write for you — it streams the compressed image straight to the
+eMMC and leaves the firmware region untouched:
+
 ```sh
 cd /tmp
-wget https://openwrt.mono.si/mono-v25.12.5-r3/openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
-gunzip openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+REL=https://openwrt.mono.si/mono-v25.12.5-rN          # ← the newest folder
+wget $REL/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+wget $REL/flash-mono-gateway.sh
+sh flash-mono-gateway.sh layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+```
+
+Or write it by hand — the two `dd` commands are what the script runs:
+
+```sh
+gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
 
 DEV=/dev/mmcblk0
-IMG=openwrt-layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
-dd if=$IMG of=$DEV bs=512 count=8
-dd if=$IMG of=$DEV bs=1M skip=32 seek=32
+IMG=layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
+dd if=$IMG of=$DEV bs=512 count=8           # partition table (first 4 KB)
+dd if=$IMG of=$DEV bs=1M skip=32 seek=32     # the system, from 32 MB on
 sync
 ```
 
-(Replace the release in the URL with the newest one from
-[openwrt.mono.si](https://openwrt.mono.si).)
+Why two writes instead of one? The area from 4 KB to 32 MB on the eMMC belongs
+to the boot firmware (the low-level pieces that run before Linux) and its own
+update tool. The image deliberately leaves it alone: the first command writes
+the partition table into the first 4 KB, the second writes the actual system
+from 32 MB onward. Nothing in between is ever touched. See Part 2 for the layout.
 
-Why two `dd` commands instead of one? The area from 4 KB to 32 MB on
-the eMMC belongs to the boot firmware (the low-level pieces that run
-before Linux) and its own update tool. The image deliberately leaves
-it alone: the first command writes the partition table into the first
-4 KB, the second writes the actual system from 32 MB onward. Nothing
-in between is ever touched. See Part 2 for the details.
+### 4. Set up A/B booting (one time)
 
-### 4. Tell U-Boot how to boot it
+The current image boots from **A/B slots** using an `extlinux` boot script.
+Factory units still ship with the older single-slot U-Boot environment, so a
+freshly-flashed board needs the A/B boot environment set **once** by hand. After
+the first successful boot the image writes the full environment itself, and this
+step never repeats.
 
-Set the DIP switch back to **eMMC**, power-cycle, and press any key
-during the countdown to stop in U-Boot. Then:
+Set the DIP switch back to **eMMC**, power-cycle, press any key during the
+countdown to stop in U-Boot, and paste:
 
 ```
-setenv openwrt 'setenv bootargs "${bootargs_console} boot_medium=emmc root=/dev/mmcblk0p2 rootwait"; run emmc_load && booti ${kernel_addr_r} - ${fdt_addr_r}'
-setenv bootcmd 'run openwrt || run recovery'
+setenv slot a
+setenv set_slot_a 'setenv bootpart 1; setenv rootpart 2'
+setenv set_slot_b 'setenv bootpart 3; setenv rootpart 4'
+setenv scriptaddr 0x80200000
+setenv bootcmd 'run set_slot_${slot}; sysboot mmc 0:${bootpart} any ${scriptaddr} /boot/extlinux/extlinux.conf || run recovery'
+setenv bootlimit 3
+setenv altbootcmd 'setenv upgrade_available 0; if test ${slot} = a; then setenv slot b; else setenv slot a; fi; setenv bootcount 0; saveenv; run bootcmd'
 saveenv
 boot
 ```
 
-This makes the board boot OpenWRT normally, and fall back to recovery
-Linux automatically if that ever fails.
+{% hint style="warning" %}
+Paste it exactly, and **don't** add `mono_ab_env_ver` yourself — leaving it
+unset lets the image re-assert the complete, correct environment on first boot.
+The two common ways this goes wrong: forgetting `setenv scriptaddr …` (which
+leaves `sysboot` with an empty address and a broken `bootcmd`), or retyping the
+old `emmc_load` / `booti root=…` lines from an older guide — those are the
+pre-A/B path and won't boot the current image.
+{% endhint %}
+
+This boots OpenWRT from the active slot and falls back to recovery Linux
+automatically if that ever fails. (Once shipping firmware carries the A/B
+environment, this whole step disappears — a fresh board will boot straight after
+flashing.)
 
 ### 5. First boot
 
-The first boot takes a few seconds longer: the filesystem grows itself
-to fill the whole eMMC (about 29 GB). After that:
+The first boot takes a few extra seconds and may restart once on its own: the
+board grows the active rootfs slot to its full size, creates the persistent
+`/data` partition, and saves the A/B boot environment to both storage locations.
+After that it settles. Then:
 
-* LuCI (the web interface) is on `https://192.168.1.1`
-* Ports: **eth0–eth2** are the LAN bridge, **eth3** is WAN (DHCP),
-  **eth4** is a second LAN (`192.168.2.1`)
-* Login is root with no password — set one.
+* LuCI (the web interface) is at `https://192.168.1.1`
+* Ports: **eth0–eth2** are the LAN bridge, **eth3** is WAN (DHCP), **eth4** is a
+  second LAN (`192.168.2.1`)
+* Login is `root` with no password — set one.
 
 ### Updating
 
-The board checks [openwrt.mono.si](https://openwrt.mono.si) once a day and
-notes any new release in the system log (and in
-`/tmp/mono-update-available`). How you install that release depends on which
-version the board is currently running.
+The board updates itself with OpenWRT's **Attended Sysupgrade**: the build
+server at `sysupgrade.mono.si` rebuilds an image carrying your exact installed
+package set, verifies its signature, and installs it. Because the board is A/B,
+the new system is written to the **spare slot** and the board flips to it — so a
+failed or interrupted update simply rolls back to the slot you were on.
 
-Either way your settings survive, and the image is verified before anything
-is written — its signature and hash are checked against the signed release
-manifest. And either way, one **heads-up**: writing the new system takes a
-few seconds, and a power cut in exactly that window leaves the board booting
-into recovery. Fine on a desk; think twice for a device in a closet far away.
+* **From LuCI:** open **System → Attended Sysupgrade**, click to check, and
+  install if an update is offered.
+* **From the shell:**
 
-#### mono-v25.12.5-r7 and earlier
+  ```sh
+  owut check      # is a newer build available?
+  owut upgrade    # rebuild with your packages, verify, install, reboot
+  ```
 
-The updater (`mono-update-check`) is driven by a single mode setting and only
-notifies by default. To install, switch it to verified auto-install and
-either wait for the daily check or run it now:
-
-```sh
-uci set mono-update.check.mode='auto'
-uci commit mono-update
-mono-update-check          # apply now instead of waiting for the daily check
-```
-
-Left at `auto`, every future release installs itself unattended; set it back
-to `notify` afterwards if you only wanted the one update. Do not `sysupgrade`
-the release URL by hand — that path skips the signature and hash checks.
-
-#### mono-v25.12.5-r8 and up
-
-r8 replaces the mode dance with an on-demand command and a LuCI page, so a
-one-off update no longer means flipping a persistent setting.
-
-From LuCI: open **System → Updates**, click **Check for updates**, then
-**Install update** if one is offered.
-
-From the shell:
-
-```sh
-mono-update --check      # is a newer signed release available?
-mono-update --install    # verify + flash the newest signed release (reboots)
-```
-
-Running `mono-update` with no arguments prints this usage. The daily
-background check still only notifies; for unattended updates set
-`mono-update.check.mode='auto'` as before, and at the default `notify`
-nothing is flashed without you asking.
-
-The command and page exist only once the board is running r8 or newer;
-update *to* r8 from an older release using the procedure above.
-
-#### Updating to mono-v25.12.5-r9 (the A/B migration)
-
-r9 introduces **A/B boot slots** — two rootfs copies, so a failed update rolls
-itself back to the previous working one instead of dropping you into recovery.
-Reaching that layout means re-carving the eMMC once, so **the update to r9
-reboots twice** — both automatically, nothing for you to do:
-
-1. `mono-update --install` verifies and writes the new system, then reboots
-   into it (as every update does).
-2. On that first boot the board shrinks the single rootfs partition, adds the
-   second slot and a persistent `/data` partition, and **reboots itself once
-   more** to bring the new layout into effect.
-
-So the board comes up, restarts on its own, and then settles — a brief double
-boot that is normal and happens on this one update only. Every update after r9
-is a single reboot, and a bad one rolls back on its own.
-
-Why the second reboot can't be skipped: the eMMC is full, so the rootfs must
-shrink to make room, and the running kernel will not accept a new partition
-table while it is booted from that partition — only a reboot re-reads it. Boards
-freshly flashed from recovery already carry the A/B layout and skip all of this.
+Your settings and everything under `/data` survive the update. One **heads-up**:
+writing the new system takes a few seconds; a power cut in exactly that window
+leaves the board on its previous slot (or in recovery). Fine on a desk; think
+twice for a device in a closet far away.
 
 ## Part 2: How the image works
 
-This part explains what is inside the image and why. You do not need
-any of it to use the board.
+This part explains what is inside the image and why. You do not need any of it
+to use the board.
 
 ### Why we build our own image at all
 
-The LS1046A chip in the Gateway has a network engine (called FMan)
-that can forward packets entirely in hardware — the CPU never sees
-them. The software that drives this is **ASK**, our maintained version
-of NXP's offloading stack.
+The LS1046A chip in the Gateway has a network engine (called FMan) that can
+forward packets entirely in hardware — the CPU never sees them. The software
+that drives this is **ASK**, our maintained version of NXP's offloading stack.
 
-The catch: ASK needs NXP's version of the Linux kernel, because the
-FMan drivers only exist there. Stock OpenWRT builds the standard
-kernel from kernel.org. So our build tells OpenWRT to fetch NXP's
-kernel (pinned to an exact version) and applies the ASK patches on
-top during the build. Everything is fetched from public sources at
-fixed versions — the same inputs always give the same image, on any
-machine.
+We build on **OpenWRT's own kernel** (currently 6.12.x) and layer ASK on top:
+the NXP SDK datapath drivers are vendored into the build as plain source files,
+and the ASK offload hooks are applied as patches during the build. (This
+replaced an older approach that cloned NXP's entire vendor kernel — we now track
+OpenWRT's mainline kernel and carry only the ASK pieces.) Everything is fetched
+from public sources at pinned versions, so the same inputs always give the same
+image, on any machine.
 
 ### How offloading actually works
 
 In plain terms:
 
-1. The first packets of every connection go through Linux normally —
-   firewall, NAT, routing, all of it.
-2. A small daemon called **cmm** watches the connection table. Once a
-   connection is established and it knows everything about it (where
-   it goes, what NAT does to it), it programs that connection into
-   the FMan's hardware table.
-3. From then on, packets of that connection are forwarded, rewritten
-   and NAT-ed by the chip itself. The CPU is not involved at all.
-4. When the connection dies (or a port goes down, or routing
-   changes), cmm removes it from the hardware again.
+1. The first packets of every connection go through Linux normally — firewall,
+   NAT, routing, all of it.
+2. A small daemon called **cmm** watches the connection table. Once a connection
+   is established and it knows everything about it (where it goes, what NAT does
+   to it), it programs that connection into the FMan's hardware table.
+3. From then on, packets of that connection are forwarded, rewritten and NAT-ed
+   by the chip itself. The CPU is not involved at all.
+4. When the connection dies (or a port goes down, or routing changes), cmm
+   removes it from the hardware again.
 
-The firewall still fully applies — rules are enforced on those first
-packets, and only connections the firewall allowed ever reach the
-hardware table.
+The firewall still fully applies — rules are enforced on those first packets,
+and only connections the firewall allowed ever reach the hardware table.
 
 ### The pieces
 
@@ -219,85 +202,79 @@ hardware table.
 | patched `libnetfilter-conntrack` | library | Lets cmm see the extra connection details our kernel attaches. |
 
 All ASK pieces are built from one pinned commit of the
-[ASK repository](https://github.com/we-are-mono/ASK) — the kernel
-patches and the programs can never get out of step with each other.
+[ASK repository](https://github.com/we-are-mono/ASK) — the kernel patches and
+the programs can never get out of step with each other.
 
-A few connection types are deliberately never offloaded (FTP, SIP,
-PPTP — they need the CPU to inspect them). The list lives in
-`/etc/config/fastforward`.
+A few connection types are deliberately never offloaded (FTP, SIP, PPTP — they
+need the CPU to inspect them). The list lives in `/etc/config/fastforward`.
 
 ### Board support
 
 Beyond offloading, the image carries the Gateway's board bits:
 
-* **Device tree** from our `meta-mono` layer — the same board
-  description Armbian and the Yocto test image use.
-* **LED drivers**: the LP5812 status LED and the SFP link/activity
-  LEDs.
-* **Fan control**: the standard lm-sensors `fancontrol` with the same
-  curve as our other images — fan off below 40 °C, ramping linearly
-  to full at 80 °C, driven by the SoC temperature.
-* **Sensors**: the eight INA234 power monitors, temperature sensors
-  and the fan controller all show up under `/sys/class/hwmon`.
-* One image serves the whole product family. The only per-device
-  offloading file (`cdx_cfg.xml`) ships in all variants and the right
-  one is picked at boot by board name — Gateway DK today, Gateway and
-  Gateway Pro when they arrive.
+* **Device tree** describing the board — the same description Armbian and the
+  Yocto test image use.
+* **LED drivers**: the LP5812 status LED and the SFP link/activity LEDs.
+* **Fan control**: the standard lm-sensors `fancontrol` with the same curve as
+  our other images — fan off below 40 °C, ramping linearly to full at 80 °C,
+  driven by the SoC temperature.
+* **Sensors**: the INA-series power monitors, temperature sensors and the fan
+  controller all show up under `/sys/class/hwmon`.
+* One image serves the whole product family. The only per-device offloading file
+  (`cdx_cfg.xml`) ships in all variants and the right one is picked at boot by
+  board name — Gateway DK today, Gateway and Gateway Pro when they arrive.
 
-### The eMMC layout
+### The eMMC layout (A/B)
 
 ```
-0-4 KB   the partition table (GPT), complete
-4 KB     ┐
-         │ boot firmware: PBL, FIP (U-Boot), U-Boot env, FMan microcode
-32 MB    ┘ (owned by the firmware update tool - not ours)
-32 MB    partition 1: boot (kernel + device tree)
-96 MB    partition 2: rootfs (ext4, grows to fill the disk on first boot)
+0–4 KB      GPT partition table (8 entries, kept clear of the firmware)
+4 KB–32 MB  boot firmware: PBL, FIP (U-Boot), U-Boot env, FMan microcode
+            (owned by the firmware update tool — never touched by OpenWRT)
+32 MB    p1 bootA   64 MiB   slot-A boot (extlinux.conf + Image.gz + dtb)
+96 MB    p2 rootA   1 GiB    slot-A rootfs
+1120 MB  p3 bootB   64 MiB   slot-B boot   (empty until the first update)
+1184 MB  p4 rootB   1 GiB    slot-B rootfs (empty until the first update)
+2208 MB  p5 data    ~27.5 GiB persistent /data — survives updates
 ```
+
+**A/B slots.** There are two rootfs copies. An update writes the *inactive*
+slot and flips U-Boot to it, keeping the slot you were on as an automatic
+rollback: if the new system fails to boot, the board comes back on the old one.
+Anything that must persist across updates lives on the separate `/data`
+partition. A freshly-flashed image seeds only slot A (p1 + p2); the B slot fills
+in on the first update, and `/data` is created on first boot — which is also
+when slot-A's rootfs grows to its full 1 GiB and a backup copy of the partition
+table is written to the end of the disk.
 
 Two unusual choices, both because of the firmware region:
 
-* A normal partition table spills past 4 KB (its list of partitions
-  alone reserves 16 KB). Everything from 4 KB to 32 MB belongs to the
-  firmware and its update tool, so our table is slimmed down - it
-  lists up to 8 partitions instead of the usual 128 - and the whole
-  thing fits in the first 4 KB. Linux and U-Boot are fine with that;
-  some desktop partitioning tools may grumble.
-* The rootfs partition is created at its final size **in the image**,
-  and only the filesystem grows on first boot. The partition table on
-  the device is never rewritten - repartitioning tools would write a
-  full-size table right over the firmware.
-
-Updates (`sysupgrade`) rewrite only the two partitions. The firmware
-region and the partition table are never touched by anything after
-the first flash.
+* A normal partition table spills past 4 KB (its list of partitions alone
+  reserves 16 KB). Everything from 4 KB to 32 MB belongs to the firmware and its
+  update tool, so our table is slimmed down — it lists up to 8 partitions
+  instead of the usual 128 — and the whole thing fits in the first 4 KB. Linux
+  and U-Boot are fine with that; some desktop partitioning tools may grumble.
+* Partitions are created at their final size **in the image**; only the
+  filesystem in slot A grows on first boot. The partition table is otherwise
+  never rewritten — repartitioning tools would write a full-size table right
+  over the firmware.
 
 ### How releases happen
 
-We build nightly. Each night the build machine checks for work and
-releases in two cases:
+We build nightly. Each night the build machine releases in two cases:
 
-* **OpenWRT ships a new stable version** (say v25.12.6): the script
-  moves our changes on top of it, rebuilds, and publishes
-  `mono-v25.12.6`.
-* **We committed something** (say an ASK update): the script rebuilds
-  the same OpenWRT base with the new changes and publishes a revision,
-  e.g. `mono-v25.12.5-r4`.
+* **OpenWRT ships a new stable version** (say v25.12.6): the script moves our
+  changes on top of it, rebuilds, and publishes `mono-v25.12.6-rN`.
+* **We committed something** (say an ASK update): it rebuilds the same OpenWRT
+  base with the new changes and publishes a new `-rN` revision.
 
-Publishing means: images to [openwrt.mono.si](https://openwrt.mono.si),
+Publishing means: images to [openwrt.mono.si](https://openwrt.mono.si), plus
 source and a GitHub release to
-[we-are-mono/openwrt](https://github.com/we-are-mono/openwrt).
-Deployed boards notice within a day.
+[we-are-mono/openwrt](https://github.com/we-are-mono/openwrt). Deployed boards
+pick it up through Attended Sysupgrade (above).
 
-To build the same image yourself:
-
-```sh
-git clone -b mono https://github.com/we-are-mono/openwrt
-cd openwrt
-./scripts/feeds update -a && ./scripts/feeds install -a
-cp configs/mono_gateway-dk.seed .config
-make defconfig && make
-```
+You can reproduce the exact image yourself: clone the `mono` branch and build in
+the repository's pinned Nix environment (`nix run .`) for a reproducible
+toolchain — see the repo README for the full commands.
 
 ## Wi-Fi
 
@@ -332,29 +309,6 @@ Set SSIDs and encryption per device in LuCI as usual.
 Both bands run Wi-Fi 6 at 40 MHz-wide channels (HE40). 80 MHz (HE80) on 5 GHz is
 currently rejected by the module driver even where the regulatory domain permits
 it, so leave 5 GHz at HE40.
-
-{% hint style="warning" %}
-**A client that connects but has no internet is almost always DNS, not Wi-Fi.**
-The giveaway on an iPhone or iPad: under _Wi-Fi → ⓘ → Configure DNS: Automatic_ the
-DNS-server list is **empty**, and the Wi-Fi icon drops to cellular. It associated,
-got an IP, and simply has no resolver.
-
-This bites whenever something takes port 53 and moves dnsmasq aside — the image's
-**AdGuard Home** puts dnsmasq on `5353` — because dnsmasq then stops advertising
-_itself_ as the DHCP DNS server and nothing else fills in. Linux and Android fall
-back to the gateway and never notice; iOS doesn't, so it is left with no DNS at
-all. Setting a manual DNS on the device (e.g. `192.168.1.1`) works and confirms it.
-
-Fix it on the router by handing out a DNS server explicitly, once per DHCP-served
-network, each pointing at that network's own gateway (AdGuard listens on all of
-them):
-
-```sh
-uci add_list dhcp.lan.dhcp_option='6,192.168.1.1'   # repeat per network → its gateway
-uci commit dhcp
-/etc/init.d/dnsmasq reload
-```
-{% endhint %}
 
 ### One SSID on both bands, with band steering
 
@@ -415,3 +369,22 @@ A status page lives under *Network → Wireless → usteer*.
 
 Option names drift between usteer versions; the shipped `/etc/config/usteer` is
 fully commented, so check it there if the daemon rejects one.
+
+{% hint style="info" %}
+**A client that connects but has no internet is almost always DNS.** The
+giveaway on an iPhone or iPad: under _Wi-Fi → ⓘ → Configure DNS: Automatic_ the
+DNS-server list is **empty**. It associated and got an IP, but has no resolver.
+
+This only happens if something takes over port 53 and moves dnsmasq aside (for
+example if you later install **AdGuard Home**, which runs dnsmasq on `5353`) —
+dnsmasq then stops advertising _itself_ as the DHCP DNS server. A stock image
+uses plain dnsmasq on `:53` and is not affected. If you hit it, hand out a DNS
+server explicitly, once per DHCP-served network, each pointing at that network's
+own gateway:
+
+```sh
+uci add_list dhcp.lan.dhcp_option='6,192.168.1.1'   # repeat per network → its gateway
+uci commit dhcp
+/etc/init.d/dnsmasq reload
+```
+{% endhint %}
