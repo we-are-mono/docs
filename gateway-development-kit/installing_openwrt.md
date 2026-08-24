@@ -52,21 +52,13 @@ address with `ip addr add …` and `ip route add default via …` instead. See
 ### 3. Download and write the image
 
 Open [openwrt.mono.si](https://openwrt.mono.si), note the newest `mono-v…`
-folder, and use it below. Each release ships a small `flash-mono-gateway.sh`
-that does the write for you — it streams the compressed image straight to the
-eMMC and leaves the firmware region untouched:
+folder, and use it below. Download the compressed image, unpack it, and write it
+to the eMMC with two `dd` commands — this leaves the firmware region untouched:
 
 ```sh
 cd /tmp
 REL=https://openwrt.mono.si/mono-v25.12.5-rN          # ← the newest folder
 wget $REL/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
-wget $REL/flash-mono-gateway.sh
-sh flash-mono-gateway.sh layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
-```
-
-Or write it by hand — the two `dd` commands are what the script runs:
-
-```sh
 gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
 
 DEV=/dev/mmcblk0
