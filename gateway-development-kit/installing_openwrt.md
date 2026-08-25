@@ -147,6 +147,50 @@ writing the new system takes a few seconds; a power cut in exactly that window
 leaves the board on its previous slot (or in recovery). Fine on a desk; think
 twice for a device in a closet far away.
 
+{% hint style="info" %}
+**Rolling back on purpose.** The system you upgraded *from* stays in the other
+slot until the next update overwrites it, so you can return to it deliberately —
+not only when an update fails. Check which slot you're on, flip to the other, and
+reboot:
+
+```sh
+fw_printenv slot          # a or b — the slot you are on now
+mono-fw-setenv slot b     # set it to the OTHER value, then reboot into the old system
+reboot
+```
+
+`mono-fw-setenv` writes both copies of the boot environment, so the switch holds
+no matter how the boot DIP switch is set. It is the same slot flip the board does
+on its own after a failed update — here you are just doing it by hand.
+{% endhint %}
+
+### Installing extra packages
+
+The image ships lean — the essentials plus everything the hardware needs — but
+the whole OpenWRT package catalogue, and our kernel modules, is available to add.
+Because every update rebuilds the image, the right way to add a package is to have
+the build server bake it in, so it **survives future updates**:
+
+* **From LuCI:** *System → Attended Sysupgrade* → add the package(s) to the list →
+  install.
+* **From the shell:**
+
+  ```sh
+  owut upgrade -a nano                 # add one package
+  owut upgrade -a luci-app-statistics  # an app pulls its dependencies in automatically
+  ```
+
+`owut -a` accepts anything in the OpenWRT feeds — a userspace tool, a LuCI app, or
+a kernel module — and the rebuilt image comes back with it installed and kept on
+every update thereafter.
+
+{% hint style="info" %}
+`apk add <package>` also works for a quick, one-off install on the running system —
+but the board is A/B, so the next Attended Sysupgrade writes a *fresh* slot and an
+`apk`-installed package is **not** carried across. For anything you want to keep,
+add it with `owut -a` so it lands in the image itself.
+{% endhint %}
+
 ## Part 2: How the image works
 
 This part explains what is inside the image and why. You do not need any of it
