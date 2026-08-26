@@ -1,6 +1,6 @@
-name: Notify docs-site builder
+name: Notify astro builder
 
-# On every merge to main, tell the docs-site builder repo to rebuild & deploy.
+# On every merge to main, tell the astro builder repo to rebuild & deploy.
 on:
   push:
     branches: [master]
@@ -10,12 +10,12 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger docs-site build
+      - name: Trigger astro build
         # DISPATCH_TOKEN: a fine-grained PAT with "Contents: read & write" (or
-        # repository_dispatch) permission on we-are-mono/docs-site.
+        # repository_dispatch) permission on we-are-mono/astro.
         run: |
           curl -fsS -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
-            https://api.github.com/repos/we-are-mono/docs-site/dispatches \
+            https://api.github.com/repos/we-are-mono/astro/dispatches \
             -d '{"event_type":"content-updated"}'
