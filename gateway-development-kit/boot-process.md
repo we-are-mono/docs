@@ -60,7 +60,7 @@ BL31 is the runtime firmware. It stays in a protected part of the DDR memory whi
 
 U-Boot is the boot loader. It loads the firmware, reads its environment data, runs the hardware tests, ...
 
-It then boots OpenWRT from one of two **A/B rootfs slots**. U-Boot picks the active slot (`slot` a or b, which sets `bootpart`/`rootpart`) and runs that slot's `extlinux` boot script (`sysboot mmc 0:${bootpart} … /boot/extlinux/extlinux.conf`) to load the kernel and device tree. If a slot fails to boot `bootlimit` times it switches to the other slot automatically (`altbootcmd`); if neither boots, it falls back to the recovery system in the firmware region of the selected boot medium.
+It then boots OpenWrt from one of two **A/B rootfs slots**. U-Boot picks the active slot (`slot` a or b, which sets `bootpart`/`rootpart`) and runs that slot's `extlinux` boot script (`sysboot mmc 0:${bootpart} … /boot/extlinux/extlinux.conf`) to load the kernel and device tree. If a slot fails to boot `bootlimit` times it switches to the other slot automatically (`altbootcmd`); if neither boots, it falls back to the recovery system in the firmware region of the selected boot medium.
 
 *The environment data contains the boot instructions.*
 *The two slots let an update install into the inactive slot and roll back on its own if the new system fails to boot.*

@@ -41,7 +41,7 @@ The Linux interface names are **not** in physical order — the three RJ-45 port
 
 Press the reset button to observe the full boot sequence. The device will boot through U-Boot, which displays a countdown before loading the OS. You can either:
 
-* **Let it continue** — boots into OpenWRT on the eMMC.
+* **Let it continue** — boots into OpenWrt on the eMMC.
 * **Press any key** — interrupts the countdown and drops you into the U-Boot shell.
 
 When attaching the USB cable to the router's UART, in dmesg you will see something like:
@@ -72,13 +72,13 @@ This boots a minimal Linux environment from the firmware region of the selected 
 
 The default user is `root` with no password.
 
-To exit Recovery Linux and boot into OpenWRT:
+To exit Recovery Linux and boot into OpenWrt:
 
 ```bash
 $ reboot
 ```
 
-If OpenWRT ever fails to boot — or you want to re-flash it from scratch — recovery Linux is where you do it; see [Installing OpenWRT](/gateway-development-kit/installing-openwrt/).
+If OpenWrt ever fails to boot — or you want to re-flash it from scratch — recovery Linux is where you do it; see [Installing OpenWrt](/gateway-development-kit/installing-openwrt/).
 
 ### Status LED
 
@@ -89,7 +89,7 @@ During boot, U-Boot runs a series of hardware tests to verify that all I2C devic
 | Green (solid)    | All hardware tests passed  |
 | Red (solid)      | One or more tests failed   |
 | Orange (pulsing) | Booted into Recovery Linux |
-| White (solid)    | Booted into OpenWRT        |
+| White (solid)    | Booted into OpenWrt        |
 
 If the LED turns red, reset the device and check the U-Boot output via the serial console—it will report which chip failed its test.
 
@@ -161,9 +161,9 @@ EOF
 
 ## Next steps
 
-**Using OpenWRT (default)**
+**Using OpenWrt (default)**
 
-The Development Kit ships with OpenWRT pre-installed — LuCI (the web interface) and all the standard OpenWRT package feeds are already there. To start using it, connect a client to one of the RJ-45 ports and open **`https://192.168.1.1`** in your browser (accept the self-signed-certificate warning), then configure the device in LuCI.
+The Development Kit ships with OpenWrt pre-installed — LuCI (the web interface) and all the standard OpenWrt package feeds are already there. To start using it, connect a client to one of the RJ-45 ports and open **`https://192.168.1.1`** in your browser (accept the self-signed-certificate warning), then configure the device in LuCI.
 
 To install extra packages, update the feed index and add what you need:
 
@@ -172,7 +172,7 @@ apk update
 apk add <package>
 ```
 
-Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWRT → Updating](/gateway-development-kit/installing-openwrt/).
+Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWrt → Updating](/gateway-development-kit/installing-openwrt/).
 
 <img src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
 

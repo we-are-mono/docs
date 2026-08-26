@@ -1,17 +1,17 @@
 ---
-title: "OpenWRT on the Mono Gateway"
+title: "OpenWrt on the Mono Gateway"
 section: "Gateway development kit"
 order: 5
 ---
 
-Our OpenWRT build comes with hardware offloading (ASK), all board
+Our OpenWrt build comes with hardware offloading (ASK), all board
 hardware working out of the box, and self-service updates over the network.
 
 * Source: [github.com/we-are-mono/openwrt](https://github.com/we-are-mono/openwrt) (branch `mono`)
 * Images: [openwrt.mono.si](https://openwrt.mono.si) and the GitHub
   [releases page](https://github.com/we-are-mono/openwrt/releases)
 * Each release is a folder on [openwrt.mono.si](https://openwrt.mono.si), named like
-  **`mono-v25.12.5-r1787707074`** — `25.12.5` is the OpenWRT version, and the long number
+  **`mono-v25.12.5-r1787707074`** — `25.12.5` is the OpenWrt version, and the long number
   after `-r` is the specific build (bigger = newer). That number is different every release,
   so always use the **newest** folder — Step 3 below shows exactly how to find it.
 
@@ -132,7 +132,7 @@ old `emmc_load` / `booti root=…` lines from an older guide — those are the
 pre-A/B path and won't boot the current image.
 :::
 
-This boots OpenWRT from the active slot and falls back to recovery Linux
+This boots OpenWrt from the active slot and falls back to recovery Linux
 automatically if that ever fails. (Once shipping firmware carries the A/B
 environment, this whole step disappears — a fresh board will boot straight after
 flashing.)
@@ -153,7 +153,7 @@ After that it settles. Then:
 
 ### Updating
 
-The board updates itself with OpenWRT's **Attended Sysupgrade**: the build
+The board updates itself with OpenWrt's **Attended Sysupgrade**: the build
 server at `sysupgrade.mono.si` rebuilds an image carrying your exact installed
 package set, verifies its signature, and installs it. Because the board is A/B,
 the new system is written to the **spare slot** and the board flips to it — so a
@@ -193,7 +193,7 @@ on its own after a failed update — here you are just doing it by hand.
 ### Installing extra packages
 
 The image ships lean — the essentials plus everything the hardware needs — but
-the whole OpenWRT package catalogue, and our kernel modules, is available to add.
+the whole OpenWrt package catalogue, and our kernel modules, is available to add.
 Because every update rebuilds the image, the right way to add a package is to have
 the build server bake it in, so it **survives future updates**:
 
@@ -206,7 +206,7 @@ the build server bake it in, so it **survives future updates**:
   owut upgrade -a luci-app-statistics  # an app pulls its dependencies in automatically
   ```
 
-`owut -a` accepts anything in the OpenWRT feeds — a userspace tool, a LuCI app, or
+`owut -a` accepts anything in the OpenWrt feeds — a userspace tool, a LuCI app, or
 a kernel module — and the rebuilt image comes back with it installed and kept on
 every update thereafter.
 
@@ -228,11 +228,11 @@ The LS1046A chip in the Gateway has a network engine (called FMan) that can
 forward packets entirely in hardware — the CPU never sees them. The software
 that drives this is **ASK**, our maintained version of NXP's offloading stack.
 
-We build on **OpenWRT's own kernel** (currently 6.12.x) and layer ASK on top:
+We build on **OpenWrt's own kernel** (currently 6.12.x) and layer ASK on top:
 the NXP SDK datapath drivers are vendored into the build as plain source files,
 and the ASK offload hooks are applied as patches during the build. (This
 replaced an older approach that cloned NXP's entire vendor kernel — we now track
-OpenWRT's mainline kernel and carry only the ASK pieces.) Everything is fetched
+OpenWrt's mainline kernel and carry only the ASK pieces.) Everything is fetched
 from public sources at pinned versions, so the same inputs always give the same
 image, on any machine.
 
@@ -293,7 +293,7 @@ Beyond offloading, the image carries the Gateway's board bits:
 ```text
 0–4 KB      GPT partition table (8 entries, kept clear of the firmware)
 4 KB–32 MB  boot firmware: PBL, FIP (U-Boot), U-Boot env, FMan microcode
-            (owned by the firmware update tool — never touched by OpenWRT)
+            (owned by the firmware update tool — never touched by OpenWrt)
 32 MB    p1 bootA   64 MiB   slot-A boot (extlinux.conf + Image.gz + dtb)
 96 MB    p2 rootA   1 GiB    slot-A rootfs
 1120 MB  p3 bootB   64 MiB   slot-B boot   (empty until the first update)
@@ -326,9 +326,9 @@ Two unusual choices, both because of the firmware region:
 
 We build nightly. Each night the build machine releases in two cases:
 
-* **OpenWRT ships a new stable version** (say v25.12.6): the script moves our
+* **OpenWrt ships a new stable version** (say v25.12.6): the script moves our
   changes on top of it, rebuilds, and publishes `mono-v25.12.6-rN`.
-* **We committed something** (say an ASK update): it rebuilds the same OpenWRT
+* **We committed something** (say an ASK update): it rebuilds the same OpenWrt
   base with the new changes and publishes a new `-rN` revision.
 
 Publishing means: images to [openwrt.mono.si](https://openwrt.mono.si), plus

@@ -57,7 +57,7 @@ Interrupt the U-Boot countdown and run:
 Copy and paste the entire output somewhere safe. After flashing, you can restore any custom variables with `setenv` and `saveenv`.
 
 :::warning
-The factory U-Boot environment is the older **single-slot** boot environment. A board running the current OpenWRT image re-installs the A/B boot environment automatically on its first boot, so you normally do nothing. But **don't blindly paste back an old saved dump** — one made before the A/B switch reintroduces the retired single-slot boot commands, and the board won't boot OpenWRT until the A/B environment is set again (see the [OpenWRT install guide](/gateway-development-kit/installing-openwrt/)).
+The factory U-Boot environment is the older **single-slot** boot environment. A board running the current OpenWrt image re-installs the A/B boot environment automatically on its first boot, so you normally do nothing. But **don't blindly paste back an old saved dump** — one made before the A/B switch reintroduces the retired single-slot boot commands, and the board won't boot OpenWrt until the A/B environment is set again (see the [OpenWrt install guide](/gateway-development-kit/installing-openwrt/)).
 :::
 
 ## Step 2: Boot into recovery Linux from NOR
