@@ -6,10 +6,10 @@ hardware working out of the box, and self-service updates over the network.
 * Source: [github.com/we-are-mono/openwrt](https://github.com/we-are-mono/openwrt) (branch `mono`)
 * Images: [openwrt.mono.si](https://openwrt.mono.si) and the GitHub
   [releases page](https://github.com/we-are-mono/openwrt/releases)
-* Releases are named like `mono-v25.12.5-rN`. The `25.12.5` is the OpenWRT
-  version we build on; the `-rN` marks our own updates in between (usually an
-  ASK refresh). Always grab the newest folder from
-  [openwrt.mono.si](https://openwrt.mono.si).
+* Each release is a folder on [openwrt.mono.si](https://openwrt.mono.si), named like
+  **`mono-v25.12.5-r1787707074`** — `25.12.5` is the OpenWRT version, and the long number
+  after `-r` is the specific build (bigger = newer). That number is different every release,
+  so always use the **newest** folder — Step 3 below shows exactly how to find it.
 
 ## Part 1: Installing
 
@@ -51,28 +51,50 @@ address with `ip addr add …` and `ip route add default via …` instead. See
 
 ### 3. Download and write the image
 
-Open [openwrt.mono.si](https://openwrt.mono.si), note the newest `mono-v…`
-folder, and use it below. Download the compressed image, unpack it, and write it
-to the eMMC with two `dd` commands — this leaves the firmware region untouched:
+Every release lives in its own folder on [openwrt.mono.si](https://openwrt.mono.si),
+with a name like `mono-v25.12.5-r1787707074`. That long number changes every single
+release, so you can't guess it — you have to go look.
+
+**Step A — find the newest folder's name.** Open
+[openwrt.mono.si](https://openwrt.mono.si) in a web browser. You'll see a list of
+folders. Pick the one with the **biggest number after `-r`** — that's the newest.
+Copy its whole name; you'll paste it in a second.
+
+{% hint style="warning" %}
+`mono-v25.12.5-rN` is **not** a real folder name — the `rN` is just a stand-in for
+"the real number". Do **not** type `rN`. Copy the exact name **you** see on the site
+(the one with the long number, like `mono-v25.12.5-r1787707074` — but yours will have
+different digits). If you use `rN`, the download fails with "not found".
+{% endhint %}
+
+**Step B — download and write it.** Back in recovery Linux, paste the folder name in
+place of `PASTE_THE_FOLDER_NAME_HERE`, then run the whole block:
 
 ```sh
 cd /tmp
-REL=https://openwrt.mono.si/mono-v25.12.5-rN          # ← the newest folder
-wget $REL/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+
+# Paste the newest folder's exact name between the quotes.
+# Example: mono-v25.12.5-r1787707074  (yours will have different numbers)
+FOLDER="PASTE_THE_FOLDER_NAME_HERE"
+
+# Download the full-disk image and unzip it:
+wget https://openwrt.mono.si/$FOLDER/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
 gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
 
-DEV=/dev/mmcblk0
+# Write it to the eMMC — two commands, so the bootloader area is left untouched:
 IMG=layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
-dd if=$IMG of=$DEV bs=512 count=8           # partition table (first 4 KB)
-dd if=$IMG of=$DEV bs=1M skip=32 seek=32     # the system, from 32 MB on
+dd if=$IMG of=/dev/mmcblk0 bs=512 count=8         # partition table (first 4 KB)
+dd if=$IMG of=/dev/mmcblk0 bs=1M skip=32 seek=32  # the system, from 32 MB on
 sync
 ```
 
-Why two writes instead of one? The area from 4 KB to 32 MB on the eMMC belongs
-to the boot firmware (the low-level pieces that run before Linux) and its own
-update tool. The image deliberately leaves it alone: the first command writes
-the partition table into the first 4 KB, the second writes the actual system
-from 32 MB onward. Nothing in between is ever touched. See Part 2 for the layout.
+Did `wget` say the file wasn't found? You almost certainly left `PASTE_THE_FOLDER_NAME_HERE`
+(or used `rN`) instead of the real name. Go back to Step A and copy the newest folder exactly.
+
+**Why two writes and not one?** The area from 4 KB to 32 MB on the eMMC belongs to the boot
+firmware (the low-level pieces that run before Linux) and its own update tool. The image
+leaves it alone: the first command writes the partition table into the first 4 KB, the second
+writes the system from 32 MB onward. Nothing in between is ever touched. See Part 2 for the layout.
 
 ### 4. Set up A/B booting (one time)
 
