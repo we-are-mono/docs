@@ -160,15 +160,12 @@ Both storage devices are now running the latest firmware. If you backed up custo
 
 If your device has an older firmware without the `firmware` command, you can download and flash manually. Replace `<mac-address-with-colons>` with your device's MAC address in lowercase format (e.g. `4d:4f:4e:4f:4d:4f`). Run `ip a` to find it.
 
-You might need to set time first, otherwise curl will complain the SSL certificate is not valid yet (format: `YYYY-MM-DD HH:MM`:
-```bash
-date --set "2026-07-01 10:00"
-```
+The `-k` flag skips certificate verification, so the download works even when the recovery system's clock is unset (otherwise curl rejects the not-yet-valid certificate).
 
 **Boot from NOR (dip switch set to NOR) to flash eMMC:**
 
 ```bash
-$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc-gateway-dk.bin
+$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc-gateway-dk.bin
 $ dd if=firmware-emmc-gateway-dk.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
 ```
 
@@ -179,7 +176,7 @@ The `skip=1 seek=1` arguments skip the first 4 KB of both the input file and the
 **Boot from eMMC (dip switch set to eMMC) to flash NOR:**
 
 ```bash
-$ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi-gateway-dk.bin
+$ curl -ku mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi-gateway-dk.bin
 $ flashcp -v firmware-qspi-gateway-dk.bin /dev/mtd0
 ```
 
