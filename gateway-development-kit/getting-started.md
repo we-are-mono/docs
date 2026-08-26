@@ -1,12 +1,16 @@
-# Getting started
+---
+title: "Getting started"
+section: "Gateway development kit"
+order: 1
+---
 
 Before plugging the Development Kit in for the first time, it's worth familiarizing yourself with both: the ports on the back of the device as well as the First boot procedure.
 
 ## Connectors
 
-![Development Kit ports](../.gitbook/assets/development-kit-backpanel-connectors.png)
+![Development Kit ports](/assets/development-kit-backpanel-connectors.png)
 
-More detailed information about the ports is provided in [Hardware description](hardware-description.md)
+More detailed information about the ports is provided in [Hardware description](/gateway-development-kit/hardware-description/)
 
 | Port (left to right) | Name              |
 | -------------------- | ----------------- |
@@ -19,9 +23,9 @@ More detailed information about the ports is provided in [Hardware description](
 | 6                    | eth3 (10 Gb SFP+) |
 | 7                    | eth4 (10 Gb SFP+) |
 
-{% hint style="info" %}
+:::info
 The Linux interface names are **not** in physical order — the three RJ-45 ports are `eth1`, `eth2`, `eth0` from left to right, and the two SFP+ cages are `eth3` and `eth4`. The interfaces work correctly; they are just enumerated out of order.
-{% endhint %}
+:::
 
 ## First boot
 
@@ -42,7 +46,7 @@ Press the reset button to observe the full boot sequence. The device will boot t
 
 When attaching the USB cable to the router's UART, in dmesg you will see something like:
 
-```
+```text
 [  292.530676] usb 7-2: new full-speed USB device number 2 using xhci_hcd
 [  292.682522] usb 7-2: New USB device found, idVendor=0403, idProduct=6015, bcdDevice=10.00
 [  292.682529] usb 7-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
@@ -60,7 +64,7 @@ When attaching the USB cable to the router's UART, in dmesg you will see somethi
 
 To explore the firmware or troubleshoot issues, enter the following in U-Boot:
 
-```
+```bash
 => run recovery
 ```
 
@@ -70,11 +74,11 @@ The default user is `root` with no password.
 
 To exit Recovery Linux and boot into OpenWRT:
 
-```
+```bash
 $ reboot
 ```
 
-If OpenWRT ever fails to boot — or you want to re-flash it from scratch — recovery Linux is where you do it; see [Installing OpenWRT](installing_openwrt.md).
+If OpenWRT ever fails to boot — or you want to re-flash it from scratch — recovery Linux is where you do it; see [Installing OpenWRT](/gateway-development-kit/installing-openwrt/).
 
 ### Status LED
 
@@ -93,7 +97,7 @@ If the LED turns red, reset the device and check the U-Boot output via the seria
 
 #### From U-Boot
 
-```
+```bash
 => i2c dev 3
 Setting bus to 3
 => i2c md 0x50 0.2 100
@@ -111,7 +115,7 @@ Setting bus to 3
 
 #### From recovery linux
 
-```
+```bash
 root@recovery:~# echo 24c32 0x50 > /sys/bus/i2c/devices/i2c-3/new_device
 root@recovery:~# hexdump -C /sys/bus/i2c/devices/3-0050/eeprom
 00000000  4d 41 47 43 00 01 a6 3f  4d 6f 6e 6f 20 47 61 74  |MAGC...?Mono Gat|
@@ -133,7 +137,7 @@ root@recovery:~# echo 0x50 > /sys/bus/i2c/devices/i2c-3/delete_device
 
 In case you have installed an operating system that comes with Python 3 or installed Python 3 manually:
 
-```
+```bash
 sudo python3 - <<"EOF"
 import os, fcntl
 fd = os.open("/dev/i2c-3", os.O_RDWR)
@@ -145,7 +149,7 @@ EOF
 
 And if you want just serial number:
 
-```
+```bash
 sudo python3 - <<"EOF"
 import os, fcntl
 fd = os.open("/dev/i2c-3", os.O_RDWR)
@@ -168,9 +172,9 @@ apk update
 apk add <package>
 ```
 
-Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWRT → Updating](installing_openwrt.md).
+Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWRT → Updating](/gateway-development-kit/installing-openwrt/).
 
-<img src="../.gitbook/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%">
+<img src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
 
 **Installing an alternative OS**
 

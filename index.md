@@ -1,0 +1,6 @@
+---
+title: "Documentation"
+section: "Overview"
+order: 0
+---
+This is the starting point for our documentation. While it doesn't have much yet, we will use this repository to add not just the content that we publish on the [YouTube channel](https://www.youtube.com/@TomazZaman) but also everything that we consider would be useful info for the community.

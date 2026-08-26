@@ -1,4 +1,8 @@
-# Flashing firmware
+---
+title: "Flashing firmware"
+section: "Gateway development kit"
+order: 3
+---
 
 The Development Kit has two bootable storage devices: a **64 MB NOR flash** and a **32 GB eMMC**. A DIP switch on the PCB selects which one the CPU boots from.
 
@@ -17,13 +21,13 @@ The recommended procedure is:
 
 This order ensures you always have a working recovery environment to fall back on.
 
-{% hint style="danger" %}
+:::danger
 **Follow the steps in order.** If you flash NOR without a working eMMC firmware to fall back on, a failed or interrupted flash will brick the device. Recovery requires a hardware programmer or sending the unit back to us.
-{% endhint %}
+:::
 
 ## Prerequisites
 
-- UART serial console connected (see [Getting started](getting-started.md))
+- UART serial console connected (see [Getting started](/gateway-development-kit/getting-started/))
 - An Ethernet cable connected to one of the ports with access to the internet
 
 ## NOR Flash Memory Map
@@ -46,21 +50,21 @@ Flashing firmware resets U-Boot environment variables back to factory defaults. 
 
 Interrupt the U-Boot countdown and run:
 
-```
+```bash
 => pri
 ```
 
 Copy and paste the entire output somewhere safe. After flashing, you can restore any custom variables with `setenv` and `saveenv`.
 
-{% hint style="warning" %}
-The factory U-Boot environment is the older **single-slot** boot environment. A board running the current OpenWRT image re-installs the A/B boot environment automatically on its first boot, so you normally do nothing. But **don't blindly paste back an old saved dump** — one made before the A/B switch reintroduces the retired single-slot boot commands, and the board won't boot OpenWRT until the A/B environment is set again (see the [OpenWRT install guide](installing_openwrt.md)).
-{% endhint %}
+:::warning
+The factory U-Boot environment is the older **single-slot** boot environment. A board running the current OpenWRT image re-installs the A/B boot environment automatically on its first boot, so you normally do nothing. But **don't blindly paste back an old saved dump** — one made before the A/B switch reintroduces the retired single-slot boot commands, and the board won't boot OpenWRT until the A/B environment is set again (see the [OpenWRT install guide](/gateway-development-kit/installing-openwrt/)).
+:::
 
 ## Step 2: Boot into recovery Linux from NOR
 
 Ensure the DIP switch is set to **NOR** (this is the factory default). From the U-Boot shell, run:
 
-```
+```bash
 => run recovery
 ```
 
@@ -78,13 +82,13 @@ Recovery Linux supports SLAAC, but has no DHCP client. For IPv6 with SLAAC, you 
 | 4 (SFP+)             | eth3      |
 | 5 (SFP+)             | eth4      |
 
-{% hint style="info" %}
+:::info
 The non-sequential interface naming is a cosmetic hardware quirk — the interfaces work correctly, they are just enumerated out of order.
-{% endhint %}
+:::
 
 For example, if using the third RJ-45 port (eth0) with IPv4:
 
-```
+```bash
 $ ip link set eth0 up
 $ ip addr add 10.0.0.69/24 dev eth0
 $ ip route add default via 10.0.0.1 dev eth0
@@ -96,7 +100,7 @@ Adjust the interface, IP address, and gateway to match your setup.
 
 Run the firmware update tool:
 
-```
+```bash
 $ firmware update
 ```
 
@@ -106,13 +110,13 @@ The tool will download the eMMC firmware, verify its signature, and flash it. Fo
 
 Flip the DIP switch to **eMMC**. You can do this while the system is still running — no need to power off. Then reboot:
 
-```
+```bash
 $ reboot
 ```
 
 Watch the serial console output. Confirm you see the following line, which indicates a successful eMMC boot:
 
-```
+```bash
 INFO:    RCW BOOT SRC is SD/EMMC
 ```
 
@@ -120,13 +124,13 @@ INFO:    RCW BOOT SRC is SD/EMMC
 
 Now that eMMC is verified, interrupt the U-Boot countdown again and enter recovery:
 
-```
+```bash
 => run recovery
 ```
 
 This time, recovery Linux is loaded from eMMC. Log in as `root` and set up networking the same way as in Step 3:
 
-```
+```bash
 $ ip link set <interface> up
 $ ip addr add 10.0.0.69/24 dev <interface>
 $ ip route add default via 10.0.0.1 dev <interface>
@@ -136,7 +140,7 @@ $ ip route add default via 10.0.0.1 dev <interface>
 
 Run the firmware update tool again:
 
-```
+```bash
 $ firmware update
 ```
 
@@ -146,7 +150,7 @@ Since you are now booted from eMMC, the tool will automatically target NOR.
 
 Flip the DIP switch back to **NOR**, then reboot:
 
-```
+```bash
 $ reboot
 ```
 
@@ -157,24 +161,24 @@ Both storage devices are now running the latest firmware. If you backed up custo
 If your device has an older firmware without the `firmware` command, you can download and flash manually. Replace `<mac-address-with-colons>` with your device's MAC address in lowercase format (e.g. `4d:4f:4e:4f:4d:4f`). Run `ip a` to find it.
 
 You might need to set time first, otherwise curl will complain the SSL certificate is not valid yet (format: `YYYY-MM-DD HH:MM`:
-```
+```bash
 date --set "2026-07-01 10:00"
 ```
 
 **Boot from NOR (dip switch set to NOR) to flash eMMC:**
 
-```
+```bash
 $ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-emmc-gateway-dk.bin
 $ dd if=firmware-emmc-gateway-dk.bin of=/dev/mmcblk0 bs=4096 skip=1 seek=1
 ```
 
-{% hint style="info" %}
+:::info
 The `skip=1 seek=1` arguments skip the first 4 KB of both the input file and the output device. The CPU does not use this region, which is where the GPT partition data resides.
-{% endhint %}
+:::
 
 **Boot from eMMC (dip switch set to eMMC) to flash NOR:**
 
-```
+```bash
 $ curl -u mono:<mac-address-with-colons> -O https://firmware.mono.si/firmware-qspi-gateway-dk.bin
 $ flashcp -v firmware-qspi-gateway-dk.bin /dev/mtd0
 ```

@@ -1,5 +1,8 @@
-# How to set up DPDK and VPP environment for LS1046A
-
+---
+title: "How to set up DPDK and VPP environment for LS1046A"
+section: "Tutorials"
+order: 2
+---
 In this article, we're going to set up a Debian 12 (bookworm) machine for developing software for [NXP LS1046A CPUs](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/layerscape-processors/layerscape-1046a-and-1026a-processors:LS1046A). We're using a virtual machine for this purposes, but a normal, physical box should work just the same.
 
 The goal here is to build two pieces of software that allow us to achieve _insane_ amounts of networking performance on our 10 Gigabit ports regardless of what kind of traffic is passing through them or what kind of processing we need to do on it - NAT (IPv4 or IPv6), VLANs, PPPoE, IPSEC, IPS/IDS, you name it. And the software that allows us to do that is called Vector Packet Processing. Traditionally, kernel handles layers 2-4 in the OSI networking model, but since it's very inefficient at doing so, we're preventing it from even accessing the NICs in the first place. Instead, layer 2 is handled by something called a [Data Plane Development Kit (DPDK)](https://www.dpdk.org/) and layers 3 and 4 are handled by [VPP](https://fd.io/), which in turn depends on DPDK and will not work properly without it. Building both is a relatively complex and involved process, which is where this article comes in. Hopefully, by the end, you should have an understanding of how to cross-build both for arm64 and have them running on a development board!

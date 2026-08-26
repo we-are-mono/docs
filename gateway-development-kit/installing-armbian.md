@@ -1,12 +1,15 @@
-# Installing Armbian
-
+---
+title: "Installing Armbian"
+section: "Gateway development kit"
+order: 4
+---
 This guide walks through flashing Armbian to the Development Kit's **eMMC** from Recovery Linux.
 
 The procedure boots Recovery Linux from **NOR**, writes the Armbian image to eMMC over the network, then switches the DIP switch to boot Armbian from eMMC. Because Recovery runs from NOR, overwriting the entire eMMC is safe — you always retain a working recovery environment on NOR.
 
 ## Prerequisites
 
-* UART serial console connected (see [Getting started](/gateway-development-kit/getting-started.md))
+* UART serial console connected (see [Getting started](/gateway-development-kit/getting-started/))
 * An Ethernet cable connected to one of the ports with access to the internet
 * DIP switch currently set to **NOR** (factory default)
 
@@ -18,13 +21,13 @@ Armbian can be update normally after it is installed on Mono Gateway developmnet
 
 Connect the UART cable and open a serial terminal:
 
-```
+```bash
 tio /dev/ttyUSB0
 ```
 
 Reset the device, interrupt the U-Boot countdown by pressing any key, then boot Recovery:
 
-```
+```bash
 => run recovery
 ```
 
@@ -44,7 +47,7 @@ Recovery Linux has no DHCP, so configure the network manually. Pick the interfac
 
 For example, using the port mapped to `eth0`:
 
-```
+```bash
 ip link set eth0 up
 ip addr add 10.0.0.69/24 dev eth0
 ip route add default via 10.0.0.1 dev eth0
@@ -58,8 +61,7 @@ Stream, decompress, and write the image directly to the eMMC (`/dev/mmcblk0`) in
 
 **Make sure to replace the `ARMBIAN-IMAGE-DOWNLOAD-LINK.xz` with the actual link from [https://armbian.com/boards/gateway-dk](https://armbian.com/boards/gateway-dk)**
 
-
-```
+```bash
 curl -sL ARMBIAN-IMAGE-DOWNLOAD-LINK.xz | xz -d | dd of=/dev/mmcblk0 bs=4M
 ```
 
@@ -69,13 +71,13 @@ Flip the DIP switch to **eMMC**. You can do this while the system is running —
 
 ## Step 5: Reboot
 
-```
+```bash
 reboot
 ```
 
 Watch the serial console. A successful eMMC boot shows:
 
-```
+```bash
 INFO:    RCW BOOT SRC is SD/EMMC
 ```
 

@@ -1,0 +1,21 @@
+name: Notify docs-site builder
+
+# On every merge to main, tell the docs-site builder repo to rebuild & deploy.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger docs-site build
+        # DISPATCH_TOKEN: a fine-grained PAT with "Contents: read & write" (or
+        # repository_dispatch) permission on we-are-mono/docs-site.
+        run: |
+          curl -fsS -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
+            https://api.github.com/repos/we-are-mono/docs-site/dispatches \
+            -d '{"event_type":"content-updated"}'

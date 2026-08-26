@@ -1,4 +1,8 @@
-# OpenWRT on the Mono Gateway
+---
+title: "OpenWRT on the Mono Gateway"
+section: "Gateway development kit"
+order: 5
+---
 
 Our OpenWRT build comes with hardware offloading (ASK), all board
 hardware working out of the box, and self-service updates over the network.
@@ -22,17 +26,17 @@ in which case this procedure un-bricks it too).
 Set the boot DIP switch to **NOR** and power-cycle. The board stops in U-Boot;
 start recovery Linux by typing:
 
-```
+```bash
 run recovery
 ```
 
 Log in as `root` — no password.
 
-{% hint style="info" %}
+:::info
 If `run recovery` fails with `Bad Linux ARM64 Image magic!` (or similar), the
 board's low-level firmware needs reflashing first. Do that once —
-see [Flashing firmware](flashing-firmware.md) — then come back here.
-{% endhint %}
+see [Flashing firmware](/gateway-development-kit/flashing-firmware/) — then come back here.
+:::
 
 ### 2. Get networking up
 
@@ -47,7 +51,7 @@ udhcpc -i eth0
 
 (Use whichever RJ-45 you plugged into. If your network has no DHCP, set a static
 address with `ip addr add …` and `ip route add default via …` instead. See
-[Getting started](getting-started.md) for the physical port order.)
+[Getting started](/gateway-development-kit/getting-started/) for the physical port order.)
 
 ### 3. Download and write the image
 
@@ -60,12 +64,12 @@ release, so you can't guess it — you have to go look.
 folders. Pick the one with the **biggest number after `-r`** — that's the newest.
 Copy its whole name; you'll paste it in a second.
 
-{% hint style="warning" %}
+:::warning
 `mono-v25.12.5-rN` is **not** a real folder name — the `rN` is just a stand-in for
 "the real number". Do **not** type `rN`. Copy the exact name **you** see on the site
 (the one with the long number, like `mono-v25.12.5-r1787707074` — but yours will have
 different digits). If you use `rN`, the download fails with "not found".
-{% endhint %}
+:::
 
 **Step B — download and write it.** Back in recovery Linux, paste the folder name in
 place of `PASTE_THE_FOLDER_NAME_HERE`, then run the whole block:
@@ -107,7 +111,7 @@ step never repeats.
 Set the DIP switch back to **eMMC**, power-cycle, press any key during the
 countdown to stop in U-Boot, and paste:
 
-```
+```bash
 setenv slot a
 setenv set_slot_a 'setenv bootpart 1; setenv rootpart 2'
 setenv set_slot_b 'setenv bootpart 3; setenv rootpart 4'
@@ -119,14 +123,14 @@ saveenv
 boot
 ```
 
-{% hint style="warning" %}
+:::warning
 Paste it exactly, and **don't** add `mono_ab_env_ver` yourself — leaving it
 unset lets the image re-assert the complete, correct environment on first boot.
 The two common ways this goes wrong: forgetting `setenv scriptaddr …` (which
 leaves `sysboot` with an empty address and a broken `bootcmd`), or retyping the
 old `emmc_load` / `booti root=…` lines from an older guide — those are the
 pre-A/B path and won't boot the current image.
-{% endhint %}
+:::
 
 This boots OpenWRT from the active slot and falls back to recovery Linux
 automatically if that ever fails. (Once shipping firmware carries the A/B
@@ -143,7 +147,7 @@ After that it settles. Then:
 * LuCI (the web interface) is at `https://192.168.1.1`
 * Ports: the three **RJ-45** ports (`eth0`–`eth2`) are the LAN bridge; the first
   **SFP+** cage (`eth3`) is WAN (DHCP); the second SFP+ (`eth4`) is a second LAN
-  (`192.168.2.1`). See [Getting started](getting-started.md) for the physical
+  (`192.168.2.1`). See [Getting started](/gateway-development-kit/getting-started/) for the physical
   port order.
 * Login is `root` with no password — set one.
 
@@ -169,7 +173,7 @@ writing the new system takes a few seconds; a power cut in exactly that window
 leaves the board on its previous slot (or in recovery). Fine on a desk; think
 twice for a device in a closet far away.
 
-{% hint style="info" %}
+:::info
 **Rolling back on purpose.** The system you upgraded *from* stays in the other
 slot until the next update overwrites it, so you can return to it deliberately —
 not only when an update fails. Check which slot you're on, flip to the other, and
@@ -184,7 +188,7 @@ reboot
 `mono-fw-setenv` writes both copies of the boot environment, so the switch holds
 no matter how the boot DIP switch is set. It is the same slot flip the board does
 on its own after a failed update — here you are just doing it by hand.
-{% endhint %}
+:::
 
 ### Installing extra packages
 
@@ -206,12 +210,12 @@ the build server bake it in, so it **survives future updates**:
 a kernel module — and the rebuilt image comes back with it installed and kept on
 every update thereafter.
 
-{% hint style="info" %}
+:::info
 `apk add <package>` also works for a quick, one-off install on the running system —
 but the board is A/B, so the next Attended Sysupgrade writes a *fresh* slot and an
 `apk`-installed package is **not** carried across. For anything you want to keep,
 add it with `owut -a` so it lands in the image itself.
-{% endhint %}
+:::
 
 ## Part 2: How the image works
 
@@ -286,7 +290,7 @@ Beyond offloading, the image carries the Gateway's board bits:
 
 ### The eMMC layout (A/B)
 
-```
+```text
 0–4 KB      GPT partition table (8 entries, kept clear of the firmware)
 4 KB–32 MB  boot firmware: PBL, FIP (U-Boot), U-Boot env, FMan microcode
             (owned by the firmware update tool — never touched by OpenWRT)
@@ -357,7 +361,7 @@ LuCI under *Network → Wireless* (managed natively — no extra setup needed). 
 are auto-detected on the 5 GHz band; to put one on 2.4 GHz, change its band in
 LuCI, or from the shell:
 
-```
+```bash
 uci set wireless.radio0.band='2g'
 uci set wireless.radio0.htmode='HE40'
 uci commit wireless
@@ -430,7 +434,7 @@ A status page lives under *Network → Wireless → usteer*.
 Option names drift between usteer versions; the shipped `/etc/config/usteer` is
 fully commented, so check it there if the daemon rejects one.
 
-{% hint style="info" %}
+:::info
 **A client that connects but has no internet is almost always DNS.** The
 giveaway on an iPhone or iPad: under _Wi-Fi → ⓘ → Configure DNS: Automatic_ the
 DNS-server list is **empty**. It associated and got an IP, but has no resolver.
@@ -447,4 +451,4 @@ uci add_list dhcp.lan.dhcp_option='6,192.168.1.1'   # repeat per network → its
 uci commit dhcp
 /etc/init.d/dnsmasq reload
 ```
-{% endhint %}
+:::

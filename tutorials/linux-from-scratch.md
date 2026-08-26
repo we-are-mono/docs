@@ -1,4 +1,8 @@
-# Build a Debian Linux image from scratch
+---
+title: "Build a Debian Linux image from scratch"
+section: "Tutorials"
+order: 1
+---
 
 This tutorial has an accompanying [YouTube video](https://youtu.be/vJ44sgnsREk).
 
@@ -8,15 +12,15 @@ In order to build a Debian linux from scratch for an embedded device, we need th
 - Root filesystem (along with an optional initial RAM filesystem)
 - A device tree
 
-{% hint style="info" %}
+:::info
 If you encounter any issues following this tutorial, you're likely missing dependencies like `build-essential` on your system. Also, I'm using Debian (bookworm) virtual machine on the M1 Mac Studio for everything below which means I don't have to use cross compilation tools, but if you're working on an x86 machine, give [this document](https://bootlin.com/doc/training/embedded-linux/embedded-linux-labs.pdf) a read.
-{% endhint %}
+:::
 
 ## Build the kernel
 
 Let's first create a directory in which we will perform all the work then download and uncompress the kernel into it. We will be using the mainline kernel version 6.6.51 for this tutorial, but you're encouraged to check whether the manufacturer of your particular board supplies their own kernel and use that instead.
 
-```
+```bash
 $ mkdir embedded-debian
 $ cd embedded-debian
 $ wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.51.tar.xz
@@ -26,7 +30,7 @@ $ cd linux-6.6.51
 
 For the purpose of making it simple, we won't do any modifications to the kernel configuration, but if you do, you can always run `$ make menuconfig` and play around with the settings. Run the following to create a `.config` file from the default one (you can find these files in `linux-6.6.51/arch/arm64/configs`):
 
-```
+```bash
 $ make defconfig
 $ make -j8 # Replace 8 with the number of cores you have available on your machine
 $ cd ..
@@ -38,7 +42,7 @@ After this is done (it can take a while depending on how much cores and RAM you 
 
 Let's use [Busybox](https://www.busybox.net/) for this purpose because once fully built the whole filesystem only takes up a couple of megabytes:
 
-```
+```bash
 $ wget https://github.com/mirror/busybox/archive/refs/tags/1_36_0.tar.gz
 $ tar -zxf 1_36_0.tar.gz
 $ cd busybox-1_36_0
@@ -48,7 +52,7 @@ Before we build it, it's recommended to build all files as one static binary, so
 
 This is all we have to do in here, but feel free to look around at all the options and packages you can build into the final image and add anything you might seem necessary. Once you're done, save and exit the configuration and run:
 
-```
+```bash
 $ make -j8
 $ make install
 $ cd ..
@@ -56,7 +60,7 @@ $ cd ..
 
 This created a directory `_install` which holds almost everything we need for our final *initramfs*, but we're missing two things - an *init* script which kernel needs to run as the very first thing once it's done booting, and a couple of directories that it also expects, so let's make both and also copy the whole `_install` directory over:
 
-```
+```bash
 $ mkdir initramfs
 $ mkdir -p initramfs/bin initramfs/sbin initramfs/etc initramfs/proc initramfs/sys initramfs/dev initramfs/usr/bin initramfs/usr/sbin
 $ cp -a busybox-1_36_0/_install/* ./initramfs
@@ -87,7 +91,7 @@ $ chmod +x initramfs/init
 
 Our *initramfs* is now complete, so lets compress it into a CPIO image:
 
-```
+```bash
 $ chmod +x initramfs/init
 $ ls -al initramfs
 $ cd initramfs
@@ -98,7 +102,7 @@ $ mkimage -A arm64 -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.cp
 
 Notice the last line/command? We need it in order to make it compatible with u-boot. If you plan to **only** use it within a *FIT image*, then this step is not necessary. However, for the sake of completeness, we will do both, boot a FIT image and a regular u-boot `booti` boot, so let's now make a directory on our [TFTP server](https://www.baeldung.com/linux/tftp-server-install-configure-test) and copy all the files we'll need into it:
 
-```
+```bash
 $ mkdir -p /srv/tftp/embedded-debian
 $ cp linux-6.6.51/arch/arm64/boot/Image* /srv/tftp/youtube
 $ cp linux-6.6.51/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dtb /srv/tftp/youtube
@@ -111,7 +115,7 @@ Notice how I'm also copying over the `fsl-ls1046a-rdb.dtb` over? This file is pa
 
 Next, let's create a FIT image *recipe* file, and make sure to put it into `/srv/tftp/embedded-debian/board.its` with the following contents:
 
-```
+```c
 /dts-v1/;
 
 / {
@@ -163,13 +167,13 @@ Here, you can change all the description fields to your heart's content, but pay
 
 Now let's build the FIT image:
 
-```
+```bash
 $ mkimage -f /srv/tftp/embedded-debian/board.its /srv/tftp/embedded-debian/board.itb
 ```
 
 To test it out, now go u-boot on your board and enter the following (make sure to change IP addresses for both your board and the TFTP server):
 
-```
+```bash
 => setenv ipaddr 10.0.0.10
 => setenv serverip 10.0.0.1
 => setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/ram0 rootwait rw"
@@ -183,7 +187,7 @@ This will unpack the FIT image and if everything is in order, start the kernel a
 
 Because the above will only get you into a really basic filesystem that can't do much and is not permanent, it's now time to set up a proper Debian image that we can flash an SD card with. Make sure to `cd embedded-debian` where we will make an empty image by using tools that [qemu-img](https://qemu-project.gitlab.io/qemu/tools/qemu-img.html) brings to the table:
 
-```
+```bash
 $ qemu-img create sdcard.img 4G
 $ sudo parted --script sdcard.img \
     mktable gpt \
@@ -194,7 +198,7 @@ $ sudo parted --script sdcard.img \
 
 We've created a 4 GB image file then inside of it, created the two partitions we'll need: first, a boot partition, which will hold our kernel, device trees and the initial RAM filesystem, and second, our root filesystem partition which'll hold the whole Debian root filesystem. However, this is still just a file, so run the following commands:
 
-```
+```bash
 $ sudo losetup --show -f sdcard.img
 $ sudo kpartx -a /dev/loop0
 $ sudo mkfs.ext4 /dev/mapper/loop0p1
@@ -214,7 +218,7 @@ Let's go over what we just did:
 
 If you check both directories, so `/mnt/sdcard` and `/mnd/sdcard/boot`, you'll notice there is only one directory in each of them (`lost+found` which is an artifact of `ext4` filesystem), so let's now install Debian into the second partition:
 
-```
+```bash
 $ sudo apt install debootstrap
 $ sudo debootstrap --arch=arm64 --foreign bookworm /mnt/sdcard
 $ sudo chroot /mnt/sdcard bash
@@ -234,7 +238,7 @@ And last thing, we also need to set up the root password, otherwise we won't be 
 
 We now have our root filesystem in place, so we need to install Kernel into the `/boot` partition on the SD card image. Go back to the `embedded-debian` directory and run the following:
 
-```
+```bash
 $ cd linux-6.6.51
 $ sudo INSTALL_MOD_PATH=/mnt/sdcard make modules_install
 $ sudo INSTALL_PATH=/mnt/sdcard/boot make install
@@ -246,7 +250,7 @@ This'll install both the kernel itself **and** all the separate modules that wer
 
 The final thing we need to copy over into our boot partition is optional if you don't intend to use it, but it's good to have it in place as a sort of a rescue system and that's the initramfs image we built earlier, and while we're at it also copy the FIT image, which we will likely not need, but doesn't hurt to have it available:
 
-```
+```bash
 $ sudo cp initramfs.cpio.gz* /mnt/sdcard/boot
 $ sudo cp /srv/tftp/embedded-debian/board.itb /mnt/sdcard/boot
 ```
@@ -257,7 +261,7 @@ There we go, we now have everything in place to flash our SD card. Take the `sdc
 
 Once you're done building the image, use the following commands to unmount the partitions and detatch the loopback device with the commands below, however, feel free to skip this step in case you discover in any of the next steps that your image doesn't boot correctly (or at all) and you need to make any adjustments.
 
-```
+```bash
 $ sudo umount /dev/mapper/loop0p1
 $ sudo umount /dev/mapper/loop0p2
 $ sudo kpartx -d /dev/loop0
@@ -268,7 +272,7 @@ $ sudo losetup -d /dev/loop0
 
 Once in u-boot, run the following commands:
 
-```
+```bash
 => setenv bootargs "console=ttyS0,115200 root=/dev/mmcblk0p2 rootwait rw net.ifnames=0 earlycon=uart8250,mmio,0x21c0500"
 => load mmc 0:1 $kernel_addr_r vmlinuz-6.6.51
 => load mmc 0:1 $fdt_addr_r dtb/fsl-ls1046a-rdb.dtb
@@ -285,7 +289,7 @@ This should hopefully get you to the login screen, but we're not quite done yet.
 
 Then open `/etc/fstab` file with your favorite editor and paste the following line into it, and make sure you change the UUID to whatever *your* UUID of the partition is:
 
-```
+```bash
 /dev/disk/by-uuid/9df01dc0-039c-4efe-8b14-e594704d51a5 /boot ext4 defaults 0 2
 ```
 
@@ -294,7 +298,7 @@ Then commit the above by entering `$ mount -a`. The `/etc/fstab` file gets read 
 ## Tips and tricks
 
 If you ever need to boot into **initramfs** for whatever reason, run the following:
-```
+```bash
 => setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/ram0 rootwait rw net.ifnames=0 earlycon=uart8250,mmio,0x21c0500"
 => load mmc 0:1 $kernel_addr_r vmlinuz-6.6.51
 => load mmc 0:1 $ramdisk_addr_r initramfs.cpio.gz.uboot
@@ -302,13 +306,13 @@ If you ever need to boot into **initramfs** for whatever reason, run the followi
 => booti $kernel_addr_r $ramdisk_addr_r $fdt_addr_r
 ```
 
-{% hint style="info" %}
+:::info
 Pay special attention to the `root=/dev/ram0` part of the `bootargs` environment variable because this tells kernel as to where to look for the root filesystem. Since we're using *initramfs*, it needs to look into RAM. But if we skip *initramfs*, then it needs to look into our *mmc* device, which is why we used `root=/dev/mmcblk0p2` earlier.
-{% endhint %}
+:::
 
 Once you're done with it, continue booting into Debian with the following:
 
-```
+```bash
 $ mkdir -p /mnt/root
 $ mount -o rw /dev/mmcblk0p2 /mnt/root
 $ mount -o rw /dev/mmcblk0p1 /mnt/root/boot

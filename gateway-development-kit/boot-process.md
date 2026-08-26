@@ -1,5 +1,8 @@
-# Boot Process — General Description
-
+---
+title: "Boot Process — General Description"
+section: "Gateway development kit"
+order: 6
+---
 This document gives a general description of the boot process of the Mono Gateway Development Kit.
 
 The boot data is in one of 2 memory devices:
@@ -8,7 +11,7 @@ The boot data is in one of 2 memory devices:
 
 The DIP switch on the board tells the processor which device will be used.
 
-![The boot stages and the boot device](../.gitbook/assets/boot-process.svg)
+![The boot stages and the boot device](/assets/boot-process.svg)
 
 *The boot stages and the boot device*
 
@@ -69,7 +72,6 @@ The Linux kernel starts and gets control of the system and reads the hardware de
 The kernel then starts the 3 other processor cores, starts the network interfaces and the other devices, starts the user programs, ...
 
 **The boot process is complete.**
-
 
 ## Resources / Additional reading
 [LS1046A Reference Manual](https://www.nxp.com/webapp/Download?colCode=LS1046ARM) *You need an NXP account... Yay!*

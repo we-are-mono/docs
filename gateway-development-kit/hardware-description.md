@@ -1,4 +1,8 @@
-# Hardware description
+---
+title: "Hardware description"
+section: "Gateway development kit"
+order: 2
+---
 
 This page describes the hardware specifications and functionality of the expansion ports and how to use them.
 
@@ -6,21 +10,21 @@ This page describes the hardware specifications and functionality of the expansi
 
 |                        |                                                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| CPU                    | <p>NXP Layerscape LS1046A<br>4 cores<br>1.6 GHz</p>                                                                |
-| RAM                    | <p>8 GB<br>2100 MT/s<br>ECC support</p>                                                                            |
-| Networking             | <p>2x SFP+ 10 Gb<br>3x RJ-45 1 Gb</p>                                                                              |
-| Wifi                   | <p>1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br>1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread)</p> |
-| Storage                | <p>32 GB eMMC for Operating System<br>64 MB NOR flash for Bootloader</p>                                           |
-| Debugging              | <p>JTAG connector<br>100+ test points throughout the PCB<br>UART USB-C port<br>Status RGB LED</p>                  |
-| Required Power supply  | <p>USB-C PD 3.0<br>15V 3A (45W) or<br>20V 2A (40W)</p>                                                             |
-| Connectivity           | <p>1x USB-C 3.1 port<br>5Gbps data speed<br>5V 3A output power</p>                                                 |
-| Active cooling support | <p>Yes<br>2x 4-pin PWM 5V fan headers</p>                                                                          |
+| CPU                    | <p>NXP Layerscape LS1046A<br />4 cores<br />1.6 GHz</p>                                                                |
+| RAM                    | <p>8 GB<br />2100 MT/s<br />ECC support</p>                                                                            |
+| Networking             | <p>2x SFP+ 10 Gb<br />3x RJ-45 1 Gb</p>                                                                              |
+| Wifi                   | <p>1x M.2 Key-E port for Wifi 6.0 2x2 MU-MIMO<br />1x M.2 Key-E port for tri-radio (Wifi 5.0, Bluetooth, Thread)</p> |
+| Storage                | <p>32 GB eMMC for Operating System<br />64 MB NOR flash for Bootloader</p>                                           |
+| Debugging              | <p>JTAG connector<br />100+ test points throughout the PCB<br />UART USB-C port<br />Status RGB LED</p>                  |
+| Required Power supply  | <p>USB-C PD 3.0<br />15V 3A (45W) or<br />20V 2A (40W)</p>                                                             |
+| Connectivity           | <p>1x USB-C 3.1 port<br />5Gbps data speed<br />5V 3A output power</p>                                                 |
+| Active cooling support | <p>Yes<br />2x 4-pin PWM 5V fan headers</p>                                                                          |
 
 ## Port description
 
-![Development Kit PCB port description - TOP side](../.gitbook/assets/development-kit-pcb-port-description-top.png)
+![Development Kit PCB port description - TOP side](/assets/development-kit-pcb-port-description-top.png)
 
-![Development Kit PCB port description - BOTTOM side](../.gitbook/assets/development-kit-pcb-port-description-bot.png)
+![Development Kit PCB port description - BOTTOM side](/assets/development-kit-pcb-port-description-bot.png)
 
 ### USB PD Type-C (Power)
 
@@ -53,23 +57,23 @@ High-speed 10 gigabit ports for fiber or DAC connections. These should be compat
 
 ### Status LED
 
-An onboard RGBW LED located on the top side of the board is directly controlled by the main processor. It is intended for system status indication and user defined signaling. More information about its behavior and control is provided in [Getting started](getting-started.md)
+An onboard RGBW LED located on the top side of the board is directly controlled by the main processor. It is intended for system status indication and user defined signaling. More information about its behavior and control is provided in [Getting started](/gateway-development-kit/getting-started/)
 
 ### Cooling Fan ports \[F\_1] & \[F\_2]
 
-![Cooling fans block diagram](../.gitbook/assets/development-kit-cooling-fans-block-diagram.png)
+![Cooling fans block diagram](/assets/development-kit-cooling-fans-block-diagram.png)
 
 The cooling fan driver provides two fully independent channels designed to support 4-wire, 5 V cooling fans. These channels are labeled \[F\_1] and \[F\_2]. Channel 1 (CH1) has two physical connectors, one on the top side and one on the bottom side of the PCB, both labeled \[F\_1].
 
-{% hint style="danger" %}
+:::danger
 **WARNING** Only one cooling fan may be connected to CH1 at a time. Connecting more than one fan to this channel may result in malfunction or permanent damage to the cooling fan driver.
-{% endhint %}
+:::
 
-![Cooling Fan CH1 \[F\_1\] & CH2 \[F\_2\] pinout - PCB top side](../.gitbook/assets/development-kit-gpio-port-fan-4-wire-653104124022-pinout.png)
+![Cooling Fan CH1 \[F\_1\] & CH2 \[F\_2\] pinout - PCB top side](/assets/development-kit-gpio-port-fan-4-wire-653104124022-pinout.png)
 
-![Cooling Fan CH1 \[F\_1\] pinout - PCB bottom side](../.gitbook/assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout.png)
+![Cooling Fan CH1 \[F\_1\] pinout - PCB bottom side](/assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout.png)
 
-![Cooling Fan pinout - Wire side](../.gitbook/assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
+![Cooling Fan pinout - Wire side](/assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
 
 #### Connector type
 
@@ -87,14 +91,14 @@ _From the Gateway port's perspective_
 | ----- | ------- | ----------------------------------------------------- |
 | 1     | GND     | Power ground                                          |
 | 2     | +5V VCC | Power output, 5V, 250mA max per port.                 |
-| 3     | TACH    | <p>RPM feedback input<br>Sometimes marked as "FG"</p> |
+| 3     | TACH    | <p>RPM feedback input<br />Sometimes marked as "FG"</p> |
 | 4     | PWM     | PWM output signal                                     |
 
 ### GPIO Expansion port \[GPIO\_1]
 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch.
 
-![GPIO port pinout - PCB side](../.gitbook/assets/development-kit-gpio-port.png)
+![GPIO port pinout - PCB side](/assets/development-kit-gpio-port.png)
 
 #### Connector type
 
@@ -108,9 +112,9 @@ The GPIO header can be found on the top side of the board and has 1.27mm pin pit
 A GPIO pin configured as an output pin can be set to high (1.8V) or low (0V).\
 A GPIO pin configured as an input pin can be read as high (1.8V) or low (0V). This is made easier with the use of internal pull-up or pull-down resistors. This can be configured in software.
 
-{% hint style="danger" %}
+:::danger
 **WARNING** GPIO data pins are not protected. Do not overstress them. Doing so will damage the CPU.
-{% endhint %}
+:::
 
 _From the Gateway port's perspective_
 
@@ -134,7 +138,7 @@ _From the Gateway port's perspective_
 | ----------------------- | ------- |
 | Absolute maximum rating | 1.98 V  |
 | Input high voltage      | >1.26 V |
-| Input low voltage       | <0.36 V |
+| Input low voltage       | &lt;0.36 V |
 | Input current           | +-50 uA |
 
 | OUTPUT              |                  |
@@ -147,30 +151,30 @@ _From the Gateway port's perspective_
 
 The Gateway includes two M.2 Key-E expansion ports that support two different categories of wireless cards:
 
-{% hint style="danger" %}
+:::danger
 **WARNING** The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
-{% endhint %}
+:::
 
 | Card type  | Features                                              | Key type | Purpose                      | Port designation |
 | ---------- | ----------------------------------------------------- | -------- | ---------------------------- | ---------------- |
-| Tri-radio  | <p>Wireless<br>Bluetooth<br>Threads IEEE 802.15.4</p> | Key-E    | Home automation & smarthome  | \[M2\_1]         |
-| Dual-radio | <p>Wireless<br>Bluetooth</p>                          | Key-E    | Main radio card for wireless | \[M2\_2]         |
+| Tri-radio  | <p>Wireless<br />Bluetooth<br />Threads IEEE 802.15.4</p> | Key-E    | Home automation & smarthome  | \[M2\_1]         |
+| Dual-radio | <p>Wireless<br />Bluetooth</p>                          | Key-E    | Main radio card for wireless | \[M2\_2]         |
 
 #### Supported cards
 
-{% hint style="danger" %}
+:::danger
 **WARNING** Use of these cards is at your own risk. Performance, reliability, and long-term stability are not guaranteed, and changes may be made in future revisions.
-{% endhint %}
+:::
 
-{% hint style="danger" %}
+:::danger
 **WARNING** It is strictly important to follow the M.2 pinout listed below when selecting and installing wireless cards. Not all M.2 Key-E cards are compatible with the Gateway, and using an unsupported card or incorrect pinout may result in malfunction or hardware damage.
-{% endhint %}
+:::
 
 | Card name                                                                                                                        | Type       | PCB port | Test status                                                                              | Recommended to use |
 | -------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------- | ------------------ |
-| [uBlox M2-MAYA-W271-00B](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_M2-MAYA-W2.pdf)       | Tri-radio  | \[M2\_1] | <p>Basic HW &#x26; Firmware tests done.<br>Performance validation not yet performed.</p> | YES                |
+| [uBlox M2-MAYA-W271-00B](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_M2-MAYA-W2.pdf)       | Tri-radio  | \[M2\_1] | <p>Basic HW &#x26; Firmware tests done.<br />Performance validation not yet performed.</p> | YES                |
 | [H\&D Wireless SPB438-NTD](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_SPB438-NTD.pdf)     | Tri-radio  | \[M2\_1] | No tests performed yet                                                                   | ON YOUR OWN RISK   |
-| [uBlox M2-JODY-W377-00B](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_M2-JODY-W3.pdf)       | Dual-radio | \[M2\_2] | <p>Basic HW &#x26; Firmware tests done.<br>Performance validation not yet performed.</p> | YES                |
+| [uBlox M2-JODY-W377-00B](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_M2-JODY-W3.pdf)       | Dual-radio | \[M2\_2] | <p>Basic HW &#x26; Firmware tests done.<br />Performance validation not yet performed.</p> | YES                |
 | [AzureWave AW-XM458MA-PUR](https://github.com/we-are-mono/docs/blob/master/gateway-development-kit/assets/M2_AW-XM458MA-PUR.pdf) | Dual-radio | \[M2\_2] | No tests performed yet                                                                   | ON YOUR OWN RISK   |
 
 #### Pinout Tri-radio card \[M2\_1]
@@ -241,17 +245,17 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 | Battery spec               |                                         |
 | -------------------------- | --------------------------------------- |
 | Model                      | CR2032                                  |
-| Size                       | <p>20mm diameter<br>3.2mm thickness</p> |
+| Size                       | <p>20mm diameter<br />3.2mm thickness</p> |
 | Nominal voltage / capacity | 3V / >150mAh                            |
 | Rechargable                | No                                      |
 
 #### Replacing the battery
 
-{% hint style="danger" %}
+:::danger
 **WARNING** Do not use force to remove the battery from its holder.
-{% endhint %}
+:::
 
-![RTC battery remove procedure](../.gitbook/assets/development-kit-RTC-battery-remove.png)
+![RTC battery remove procedure](/assets/development-kit-RTC-battery-remove.png)
 
 To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
 
@@ -269,9 +273,9 @@ Before disassembling the device, ensure that proper ESD safety precautions are f
 
 Torx T10 screwdriver
 
-![Development Kit disassembly instructions - cover](../.gitbook/assets/development-kit-assembly-instruction-cover.png)
+![Development Kit disassembly instructions - cover](/assets/development-kit-assembly-instruction-cover.png)
 
-![Development Kit disassembly instructions - PCB](../.gitbook/assets/development-kit-assembly-instruction-pcb.png)
+![Development Kit disassembly instructions - PCB](/assets/development-kit-assembly-instruction-pcb.png)
 
 #### Steps
 
@@ -291,7 +295,7 @@ Torx T10 screwdriver
 
 ## PCB mechanical properties
 
-![Development Kit PCB dimensions - mm \[in\]](../.gitbook/assets/development-kit-pcb-dimensions.png)
+![Development Kit PCB dimensions - mm \[in\]](/assets/development-kit-pcb-dimensions.png)
 
 PCB thickness is 1.6mm \[63 mil]
 
@@ -299,4 +303,4 @@ PCB thickness is 1.6mm \[63 mil]
 
 Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).
 
-{% file src="../.gitbook/assets/10G_GW_DK_ENC_A1.zip" %}
+[Download 10G_GW_DK_ENC_A1.zip](/assets/10G_GW_DK_ENC_A1.zip)
