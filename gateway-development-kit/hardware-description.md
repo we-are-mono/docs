@@ -293,7 +293,8 @@ Before disassembling the device, ensure that proper ESD safety precautions are f
 
 Torx T10 screwdriver
 
-![Development Kit disassembly instructions - cover](/assets/development-kit-assembly-instruction-cover.png)
+<img class="theme-asset--light" src="/assets/development-kit-assembly-instruction-cover.png" alt="Development Kit disassembly instructions - cover" />
+<img class="theme-asset--dark" src="/assets/development-kit-assembly-instruction-cover-dark.png" alt="Development Kit disassembly instructions - cover" />
 
 ![Development Kit disassembly instructions - PCB](/assets/development-kit-assembly-instruction-pcb.png)
 
