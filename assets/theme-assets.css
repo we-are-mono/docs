@@ -1,3 +1,7 @@
+.theme-asset--light {
+  display: block;
+}
+
 .theme-asset--dark {
   display: none;
 }
