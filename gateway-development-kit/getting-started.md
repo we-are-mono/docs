@@ -4,11 +4,14 @@ section: "Gateway development kit"
 order: 1
 ---
 
+<link rel="stylesheet" href="/assets/theme-assets.css" />
+
 Before plugging the Development Kit in for the first time, it's worth familiarizing yourself with both: the ports on the back of the device as well as the First boot procedure.
 
 ## Connectors
 
-![Development Kit ports](/assets/development-kit-backpanel-connectors.png)
+<img class="theme-asset--light" src="/assets/development-kit-backpanel-connectors.png" alt="Development Kit ports" />
+<img class="theme-asset--dark" src="/assets/development-kit-backpanel-connectors-dark.png" alt="Development Kit ports" />
 
 More detailed information about the ports is provided in [Hardware description](/gateway-development-kit/hardware-description/)
 
@@ -174,7 +177,8 @@ apk add <package>
 
 Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWrt → Updating](/gateway-development-kit/installing-openwrt/).
 
-<img src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
+<img class="theme-asset--light" src="/assets/initial-luci-login-light.png" alt="LuCI login" height="50%" width="50%" />
+<img class="theme-asset--dark" src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
 
 **Installing an alternative OS**
 

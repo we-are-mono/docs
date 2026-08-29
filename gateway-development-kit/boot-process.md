@@ -3,6 +3,8 @@ title: "Boot Process — General Description"
 section: "Gateway development kit"
 order: 6
 ---
+<link rel="stylesheet" href="/assets/theme-assets.css" />
+
 This document gives a general description of the boot process of the Mono Gateway Development Kit.
 
 The boot data is in one of 2 memory devices:
@@ -11,7 +13,8 @@ The boot data is in one of 2 memory devices:
 
 The DIP switch on the board tells the processor which device will be used.
 
-![The boot stages and the boot device](/assets/boot-process.svg)
+<img class="theme-asset--light" src="/assets/boot-process-light.svg" alt="The boot stages and the boot device" />
+<img class="theme-asset--dark" src="/assets/boot-process.svg" alt="The boot stages and the boot device" />
 
 *The boot stages and the boot device*
 

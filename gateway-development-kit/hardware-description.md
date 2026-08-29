@@ -4,6 +4,8 @@ section: "Gateway development kit"
 order: 2
 ---
 
+<link rel="stylesheet" href="/assets/theme-assets.css" />
+
 This page describes the hardware specifications and functionality of the expansion ports and how to use them.
 
 ## Performance specification
@@ -33,9 +35,11 @@ The Mono Gateway Development Kit is an extremely versatile device, and its desig
 
 ## Port description
 
-![Development Kit PCB port description - TOP side](/assets/development-kit-pcb-port-description-top.png)
+<img class="theme-asset--light" src="/assets/development-kit-pcb-port-description-top.png" alt="Development Kit PCB port description - TOP side" />
+<img class="theme-asset--dark" src="/assets/development-kit-pcb-port-description-top-dark.png" alt="Development Kit PCB port description - TOP side" />
 
-![Development Kit PCB port description - BOTTOM side](/assets/development-kit-pcb-port-description-bot.png)
+<img class="theme-asset--light" src="/assets/development-kit-pcb-port-description-bot.png" alt="Development Kit PCB port description - BOTTOM side" />
+<img class="theme-asset--dark" src="/assets/development-kit-pcb-port-description-bot-dark.png" alt="Development Kit PCB port description - BOTTOM side" />
 
 ### USB PD Type-C (Power)
 
@@ -72,7 +76,8 @@ An onboard RGBW LED located on the top side of the board is directly controlled 
 
 ### Cooling Fan ports \[F\_1] & \[F\_2]
 
-![Cooling fans block diagram](/assets/development-kit-cooling-fans-block-diagram.png)
+<img class="theme-asset--light" src="/assets/development-kit-cooling-fans-block-diagram.png" alt="Cooling fans block diagram" />
+<img class="theme-asset--dark" src="/assets/development-kit-cooling-fans-block-diagram-dark.png" alt="Cooling fans block diagram" />
 
 The cooling fan driver provides two fully independent channels designed to support 4-wire, 5 V cooling fans. These channels are labeled \[F\_1] and \[F\_2]. Channel 1 (CH1) has two physical connectors, one on the top side and one on the bottom side of the PCB, both labeled \[F\_1].
 
@@ -80,11 +85,14 @@ The cooling fan driver provides two fully independent channels designed to suppo
 **WARNING** Only one cooling fan may be connected to CH1 at a time. Connecting more than one fan to this channel may result in malfunction or permanent damage to the cooling fan driver.
 :::
 
-![Cooling Fan CH1 \[F\_1\] & CH2 \[F\_2\] pinout - PCB top side](/assets/development-kit-gpio-port-fan-4-wire-653104124022-pinout.png)
+<img class="theme-asset--light" src="/assets/development-kit-gpio-port-fan-4-wire-653104124022-pinout.png" alt="Cooling Fan CH1 [F_1] &amp; CH2 [F_2] pinout - PCB top side" />
+<img class="theme-asset--dark" src="/assets/development-kit-gpio-port-fan-4-wire-653104124022-pinout-dark.png" alt="Cooling Fan CH1 [F_1] &amp; CH2 [F_2] pinout - PCB top side" />
 
-![Cooling Fan CH1 \[F\_1\] pinout - PCB bottom side](/assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout.png)
+<img class="theme-asset--light" src="/assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout.png" alt="Cooling Fan CH1 [F_1] pinout - PCB bottom side" />
+<img class="theme-asset--dark" src="/assets/development-kit-gpio-port-fan-4-wire-653104131822-pinout-dark.png" alt="Cooling Fan CH1 [F_1] pinout - PCB bottom side" />
 
-![Cooling Fan pinout - Wire side](/assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png)
+<img class="theme-asset--light" src="/assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout.png" alt="Cooling Fan pinout - Wire side" />
+<img class="theme-asset--dark" src="/assets/development-kit-gpio-port-fan-4-wire-620004113322-pinout-dark.png" alt="Cooling Fan pinout - Wire side" />
 
 #### Connector type
 
@@ -109,7 +117,8 @@ _From the Gateway port's perspective_
 
 The GPIO header can be found on the top side of the board and has 1.27mm pin pitch.
 
-![GPIO port pinout - PCB side](/assets/development-kit-gpio-port.png)
+<img class="theme-asset--light" src="/assets/development-kit-gpio-port.png" alt="GPIO port pinout - PCB side" />
+<img class="theme-asset--dark" src="/assets/development-kit-gpio-port-dark.png" alt="GPIO port pinout - PCB side" />
 
 #### Connector type
 
@@ -266,7 +275,8 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 **WARNING** Do not use force to remove the battery from its holder.
 :::
 
-![RTC battery remove procedure](/assets/development-kit-RTC-battery-remove.png)
+<img class="theme-asset--light" src="/assets/development-kit-RTC-battery-remove.png" alt="RTC battery remove procedure" />
+<img class="theme-asset--dark" src="/assets/development-kit-RTC-battery-remove-dark.png" alt="RTC battery remove procedure" />
 
 To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
 
@@ -284,9 +294,11 @@ Before disassembling the device, ensure that proper ESD safety precautions are f
 
 Torx T10 screwdriver
 
-![Development Kit disassembly instructions - cover](/assets/development-kit-assembly-instruction-cover.png)
+<img class="theme-asset--light" src="/assets/development-kit-assembly-instruction-cover.png" alt="Development Kit disassembly instructions - cover" />
+<img class="theme-asset--dark" src="/assets/development-kit-assembly-instruction-cover-dark.png" alt="Development Kit disassembly instructions - cover" />
 
-![Development Kit disassembly instructions - PCB](/assets/development-kit-assembly-instruction-pcb.png)
+<img class="theme-asset--light" src="/assets/development-kit-assembly-instruction-pcb.png" alt="Development Kit disassembly instructions - PCB" />
+<img class="theme-asset--dark" src="/assets/development-kit-assembly-instruction-pcb-dark.png" alt="Development Kit disassembly instructions - PCB" />
 
 #### Steps
 
@@ -306,7 +318,8 @@ Torx T10 screwdriver
 
 ## PCB mechanical properties
 
-![Development Kit PCB dimensions - mm \[in\]](/assets/development-kit-pcb-dimensions.png)
+<img class="theme-asset--light" src="/assets/development-kit-pcb-dimensions.png" alt="Development Kit PCB dimensions - mm [in]" />
+<img class="theme-asset--dark" src="/assets/development-kit-pcb-dimensions-dark.png" alt="Development Kit PCB dimensions - mm [in]" />
 
 PCB thickness is 1.6mm \[63 mil]
 
