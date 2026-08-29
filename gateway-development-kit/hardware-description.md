@@ -275,8 +275,7 @@ If the battery is removed or fully discharged, the RTC will lose its stored time
 **WARNING** Do not use force to remove the battery from its holder.
 :::
 
-<img class="theme-asset--light" src="/assets/development-kit-RTC-battery-remove.png" alt="RTC battery remove procedure" />
-<img class="theme-asset--dark" src="/assets/development-kit-RTC-battery-remove-dark.png" alt="RTC battery remove procedure" />
+![RTC battery remove procedure](/assets/development-kit-RTC-battery-remove.png)
 
 To replace the battery, the PCB must first be removed from the enclosure. Follow the disassembly instructions provided below.
 
@@ -294,11 +293,9 @@ Before disassembling the device, ensure that proper ESD safety precautions are f
 
 Torx T10 screwdriver
 
-<img class="theme-asset--light" src="/assets/development-kit-assembly-instruction-cover.png" alt="Development Kit disassembly instructions - cover" />
-<img class="theme-asset--dark" src="/assets/development-kit-assembly-instruction-cover-dark.png" alt="Development Kit disassembly instructions - cover" />
+![Development Kit disassembly instructions - cover](/assets/development-kit-assembly-instruction-cover.png)
 
-<img class="theme-asset--light" src="/assets/development-kit-assembly-instruction-pcb.png" alt="Development Kit disassembly instructions - PCB" />
-<img class="theme-asset--dark" src="/assets/development-kit-assembly-instruction-pcb-dark.png" alt="Development Kit disassembly instructions - PCB" />
+![Development Kit disassembly instructions - PCB](/assets/development-kit-assembly-instruction-pcb.png)
 
 #### Steps
 

@@ -177,8 +177,7 @@ apk add <package>
 
 Updating the whole system is handled by Attended Sysupgrade — see [Installing OpenWrt → Updating](/gateway-development-kit/installing-openwrt/).
 
-<img class="theme-asset--light" src="/assets/initial-luci-login-light.png" alt="LuCI login" height="50%" width="50%" />
-<img class="theme-asset--dark" src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
+<img src="/assets/initial-luci-login.png" alt="LuCI login" height="50%" width="50%" />
 
 **Installing an alternative OS**
 
