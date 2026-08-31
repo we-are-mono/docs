@@ -1,5 +1,6 @@
 ---
 title: "Boot Process — General Description"
+navLabel: "Boot process"
 section: "Gateway development kit"
 order: 6
 ---

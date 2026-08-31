@@ -1,5 +1,6 @@
 ---
 title: "OpenWrt on the Mono Gateway"
+navLabel: "Installing OpenWrt"
 section: "Gateway development kit"
 order: 5
 ---

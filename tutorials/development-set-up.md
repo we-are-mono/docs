@@ -1,5 +1,6 @@
 ---
 title: "How to set up DPDK and VPP environment for LS1046A"
+navLabel: "DPDK and VPP environment for LS1046A"
 section: "Tutorials"
 order: 2
 ---
