@@ -1,15 +1,16 @@
 ---
 title: "Restoring device tree"
+navLabel: "Restore device tree"
 section: "Gateway development kit"
-order: 6
+order: 6.5
 ---
 
-When user does not follow the steps for upgrading OpenWRT, it can happen the bootloader data will get overwritten.
+When user does not follow the steps for upgrading OpenWrt, it can happen the bootloader data will get overwritten.
 This how-to should help the user to get the router to correct bootable state.
 
 ## Part 1: Problem description
 
-During flashing of OpenWRT, user can by mistake use incorrect parameters for the **dd** command, overwriting the bootloader.
+During flashing of OpenWrt, user can by mistake use incorrect parameters for the **dd** command, overwriting the bootloader.
 The startup process will fail, u-boot will stop with following output:
 ```
 Retrieving file: /boot/extlinux/extlinux.conf
@@ -38,6 +39,7 @@ ERROR: Did not find a cmdline Flattened Device Tree
 Could not find a valid device tree
 ```
 
+## Part 2: Recovery procedure
 
 ### 1. Prepare TFTP server
 
@@ -62,12 +64,12 @@ Copy the value (starting with E8 in the above example) **including the colons** 
 
 On your Ubuntu workstation, issue command
 ```
-curl -fS -u "mono:[MAC]" \
+curl -fkS -u "mono:[MAC]" \
   -o firmware-emmc-gateway-dk.bin \
   "https://firmware.mono.si/firmware-emmc-gateway-dk.bin"
 ```
-Replace the [MAC] with the value from [step 2](#2-Gaining-the-device-MAC-address).
-Copy the file to your TFTP server root directory - if you used the how-to from [step 1](#1-Prepare-TFTP-server), this will be /srv/tftp.
+Replace the [MAC] with the value from [step 2](#2-gaining-the-device-mac-address).
+Copy the file to your TFTP server root directory - if you used the how-to from [step 1](#1-prepare-tftp-server), this will be /srv/tftp.
 You can use command such as `sudo cp firmware-emmc-gateway-dk.bin /srv/tftp`.
 
 ### 4. Setting up IP address
@@ -77,9 +79,9 @@ In order to proceed, you will need following information:
 - your default IP gateway
 - one free IP address on the same network as the TFTP server
 
-If you used your own computer to install TFTP as documented in [step 1](#1-Prepare-TFTP-server), you can use following command:
+If you used your own computer to install TFTP as documented in [step 1](#1-prepare-tftp-server), you can use following command:
 `ip route show default` - this command will print output such as
-`default via 10.100.10.254 dev enp11s0 proto dhcp src 10.100.10.54 metric 100`. In this example, the computer IP address is 10.10.10.54 and default IP gateway is 10.100.10.254.
+`default via 10.100.10.254 dev enp11s0 proto dhcp src 10.100.10.54 metric 100`. In this example, the computer IP address is 10.100.10.54 and default IP gateway is 10.100.10.254.
 In this example, the IP address 10.100.10.19 will be used as the IP address for mono gateway device.
 
 ### 5. Setting the env and running the tftpboot
@@ -93,7 +95,7 @@ In your serial console, issue following commands:
 => setenv ethprime "fm1-mac2"
 => saveenv
 ```
-**Replace the IP addresses above with values from [step 4](#4-Setting-up-IP-address).**
+**Replace the IP addresses above with values from [step 4](#4-setting-up-ip-address).**
 
 The environment will be saved to SPIFlash memory.
 You can verify the correct values again by running command `pri` and searching for ipaddr, gatewayip, serverip and ethact.
@@ -158,11 +160,11 @@ Once done, the process will finish with message
 :: Firmware update complete. Reboot to use the new firmware.
 ```
 
-Do not reboot, yet, you need to also flash OpenWRT image.
+Do not reboot, yet, you need to also flash OpenWrt image.
 
-### 9. Flashing the OpenWRT
+### 9. Flashing the OpenWrt
 
-Download latest OpenWRT build from [mono openwrt site](https://openwrt.mono.si).
+Download latest OpenWrt build from [mono openwrt site](https://openwrt.mono.si).
 In this example, it will be build [r1787707074](https://openwrt.mono.si/mono-v25.12.5-r1787707074/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz).
 To do this, in the mono gateway recovery console run commands:
 ```
@@ -174,9 +176,9 @@ dd if=$IMG of=$DEV bs=512 count=8
 dd if=$IMG of=$DEV bs=1M skip=32 seek=32
 ```
 
-### 9. NOR reboot
+### 10. NOR reboot
 
-After the firmware update and writing the OpenWRT image, you will need to flip the switch from **eMMC** back to **NOR** and reboot the device by running command `reboot` in mono gateway serial console.
+After the firmware update and writing the OpenWrt image, you will need to flip the switch from **eMMC** back to **NOR** and reboot the device by running command `reboot` in mono gateway serial console.
 
 **Stop the boot process by pressing any key when you see countdown, such as `Hit any key to stop autoboot:  4`.
 
@@ -190,4 +192,4 @@ saveenv
 ```
 Now we are done.
 
-Disconnect the network cable and issue command `boot` to start OpenWRT.
+Disconnect the network cable and issue command `boot` to start OpenWrt.
