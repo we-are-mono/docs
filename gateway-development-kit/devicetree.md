@@ -74,18 +74,120 @@ You can use command such as `sudo cp firmware-emmc-gateway-dk.bin /srv/tftp`.
 
 In order to proceed, you will need following information:
 - your TFTP server IP address
-- one free IP address on the same network as the TFTP server
 - your default IP gateway
+- one free IP address on the same network as the TFTP server
 
-If you used your own computed to install TFTP as documented in [step 1](#1-Prepare-TFTP-server), 
+If you used your own computer to install TFTP as documented in [step 1](#1-Prepare-TFTP-server), you can use following command:
+`ip route show default` - this command will print output such as
+`default via 10.100.10.254 dev enp11s0 proto dhcp src 10.100.10.54 metric 100`. In this example, the computer IP address is 10.10.10.54 and default IP gateway is 10.100.10.254.
+In this example, the IP address 10.100.10.19 will be used as the IP address for mono gateway device.
 
-Log in as `root` — no password.
+### 5. Setting the env and running the tftpboot
 
-:::info
-If `run recovery` fails with `Bad Linux ARM64 Image magic!` (or similar), the
-board's low-level firmware needs reflashing first. Do that once —
-see [Flashing firmware](/gateway-development-kit/flashing-firmware/) — then come back here.
-:::
+In your serial console, issue following commands:
+```
+=> setenv ipaddr "10.100.10.19"
+=> setenv gatewayip "10.100.10.254"
+=> setenv serverip "10.100.10.254"
+=> setenv ethact "fm1-mac2"
+=> setenv ethprime "fm1-mac2"
+=> saveenv
+```
+**Replace the IP addresses above with values from [step 4](#4-Setting-up-IP-address).**
 
-### 2. Get networking up
+The environment will be saved to SPIFlash memory.
+You can verify the correct values again by running command `pri` and searching for ipaddr, gatewayip, serverip and ethact.
 
+Once the environment values are present, issue a serial console command
+```
+tftpboot ${loadaddr} firmware-emmc-gateway-dk.bin
+```
+This will start the network interface. Don't worry if you get timeout, the device will switch to the next available interface. It will then download the file from your TFTP server.
+It should result in status message
+```
+done
+Bytes transferred = 33554432 (2000000 hex)
+```
+
+### 6. Writing the file to MMC
+
+We need to set final environment variables. In the serial console, type commands:
+```
+setexpr src ${loadaddr} + 0x1000
+setexpr cnt ${filesize} - 0x1000
+setexpr cnt ${cnt} / 0x200
+mmc dev 0
+```
+The output of the last one should be 
+```
+switch to partitions #0, OK
+mmc0(part 0) is current device
+```
+
+Now we can write the content to the MMC using command
+```
+mmc write ${src} 0x8 ${cnt}
+```
+
+### 7. Switching to eMMC
+
+Locate a DIP switch on the PCB with labels "eMMC" and "NOR". Flip the switch to **eMMC**.
+Reboot or power-cycle the board - you should now be able to reach recovery.
+
+
+### 8. Recovery steps
+
+Once in recovery, login as `root` with no password.
+Now you can obtain correct DHCP IP address and update the firmware.
+In this example, the network cable is plugged to port eth1 (the left-most port on the device).
+Obtaining DHCP IP address:
+```
+udhcpc -i eth1
+```
+Now to update the firmware, run:
+```
+firmware update --preserve-env
+```
+You will need to type `yes` to confirm the flashing process.
+
+This process will take some time and you should **NOT** interrupt it.
+The process will erase, write and verify the blocks.
+
+Once done, the process will finish with message
+```
+:: Firmware update complete. Reboot to use the new firmware.
+```
+
+Do not reboot, yet, you need to also flash OpenWRT image.
+
+### 9. Flashing the OpenWRT
+
+Download latest OpenWRT build from [mono openwrt site](https://openwrt.mono.si).
+In this example, it will be build [r1787707074](https://openwrt.mono.si/mono-v25.12.5-r1787707074/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz).
+To do this, in the mono gateway recovery console run commands:
+```
+wget https://openwrt.mono.si/mono-v25.12.5-r1787707074/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+DEV=/dev/mmcblk0
+IMG=layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
+dd if=$IMG of=$DEV bs=512 count=8
+dd if=$IMG of=$DEV bs=1M skip=32 seek=32
+```
+
+### 9. NOR reboot
+
+After the firmware update and writing the OpenWRT image, you will need to flip the switch from **eMMC** back to **NOR** and reboot the device by running command `reboot` in mono gateway serial console.
+
+**Stop the boot process by pressing any key when you see countdown, such as `Hit any key to stop autoboot:  4`.
+
+This will stop the boot process and allow again to set environment variables:
+```
+setenv bootcount 1
+setenv bootlimit 3
+setenv openwrt 'setenv bootargs "${bootargs_console} boot_medium=emmc root=/dev/mmcblk0p2 rootwait"; run emmc_load && booti ${kernel_addr_r} - ${fdt_addr_r}'
+setenv bootcmd 'run openwrt || run recovery'
+saveenv
+```
+Now we are done.
+
+Disconnect the network cable and issue command `boot` to start OpenWRT.
