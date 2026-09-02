@@ -165,13 +165,13 @@ Do not reboot, yet, you need to also flash OpenWrt image.
 ### 9. Flashing the OpenWrt
 
 Download latest OpenWrt build from [mono openwrt site](https://openwrt.mono.si).
-In this example, it will be build [r1787707074](https://openwrt.mono.si/mono-v25.12.5-r1787707074/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz).
+In this example, it will be build [r1788352954](https://openwrt.mono.si/mono-v25.12.5-r1788352954/layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img.gz).
 To do this, in the mono gateway recovery console run commands:
 ```
-wget https://openwrt.mono.si/mono-v25.12.5-r1787707074/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
-gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+wget https://openwrt.mono.si/mono-v25.12.5-r1788352954/layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img.gz
+gunzip layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img.gz
 DEV=/dev/mmcblk0
-IMG=layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
+IMG=layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img
 dd if=$IMG of=$DEV bs=512 count=8
 dd if=$IMG of=$DEV bs=1M skip=32 seek=32
 ```

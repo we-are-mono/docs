@@ -83,11 +83,11 @@ cd /tmp
 FOLDER="PASTE_THE_FOLDER_NAME_HERE"
 
 # Download the full-disk image and unzip it:
-wget https://openwrt.mono.si/$FOLDER/layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
-gunzip layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img.gz
+wget https://openwrt.mono.si/$FOLDER/layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img.gz
+gunzip layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img.gz
 
 # Write it to the eMMC — two commands, so the bootloader area is left untouched:
-IMG=layerscape-armv8_64b-mono_gateway-dk-ext4-emmc.img
+IMG=layerscape-armv8_64b-mono_gateway-dk-squashfs-emmc.img
 dd if=$IMG of=/dev/mmcblk0 bs=512 count=8         # partition table (first 4 KB)
 dd if=$IMG of=/dev/mmcblk0 bs=1M skip=32 seek=32  # the system, from 32 MB on
 sync
@@ -141,9 +141,9 @@ flashing.)
 ### 5. First boot
 
 The first boot takes a few extra seconds and may restart once on its own: the
-board grows the active rootfs slot to its full size, creates the persistent
-`/data` partition, and saves the A/B boot environment to both storage locations.
-After that it settles. Then:
+board creates the persistent `/data` partition, writes a backup partition table
+to the end of the disk, and saves the A/B boot environment to both storage
+locations. After that it settles. Then:
 
 * LuCI (the web interface) is at `https://192.168.1.1`
 * Ports: the three **RJ-45** ports (`eth0`–`eth2`) are the LAN bridge; the first
@@ -173,6 +173,23 @@ Your settings and everything under `/data` survive the update. One **heads-up**:
 writing the new system takes a few seconds; a power cut in exactly that window
 leaves the board on its previous slot (or in recovery). Fine on a desk; think
 twice for a device in a closet far away.
+
+:::info
+**One-time conversion for boards flashed before the squashfs switch.** Earlier
+images used a writable `ext4` root; current images use a read-only `squashfs`
+root (see [How the image works](#part-2-how-the-image-works)). A board still on
+`ext4` will *not* auto-upgrade until you convert it once. Back it up first
+(**System → Backup**), then run:
+
+```sh
+owut upgrade --fstype squashfs
+```
+
+It preserves your settings and everything under `/data`; afterwards plain
+`owut upgrade` works as normal. This is a **one-time** step — boards flashed
+from a current image are already `squashfs` and can ignore it, and the whole
+note goes away once every board has converted.
+:::
 
 :::info
 **Rolling back on purpose.** The system you upgraded *from* stays in the other
@@ -302,14 +319,15 @@ Beyond offloading, the image carries the Gateway's board bits:
 2208 MB  p5 data    ~27.5 GiB persistent /data — survives updates
 ```
 
-**A/B slots.** There are two rootfs copies. An update writes the *inactive*
-slot and flips U-Boot to it, keeping the slot you were on as an automatic
-rollback: if the new system fails to boot, the board comes back on the old one.
-Anything that must persist across updates lives on the separate `/data`
+**A/B slots.** There are two rootfs copies. Each is a read-only **squashfs**
+image with a writable overlay filling the rest of its 1 GiB slot, so the system
+files stay immutable while your changes live in the overlay. An update writes the
+*inactive* slot and flips U-Boot to it, keeping the slot you were on as an
+automatic rollback: if the new system fails to boot, the board comes back on the
+old one. Anything that must persist across updates lives on the separate `/data`
 partition. A freshly-flashed image seeds only slot A (p1 + p2); the B slot fills
-in on the first update, and `/data` is created on first boot — which is also
-when slot-A's rootfs grows to its full 1 GiB and a backup copy of the partition
-table is written to the end of the disk.
+in on the first update, and `/data` is created on first boot — which is also when
+a backup copy of the partition table is written to the end of the disk.
 
 Two unusual choices, both because of the firmware region:
 
@@ -318,10 +336,9 @@ Two unusual choices, both because of the firmware region:
   update tool, so our table is slimmed down — it lists up to 8 partitions
   instead of the usual 128 — and the whole thing fits in the first 4 KB. Linux
   and U-Boot are fine with that; some desktop partitioning tools may grumble.
-* Partitions are created at their final size **in the image**; only the
-  filesystem in slot A grows on first boot. The partition table is otherwise
-  never rewritten — repartitioning tools would write a full-size table right
-  over the firmware.
+* Partitions are created at their final size **in the image**, and the partition
+  table is never rewritten afterwards — repartitioning tools would write a
+  full-size table right over the firmware.
 
 ### How releases happen
 
