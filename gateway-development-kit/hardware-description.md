@@ -310,6 +310,8 @@ Torx T10 screwdriver
 
 PCB thickness is 1.6mm \[63 mil]
 
+[Download 10G_GW_DK_PCB_3D-STEP.zip](/assets/MTUR_Main_Board_A3_(DEV_KIT_VAR)_SIMPLE.zip)
+
 ## Development Kit enclosure
 
 Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).
