@@ -315,7 +315,7 @@ PCB thickness is 1.6mm \[63 mil]
 ## Power Supplies Test Points
 The Gateway development kit supports basic hardware diagnostics through direct measurement of its onboard power supply outputs. The accompanying PDF and Excel files identify the measurement test points and specify the acceptable voltage range for each supply rail. 
 
-### How to measure
+#### How to measure
 
 :::danger
 WARNING Exercise care when probing to avoid shorting adjacent pads or components.
