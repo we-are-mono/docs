@@ -312,6 +312,26 @@ PCB thickness is 1.6mm \[63 mil]
 
 [Download 10G_GW_DK_PCB_3D-STEP.zip](/assets/MTUR_Main_Board_A3_(DEV_KIT_VAR)_SIMPLE.zip)
 
+## PCB PSU Test Points
+The Gateway development kit supports basic hardware diagnostics through direct measurement of its onboard power supply outputs. The accompanying PDF and Excel files identify the measurement test points and specify the acceptable voltage range for each supply rail. 
+
+### How to measure
+
+:::danger
+WARNING Exercise care when probing to avoid shorting adjacent pads or components.
+:::
+
+* Use a digital multimeter configured for DC voltage measurement, with a measurement range above the expected rail voltage. 
+* For easier measuring, remove the PCB from its enclosure first.
+* Power up the Gateway Router.
+* Connect the negative probe to a board ground (GND) reference and place the positive probe on the corresponding voltage test point 
+* Compare each measured voltage against the specified minimum and maximum limits. A reading outside these limits may indicate a power supply fault, excessive loading, or an issue with the input power source and warrants further investigation. Measurements within the specified limits confirm the DC voltage levels at the tested points. 
+
+
+[Download Test Points Positions](/assets/MONO_GW_DevKit_A3_PSU-Output-TPs_Positions.pdf)
+
+[Download Test Points Voltage Ranges](/assets/MONO_GW_DevKit_A3_PSU-Output-TPs_Positions.pdf)
+
 ## Development Kit enclosure
 
 Here you can download the 3D step models of the Development Kit enclosure (top and bottom part).
