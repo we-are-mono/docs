@@ -275,6 +275,11 @@ Once the PCB is accessible, use a flathead screwdriver to carefully lever the ba
 
 ## I2C / SMBUS Device tree
 
+The board carries 22 I2C/SMBus devices, reached through four CPU built-in controllers and three bus multiplexers. The table below describes the device tree of the I2C system.
+
+The CPU LS1046A provides four I2C controllers. IIC1, IIC2 and IIC3 each drive one TCA9545A 4-channel multiplexer, so every device on those buses sits behind one mux channel. The IIC4 is a single-device bus wired directly to the board EEPROM. All three multiplexers are strapped to the same address, 0x70.
+
+
 | Bus / CPU channel | MUX (addr) | Device | Channel (reg) | Part number | Addr 7-bit | Addr 8-bit W/R |
 | ----------------- | ---------- | ------ | ------------- | ----------- | ---------- | -------------- |
 | **Bus 1 - SMBus** (CPU IIC1) | | | | | | |
@@ -286,10 +291,10 @@ Once the PCB is accessible, use a flathead screwdriver to carefully lever the ba
 | | | └─ Fan controller | CH3  (reg 0x08) | Microchip EMC2302-1-AIZL-TR | **0x2E** | 0x5C / 0x5D |
 | **Bus 2 - I2C** (CPU IIC2) | | | | | | |
 | | **0x70**| | mux itself | Texas Instruments TCA9545APWR | **0x70** | 0xE0 / 0xE1 |
-| | | └─ SFP+ port 1 module - pluggable  | CH0  (reg 0x01) | TE Connectivity 1888247-1 (cage) | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
-| | | └─ SFP+ port 2 module - pluggable  | CH1  (reg 0x02) | TE Connectivity 1888247-1 (cage) | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
-| | | └─ M.2 Key-E tri-radio card  | CH2  (reg 0x04) | TE Connectivity 2199230-4 (socket) | **card dependent** |  |
-| | | └─ GPIO & PWR expansion header | CH3  (reg 0x08) | Wurth Elektronik 62701420621 | **external** |  |
+| | | └─ SFP+ port 1 module - pluggable  | CH0  (reg 0x01) | - | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
+| | | └─ SFP+ port 2 module - pluggable  | CH1  (reg 0x02) | - | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
+| | | └─ M.2 Key-E tri-radio card  | CH2  (reg 0x04) | - | **card dependent** |  |
+| | | └─ GPIO & PWR expansion header | CH3  (reg 0x08) | - | **external** |  |
 | **Bus 3 - I2C** (CPU IIC3) | | | | | | |
 | | **0x70**| | mux itself | Texas Instruments TCA9545APWR | **0x70** | 0xE0 / 0xE1 |
 | | | └─ Power monitor - USB-PD input  | CH0  (reg 0x01) | Texas Instruments INA234AIYBJR | **0x40** | 0x80 / 0x81 |
