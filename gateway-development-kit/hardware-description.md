@@ -272,6 +272,42 @@ To replace the battery, the PCB must first be removed from the enclosure. Follow
 
 Once the PCB is accessible, use a flathead screwdriver to carefully lever the battery out of the holder, as shown in the image.
 
+
+## I2C / SMBUS Device tree
+
+| Bus / CPU channel | MUX (addr) | Device | Channel (reg) | Part number | Addr 7-bit | Addr 8-bit W/R |
+| ----------------- | ---------- | ------ | ------------- | ----------- | ---------- | -------------- |
+| **Bus 1 - SMBus** (CPU IIC1) | | | | | | |
+| | **0x70** | | mux itself | Texas Instruments TCA9545APWR | **0x70** | 0xE0 / 0xE1 |
+| | | └─ 10GbE XFI-SFI retimer | CH0  (reg 0x01) | Texas Instruments DS100DF410SQ | **0x30** | 0x60 / 0x61 |
+| | | └─ System clock generator  | CH0  (reg 0x01) | Renesas 6V49205BNLGI | **0x69** | 0xD2 / 0xD3 |
+| | | └─ Temperature sensor 1 - CPU diode  | CH1  (reg 0x02) | Texas Instruments TMP431ADGKR | **0x4C** | 0x98 / 0x99 |
+| | | └─ Temperature sensor 2 | CH2  (reg 0x04) | Texas Instruments TMP431ADGKR | **0x4C** | 0x98 / 0x99 |
+| | | └─ Fan controller | CH3  (reg 0x08) | Microchip EMC2302-1-AIZL-TR | **0x2E** | 0x5C / 0x5D |
+| **Bus 2 - I2C** (CPU IIC2) | | | | | | |
+| | **0x70**| | mux itself | Texas Instruments TCA9545APWR | **0x70** | 0xE0 / 0xE1 |
+| | | └─ SFP+ port 1 module - pluggable  | CH0  (reg 0x01) | TE Connectivity 1888247-1 (cage) | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
+| | | └─ SFP+ port 2 module - pluggable  | CH1  (reg 0x02) | TE Connectivity 1888247-1 (cage) | **0x50 / 0x51** | 0xA0 / 0xA1   \|   0xA2 / 0xA3 |
+| | | └─ M.2 Key-E tri-radio card  | CH2  (reg 0x04) | TE Connectivity 2199230-4 (socket) | **card dependent** |  |
+| | | └─ GPIO & PWR expansion header | CH3  (reg 0x08) | Wurth Elektronik 62701420621 | **external** |  |
+| **Bus 3 - I2C** (CPU IIC3) | | | | | | |
+| | **0x70**| | mux itself | Texas Instruments TCA9545APWR | **0x70** | 0xE0 / 0xE1 |
+| | | └─ Power monitor - USB-PD input  | CH0  (reg 0x01) | Texas Instruments INA234AIYBJR | **0x40** | 0x80 / 0x81 |
+| | | └─ Power monitor - 5V0\_SYS  | CH0  (reg 0x01) | Texas Instruments INA234AIYBJR | **0x41** | 0x82 / 0x83 |
+| | | └─ Power monitor - 1V\_CPU\_CORE  | CH0  (reg 0x01) | Texas Instruments INA234AIYBJR | **0x42** | 0x84 / 0x85 |
+| | | └─ Power monitor - 1V2\_MEM | CH0  (reg 0x01) | Texas Instruments INA234AIYBJR | **0x43** | 0x86 / 0x87 |
+| | | └─ Power monitor - 1V35\_SERDES  | CH1  (reg 0x02) | Texas Instruments INA234AIYBJR | **0x40** | 0x80 / 0x81 |
+| | | └─ Power monitor - 1V8\_SYS | CH1  (reg 0x02) | Texas Instruments INA234AIYBJR | **0x41** | 0x82 / 0x83 |
+| | | └─ Power monitor - 2V5\_SYS | CH1  (reg 0x02) | Texas Instruments INA234AIYBJR | **0x42** | 0x84 / 0x85 |
+| | | └─ Power monitor - 3V3\_SYS | CH1  (reg 0x02) | Texas Instruments INA234AIYBJR | **0x43** | 0x86 / 0x87 |
+| | | └─ USB-C PD sink controller | CH2  (reg 0x04) | STMicroelectronics STUSB4500QTR | **0x28** | 0x50 / 0x51 |
+| | | └─ Real-time clock| CH2  (reg 0x04) | NXP PCF2131TFY | **0x53** | 0xA6 / 0xA7 |
+| | | └─ USB Type-C port controller | CH2  (reg 0x04) | Texas Instruments HD3SS3220IRNHR | **0x47** | 0x8E / 0x8F |
+| | | └─ RGBW LED driver | CH3  (reg 0x08) | Texas Instruments LP5810AYBHR | **0x50-0x53 / 0x6C-0x6F** | 0xA0 / 0xA1 |
+| **Bus 4 - direct (no mux)** (CPU IIC4) | | | | | | |
+| | | └─ Board EEPROM  | no mux | Microchip AT24CS32-MAHM-E | **0x50  &  0x58** | 0xA0 / 0xA1   \|   0xB0 / 0xB1 |
+
+
 ## Disassembly instructions
 
 Since the expansion features are not accessible with the enclosure installed, it is mandatory to remove the printed circuit board (PCB) from the enclosure.
