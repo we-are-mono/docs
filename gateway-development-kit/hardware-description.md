@@ -25,10 +25,6 @@ This page describes the hardware specifications and functionality of the expansi
 As a development kit, additional features are included to enable OS installation, device recovery, firmware updates, and hardware debugging of both the SoC and the PCB.
 :::
 
-:::warning
-\*The two M.2 E-key slots have different presented interfaces and pinouts. Compatibility with user-supplied M.2 E-key hardware is not guaranteed, and incorrect use may result in hardware damage. Check the datasheet for your intended M.2 E-key device to establish interface requirements and pin-compatibility. For a list of the tested M.2 devices, and the full socket pin-assignments, see [Supported cards](#supported-cards).
-:::
-
 The Mono Gateway Development Kit is an extremely versatile device, and its design enables user recovery in an abnormally wide range of scenarios. Even if rendered *'bricked'* and unbootable, the device can still be recovered via a separate JTAG hardware debugger probe ([e.g. TC2050](https://www.tag-connect.com/product/tc2050-idc-050-all)).
 
 ## Port description
@@ -163,11 +159,12 @@ _From the Gateway port's perspective_
 
 ### M2 wireless card ports \[M2\_1] & \[M2\_2]
 
+:::warning
+The two M.2 E-key slots have different presented interfaces and pinouts. Compatibility with user-supplied M.2 E-key hardware is not guaranteed, and incorrect use may result in hardware damage. Check the datasheet for your intended M.2 E-key device to establish interface requirements and pin-compatibility. For a list of the tested M.2 devices, and the full socket pin-assignments, see [Supported cards](#supported-cards).
+:::
+
 The Gateway includes two M.2 Key-E expansion ports that support two different categories of wireless cards:
 
-:::danger
-**WARNING** The wireless expansion cards are partially tested and have not yet completed full validation. While core functionality has been verified, the design is still experimental.
-:::
 
 | Card type  | Features                                              | Key type | Purpose                      | Port designation |
 | ---------- | ----------------------------------------------------- | -------- | ---------------------------- | ---------------- |
