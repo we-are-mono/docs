@@ -13,7 +13,7 @@ This page describes the hardware specifications and functionality of the expansi
 | **CPU** | NXP QorIQ LS1046A SoC: 4x Cortex-A72 @1.6 GHz |
 | **RAM** | 8 GB ECC DDR4 @2100 MT/s |
 | **Networking** | 2x SFP+ 10 Gbps (10GBASE-R)<br />3x RJ45 1 Gbps (1000BASE-T) |
-| **M.2 expansion\*** | 1x M.2\_1 Key-E (Left) *'Smart home'* – interfaces: SDIO, UART, SPI, I2C – Usage: low-bandwidth tri-radio cards (Wifi5, Bluetooth, Thread)<br />1x M.2\_2 Key-E (Right) *'Wireless'* – interfaces: UART, PCIe 3.0 x1 – Usage: Wifi6 2x2 MU-MIMO cards |
+| **M.2 expansion** | 1x M.2\_1 Key-E (Left) "*Smart home*" – interfaces: SDIO, UART, SPI, I2C – Usage: low-bandwidth tri-radio cards (Wifi5, Bluetooth, Thread)<br />1x M.2\_2 Key-E (Right) "*Wireless*" – interfaces: UART, PCIe 3.0 x1 – Usage: Wifi6 2x2 MU-MIMO cards |
 | **Storage** | *User-selectable boot source via PCB dip-switch:*<br />1x 64 MB NOR flash for Bootloader<br />1x 32 GB eMMC for Operating System |
 | **Firmware** | NOR + eMMC (user-updatable) firmware targets are available — see [Flashing firmware](/gateway-development-kit/flashing-firmware/) |
 | **Boot loader** | U-Boot via `booti` |
@@ -25,7 +25,7 @@ This page describes the hardware specifications and functionality of the expansi
 As a development kit, additional features are included to enable OS installation, device recovery, firmware updates, and hardware debugging of both the SoC and the PCB.
 :::
 
-The Mono Gateway Development Kit is an extremely versatile device, and its design enables user recovery in an abnormally wide range of scenarios. Even if rendered *'bricked'* and unbootable, the device can still be recovered via a separate JTAG hardware debugger probe ([e.g. TC2050](https://www.tag-connect.com/product/tc2050-idc-050-all)).
+The Mono Gateway Development Kit is an extremely versatile device, and its design enables user recovery in an abnormally wide range of scenarios. Even if rendered "*bricked*" and unbootable, the device can still be recovered via a separate JTAG hardware debugger probe ([e.g. TC2050](https://www.tag-connect.com/product/tc2050-idc-050-all)).
 
 ## Port description
 
