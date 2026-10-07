@@ -63,6 +63,9 @@ Resets the device by pulling the reset pin to ground on most chips. Note that th
 Standard gigabit Ethernet ports, compatible with typical home networking equipment.
 
 ### 10 Gb SFP+
+:::danger
+**WARNING** Due to tight tolerances between the SFP+ cages and the enclosure, some SFP+ modules may fit very tightly or get stuck inside the cage. Exercise extreme caution when plugging and unplugging modules: insert them straight and gently, fully open the release latch before removing, and pull straight out. Never force, twist or pry a module, as this can damage the module, the cage or the board.
+:::
 
 High-speed 10 gigabit ports for fiber or DAC connections. These should be compatible with a wide array of modules. If a particular module doesn't work, it's usually not a hardware limitation—the retimer chip is fully configurable via I2C, and our [kernel configuration is open source](https://github.com/we-are-mono/meta-mono/blob/master/meta-mono-bsp/recipes-kernel/linux/files/defconfig).
 
