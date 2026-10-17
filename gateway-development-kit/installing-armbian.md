@@ -91,8 +91,12 @@ Earlier we wiped the eMMC while writing the image to it, so we need to write fir
 4. Run the update:
 
    ```sh
-   firmware update
+   firmware update --preserve-env
    ```
 
 5. Set the DIP switch back to **eMMC**.
 6. Reboot.
+
+:::info
+The default credentials on Armbian are `root` as the user and `1234` as the password
+:::
